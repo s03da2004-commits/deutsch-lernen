@@ -76,6 +76,17 @@ h1{margin:0;font-size:clamp(26px,5vw,38px);font-weight:900;flex:1}
 .topic .lv{background:var(--ink);color:var(--bg);border-radius:6px;padding:0 10px;font-size:14px}
 .topic small{flex-basis:100%;color:var(--mute);font-weight:500;font-size:14px;line-height:1.5}
 .pl{font-size:14px;color:var(--mute);font-weight:500}
+.lvA1{background:#FFCE00;border-color:#FFCE00;color:#111}
+.lvA2{background:#DD0000;border-color:#DD0000;color:#fff}
+.lvB1{background:#000;border-color:#000;color:#fff}
+@media (prefers-color-scheme:dark){.lvB1{border-color:#777}}
+.lvA1 small,.lvA2 small,.lvB1 small{color:inherit;opacity:.85}
+.lvA1 .bar{background:rgba(0,0,0,.22)}.lvA1 .bar i{background:#111}
+.lvA2 .bar,.lvB1 .bar{background:rgba(255,255,255,.3)}.lvA2 .bar i,.lvB1 .bar i{background:#fff}
+.lvA1 .lv{background:#111;color:#FFCE00}
+.lvA2 .lv{background:#fff;color:#DD0000}
+.lvB1 .lv{background:#fff;color:#000}
+.lvA1:hover,.lvA2:hover,.lvB1:hover{filter:brightness(1.08)}
 .chk{order:-1;width:38px;height:38px;border-radius:50%;border:2px solid var(--line);background:none;color:transparent;font-size:20px;line-height:1;cursor:pointer;flex:none}
 .chk[aria-pressed="true"]{background:var(--n);border-color:var(--n);color:#fff}
 </style>
@@ -375,7 +386,7 @@ function renderExam(l,j){
 function renderTopicList(){
  const h=document.createElement("h2");h.className="sec";h.textContent="مواضيع للتحدث";view.append(h);
  const g=document.createElement("div");g.className="grid";
- TOPICS.forEach((t,i)=>g.append(btn(`<span class="tt">${t.de}</span><span class="lv">${t.lv}</span><small>${t.ar}</small>`,"box topic",()=>go("T",i))));
+ TOPICS.forEach((t,i)=>g.append(btn(`<span class="tt">${t.de}</span><span class="lv">${t.lv}</span><small>${t.ar}</small>`,"box topic lv"+t.lv,()=>go("T",i))));
  view.append(g)}
 function renderTopic(i,c){
  const t=TOPICS[i];
@@ -459,7 +470,7 @@ function render(){
  if(i==="exam"){renderExam(l,EXAM);return}
  if(!l){title.textContent="تعلّم الألماني";crumb.textContent="اختر مستواك";
   const g=document.createElement("div");g.className="grid levels";
-  Object.keys(LESSONS).forEach(k=>g.append(btn(`<span class="lvl">${k}</span><small>${LEVEL_NAMES[k]}</small><span class="pct">${pct(k)}% محفوظ</span><span class="bar"><i style="width:${pct(k)}%"></i></span>`,"box",()=>go(k))));view.append(g);renderTopicList()}
+  Object.keys(LESSONS).forEach(k=>g.append(btn(`<span class="lvl">${k}</span><small>${LEVEL_NAMES[k]}</small><span class="pct">${pct(k)}% محفوظ</span><span class="bar"><i style="width:${pct(k)}%"></i></span>`,"box lv"+k,()=>go(k))));view.append(g);renderTopicList()}
  else if(i==null){title.textContent="المستوى "+l;crumb.textContent="اختر الدرس";
   const g=document.createElement("div");g.className="grid lessons";
   view.append(btn("ابدأ التمرين · "+pct(l)+"% محفوظ","go",()=>go(l,"quiz")));LESSONS[l].forEach((n,j)=>{const t=document.createElement("div");t.className="tile";
