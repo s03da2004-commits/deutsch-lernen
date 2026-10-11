@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>تعلّم الألماني</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6f4ef;--card:#fff;--ink:#1c1f26;--mute:#6a707c;--line:#dcd8cf;
+--m:#1d5fd1;--f:#d62839;--n:#1f9d55;--v:#111;--a:#7b3fc4;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14161b;--card:#1e222a;--ink:#eef0f4;--mute:#9aa1ae;--line:#323845;--m:#5b9bff;--f:#ff6b7a;--n:#4cd08a;--v:#f2f2f2;--a:#b58cff}}
+:root[data-theme="dark"]{--bg:#14161b;--card:#1e222a;--ink:#eef0f4;--mute:#9aa1ae;--line:#323845;--m:#5b9bff;--f:#ff6b7a;--n:#4cd08a;--v:#f2f2f2;--a:#b58cff}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 Cairo,Tahoma,sans-serif}
+.wrap{max-width:860px;margin:0 auto;padding:20px}
+:focus-visible{outline:3px solid var(--m);outline-offset:3px}
+header{display:flex;align-items:center;gap:14px;margin-bottom:8px;flex-wrap:wrap}
+h1{margin:0;font-size:clamp(26px,5vw,38px);font-weight:900;flex:1}
+.back{border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:6px 16px;font:700 15px Cairo,sans-serif;cursor:pointer}
+.crumb{color:var(--mute);margin:0 0 22px;font-size:15px}
+.grid{display:grid;gap:14px}
+.levels{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.lessons{grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}
+.cats{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.box{background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:22px 16px;text-align:center;cursor:pointer;color:var(--ink);font:700 18px Cairo,sans-serif}
+.box:hover{border-color:var(--ink)}
+.lvl{font-size:56px;font-weight:900;display:block;line-height:1.1}
+.lvl+small{color:var(--mute);font-weight:500}
+.num{display:block;color:var(--mute);font-size:14px;font-weight:500}
+.cat{border-width:2px;border-color:currentColor}
+.words{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.w{display:flex;align-items:center;gap:14px;background:var(--card);border:1.5px solid var(--line);border-radius:10px;padding:12px 16px}
+.w .de{direction:ltr;text-align:right;font-size:24px;font-weight:700}
+.w .ar{color:var(--mute);font-size:16px}
+.spk{width:42px;height:42px;border-radius:50%;border:0;background:currentColor;cursor:pointer;display:grid;place-items:center;flex:none}
+.spk svg{fill:var(--card);width:22px;height:22px}
+.m{color:var(--m)}.f{color:var(--f)}.n{color:var(--n)}.v{color:var(--v)}.a{color:var(--a)}
+.empty{color:var(--mute);background:var(--card);border:1.5px dashed var(--line);border-radius:12px;padding:28px;text-align:center}
+.w{flex-wrap:wrap}
+.row{display:flex;flex-direction:column;align-items:flex-start;gap:0;flex:1;background:none;border:0;padding:0;font:inherit;color:inherit;cursor:pointer;text-align:start;min-width:0}
+.row .ar::after{content:" \25BE";font-size:13px}
+.open .row .ar::after{content:" \25B4"}
+.ex{display:none;flex-basis:100%;grid-template-columns:1fr auto;gap:2px 12px;align-items:center;border-top:1px dashed var(--line);padding-top:10px;color:var(--mute)}
+.open .ex{display:grid}
+.exde{direction:ltr;text-align:left;font-size:20px;font-weight:600;color:var(--ink)}
+.exar{grid-column:1;color:var(--mute);font-size:15px}
+.spk.sm{grid-row:1/3;grid-column:2;width:34px;height:34px}
+.spk.sm svg{width:18px;height:18px}
+.pct{display:block;font-size:20px;font-weight:700;margin-top:8px}
+.bar{display:block;height:8px;border-radius:99px;background:var(--line);margin-top:6px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--n)}
+.go{display:block;width:100%;margin:18px 0;padding:14px;border:0;border-radius:10px;background:var(--ink);color:var(--bg);font:700 17px Cairo,sans-serif;cursor:pointer}
+.go.alt{background:var(--card);color:var(--ink);border:1.5px solid var(--line);margin-top:10px}
+.qbox{background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:28px 16px;text-align:center;font-size:32px;font-weight:900;margin-bottom:16px}
+.qbox.de{direction:ltr}
+.box.ok{background:var(--n);border-color:var(--n);color:#fff}
+.box.bad{background:var(--f);border-color:var(--f);color:#fff}
+.chk{order:-1;width:38px;height:38px;border-radius:50%;border:2px solid var(--line);background:none;color:transparent;font-size:20px;line-height:1;cursor:pointer;flex:none}
+.chk[aria-pressed="true"]{background:var(--n);border-color:var(--n);color:#fff}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><h1 id="title">تعلّم الألماني</h1><button class="back" id="back" hidden>رجوع</button></header>
+<p class="crumb" id="crumb">اختر مستواك</p>
+<div id="view"></div>
+</div>
+<script>
+/* ===== عدّل هنا: أسماء الدروس (12 لكل مستوى) ===== */
+const LESSONS={
+ A1:["Guten Tag!","Freunde, Kollegen und ich","In Hamburg","Guten Appetit!","Alltag und Familie","Zeit mit Freunden","Arbeitsalltag","Fit und gesund","Meine Wohnung","Studium und Beruf","Die Jacke gefällt mir!","Ab in den Urlaub!"],
+ A2:["الدرس 1","الدرس 2","الدرس 3","الدرس 4","الدرس 5","الدرس 6","الدرس 7","الدرس 8","الدرس 9","الدرس 10","الدرس 11","الدرس 12"],
+ B1:["الدرس 1","الدرس 2","الدرس 3","الدرس 4","الدرس 5","الدرس 6","الدرس 7","الدرس 8","الدرس 9","الدرس 10","الدرس 11","الدرس 12"]};
+const LEVEL_NAMES={A1:"مبتدئ",A2:"أساسي",B1:"متوسط"};
+/* ===== عدّل هنا: كلمات كل درس. المفتاح "المستوى-رقم الدرس" ===== */
+/* الصيغة: [الكلمة, المعنى, مثال بالألماني, ترجمة المثال] */
+const WORDS={"A1-1":{
+ m:[["der Mann","رجل","Der Mann liest ein Buch.","الرجل يقرأ كتابًا."],["der Vater","أب","Mein Vater arbeitet im Büro.","أبي يعمل في المكتب."],["der Bruder","أخ","Mein Bruder spielt Fußball.","أخي يلعب كرة القدم."],["der Tisch","طاولة","Der Tisch ist groß.","الطاولة كبيرة."],["der Hund","كلب","Der Hund schläft im Garten.","الكلب ينام في الحديقة."]],
+ f:[["die Frau","امرأة","Die Frau trinkt Kaffee.","المرأة تشرب القهوة."],["die Mutter","أم","Meine Mutter kocht gern.","أمي تحب الطبخ."],["die Schwester","أخت","Meine Schwester wohnt in Berlin.","أختي تسكن في برلين."],["die Katze","قطة","Die Katze sitzt auf dem Sofa.","القطة تجلس على الأريكة."],["die Tür","باب","Bitte mach die Tür zu.","من فضلك أغلق الباب."]],
+ n:[["das Kind","طفل","Das Kind spielt im Park.","الطفل يلعب في الحديقة."],["das Haus","بيت","Das Haus ist neu.","البيت جديد."],["das Buch","كتاب","Ich lese das Buch.","أنا أقرأ الكتاب."],["das Wasser","ماء","Ich trinke Wasser.","أنا أشرب ماء."],["das Auto","سيارة","Das Auto ist schnell.","السيارة سريعة."]],
+ v:[["sein","يكون","Ich bin müde.","أنا متعب."],["haben","يملك","Ich habe einen Bruder.","عندي أخ."],["gehen","يذهب","Wir gehen in die Schule.","نذهب إلى المدرسة."],["kommen","يأتي","Er kommt aus Ägypten.","هو من مصر."],["lernen","يتعلم","Ich lerne Deutsch.","أنا أتعلم الألماني."]],
+ a:[["gut","جيد","Das Essen ist gut.","الأكل جيد."],["groß","كبير","Das Haus ist groß.","البيت كبير."],["klein","صغير","Die Katze ist klein.","القطة صغيرة."],["schön","جميل","Die Stadt ist schön.","المدينة جميلة."],["neu","جديد","Ich habe ein neues Auto.","عندي سيارة جديدة."]]}};
+/* كلمات A1 من Netzwerk neu: الصيغة كلمة=معنى، والفاصل | */
+const RAW={
+1:{m:"Kindergarten=الحضانة|Koffer=حقيبة السفر|Name=الاسم|Nachname=اسم العائلة|Vorname=الاسم الأول|Reiseführer=المرشد السياحي|Aussagesatz=الجملة الخبرية|Partner=الرفيق|Buchstabe=الحرف|Punkt=النقطة|Unterstrich=خط أسفل السطر|Dialog=الحوار|Text=النص",f:"Autobahn=الطريق السريع|Flasche=الزجاجة|Nudel=المكرونة|Sprache=اللغة|Entschuldigung=الاعتذار|Person=الشخص|Situation=الموقف|Antwort=الإجابة|Reiseführerin=المرشدة السياحية|W-Frage=سؤال بحرف W|Partnerin=الرفيقة|Zahl=العدد|Handynummer=رقم الجوال|Telefonnummer=رقم الهاتف|E-Mail-Adresse=عنوان البريد الإلكتروني|Schweiz=سويسرا|Tabelle=الجدول|Türkei=تركيا|Ukraine=أوكرانيا|Stadt=المدينة|Grammatik=النحو",n:"Butterbrot=خبز بالزبدة|Handtuch=المنشفة|Würstchen=النقانق|Wort=الكلمة|Kursplakat=ملصق الكورس|Personalpronomen=الضمير الشخصي|Verb=الفعل|Telefon=الهاتف|Interview=المقابلة|Alphabet=الأبجدية|Gespräch=المحادثة|Land=البلد|Befinden=الحال|Redemittel=أسلوب التعبير|Subjekt=الفاعل|W-Wort=أداة الاستفهام",v:"zuordnen=يرتب|zusammengehören=يتلازم|heißen=يُسمى|kennen=يعرف|machen=يعمل|sammeln=يجمع|gehen=يذهب|hören=يسمع|lesen=يقرأ|sein=يكون|spielen=يلعب|kommen=يأتي|sprechen=يتحدث|wohnen=يسكن|ergänzen=يُكمل|notieren=يسجّل|raten=يخمّن|vorstellen=يقدّم شخصاً|mitsprechen=يردد الكلام|fragen=يسأل|mitlesen=يقرأ مع|sagen=يقول|schreiben=يكتب|buchstabieren=يتهجى|verstehen=يفهم|lernen=يتعلم|variieren=يُنوّع|grüßen=يسلّم|reagieren=يتفاعل|verabschieden=يودّع",a:"gut=جيد|international=دولي|deutsch=ألماني|andere=آخر|kurz=قصير"},
+2:{m:"Freund=الصديق|Kollege=الزميل|Kommentar=التعليق|Moment=اللحظة|Infinitiv=المصدر",f:"Freundin=الصديقة|Kollegin=الزميلة|Musik=الموسيقى|Sensation=الحدث المثير|Form=الصيغة|Endung=نهاية الكلمة",n:"Kino=السينما|Buch=الكتاب|Foto=الصورة|Wochenende=عطلة نهاية الأسبوع|Hobby=الهواية",v:"fotografieren=يصوّر|joggen=يركض|singen=يغني|tanzen=يرقص|ankreuzen=يضع علامة x|kochen=يطبخ|reisen=يسافر|schwimmen=يسبح|antworten=يجيب|arbeiten=يعمل|lieben=يحب|nennen=يذكر",a:"bekannt=معروف|lustig=مضحك|toll=رائع|super=ممتاز"},
+3:{m:"Bahnhof=محطة القطار|Besucher=الزائر|Euro=اليورو|Meter=المتر|Star=النجم|Turm=البرج|Fluss=النهر|Hafen=الميناء|Mensch=الإنسان|Zug=القطار|Ort=المكان|Weg=الطريق|Plan=الخريطة|See=البحيرة|Satz=الجملة|Tisch=المائدة|Bus=الحافلة|Test=الاختبار|Markt=السوق|Park=الحديقة العامة|Film=الفيلم|Gast=الضيف|Regisseur=المخرج|Schauspieler=الممثل|Dienstag=الثلاثاء|Montag=الاثنين|Freitag=الجمعة|Samstag=السبت|Sonntag=الأحد|Mittwoch=الأربعاء|Donnerstag=الخميس|Sommer=الصيف|Winter=الشتاء|Frühling=الربيع|Herbst=الخريف|Monat=الشهر",f:"Station=المحطة|Kirche=الكنيسة|Mitte=الوسط|Brücke=الجسر|Ausstellung=المعرض|Taxifahrt=ركوب التاكسي|Lösung=الحل|Gruppe=المجموعة|U-Bahn=مترو الأنفاق|S-Bahn=قطار المدينة|Straßenbahn=الترام|Fahrkarte=تذكرة السفر|Konzertkarte=تذكرة الحفلة|Welt=العالم|Produktion=الإنتاج|Jahreszeit=فصل السنة|Position=المكان|Regisseurin=المخرجة|Schauspielerin=الممثلة",n:"Konzert=الحفلة الموسيقية|Rathaus=دار البلدية|Meer=البحر|Schiff=السفينة|Symbol=الرمز|Hotel=الفندق|Haus=المنزل|Bild=الصورة|Fahrrad=الدراجة|Flugzeug=الطائرة|Glück=الحظ|Ziel=الهدف|Event=الحدث|Festival=المهرجان|Orchester=الأوركسترا|Publikum=الجمهور|Ticket=التذكرة|Theater=المسرح|Plakat=الملصق|Ding=الشيء",v:"aufstehen=يستيقظ|bilden=يكوّن|zeigen=يعرض|zeichnen=يرسم|klopfen=يطرق|kreisen=يدور|würfeln=يرمي النرد|sehen=يشاهد|dirigieren=يقود الأوركسترا|stellen=يضع|finden=يجد",a:"breit=عريض|hoch=عالٍ|lang=طويل|interessant=شيق|richtig=صحيح|schön=جميل|schnell=سريع|passend=مناسب|ähnlich=متشابه|doppelt=مزدوج|erste=أول"},
+4:{m:"Apfelsaft=عصير التفاح|Essig=الخل|Käse=الجبن|Kaffee=القهوة|Kuchen=الكعك|Salat=السلطة|Schinken=لحم الخنزير المملح|Zucker=السكر|Apfel=التفاحة|Einkauf=التسوق|Fisch=السمك|Reis=الأرز|Saft=العصير|Becher=الكأس|Preis=السعر|Pfeffer=الفلفل|Tee=الشاي|Orangensaft=عصير البرتقال|Supermarkt=السوبر ماركت|Einkaufszettel=قائمة المشتريات|Liter=اللتر|Cent=السنت|Einkaufswagen=عربة التسوق|Kassenzettel=فاتورة الشراء",f:"Banane=الموز|Butter=الزبدة|Kartoffel=البطاطس|Milch=الحليب|Marmelade=المربى|Tomate=الطماطم|Wurst=النقانق|Suppe=الشوربة|Schokolade=الشيكولاتة|Sahne=القشدة|Einladung=الدعوة|Nachricht=الرسالة|Zeit=الوقت|Grillparty=حفلة شواء|Birne=الكمثرى|Olive=الزيتون|Dose=العلبة|Packung=العبوة|Limonade=الليمونادة|Bäckerei=المخبز|Metzgerei=محل الجزارة|Mahlzeit=وجبة الطعام|Tüte=الكيس|Verpackung=التغليف",n:"Brötchen=الخبز الصغير|Ei=البيضة|Fleisch=اللحم|Frühstück=الفطور|Gemüse=الخضروات|Müsli=الموسلي|Öl=الزيت|Salz=الملح|Wasser=الماء|Brot=الخبز|Mittagessen=الغداء|Abendessen=العشاء|Essen=الطعام|Getränk=المشروب|Hähnchen=الدجاج|Geschäft=المتجر|Stück=القطعة|Gramm=الجرام|Kilo=الكيلو|Kilogramm=الكيلوجرام|Fett=الدسم|Maß=المقياس|Lebensmittel=المواد الغذائية",v:"verbinden=يربط|einkaufen=يتسوق|kaufen=يشتري|grillen=يشوي|brauchen=يحتاج|planen=يخطط|stimmen=يصح|schmecken=يتذوق|essen=يأكل|kosten=يكلّف|nehmen=يأخذ|wechseln=يبدّل|trinken=يشرب|recherchieren=يبحث",a:"fertig=جاهز|teuer=غالٍ|süß=حلو|lecker=لذيذ|satt=شبعان"},
+5:{m:"Alltag=الحياة اليومية|Sohn=الابن|Vater=الأب|Bruder=الأخ|Onkel=العم أو الخال|Opa=الجد|Großvater=الجد|Kalender=التقويم|Geburtstag=عيد الميلاد|Gruß=التحية|Termin=الموعد|Mittag=الظهر|Morgen=الصباح|Ball=الكرة|Sport=الرياضة|Stress=التوتر|Kunde=العميل",f:"Bibliothek=المكتبة|Familie=العائلة|Mensa=مطعم الجامعة|Oma=الجدة|Uni=الجامعة|Zeitung=الصحيفة|Uhrzeit=الوقت|Geige=آلة الكمان|Trompete=البوق|Tochter=الابنة|Mutter=الأم|Schwester=الأخت|Großmutter=الجدة|Fantasie=الخيال|Regel=القاعدة|Hausaufgabe=الواجب المنزلي|Idee=الفكرة|Party=الحفلة|Praxis=عيادة الطبيب|Bar=الحانة|Minute=الدقيقة|Sekunde=الثانية|Verspätung=التأخر|Pünktlichkeit=الدقة في المواعيد|Sprachschule=مدرسة اللغة",n:"Büro=المكتب|Spiel=المباراة|Training=التدريب|Kind=الطفل|Mädchen=البنت|Hund=الكلب|Motorrad=الدراجة النارية|Problem=المشكلة|Telefongespräch=محادثة هاتفية|Modalverb=فعل الكيفية|Familienfoto=صورة العائلة",v:"besuchen=يزور|duschen=يستحم|treffen=يقابل|nummerieren=يرقّم|haben=يملك|bleiben=يبقى|telefonieren=يهاتف|beschreiben=يصف|müssen=يجب|wollen=يريد|können=يستطيع|leidtun=يؤسف|sitzen=يجلس|entschuldigen=يعتذر|vereinbaren=يتفق على|vorbereiten=يُعدّ|überlegen=يفكر",a:"krank=مريض|falsch=خطأ|ledig=أعزب|verheiratet=متزوج|nächste=التالي|höflich=مؤدب|unhöflich=غير مؤدب|offen=مفتوح|pünktlich=دقيق|verschieden=مختلف|willkommen=مرحباً"},
+6:{m:"Ski=التزلج|Ausflug=النزهة|Betreff=الموضوع|Regen=المطر|Treffpunkt=مكان اللقاء|Besuch=الزيارة|Löffel=الملعقة|Teller=الطبق|Durst=العطش|Hunger=الجوع|Marathon=الماراثون|Spielplatz=ملعب الأطفال|Eintritt=الدخول|Beginn=البداية",f:"Pantomime=فن الإيماء|Fahrradtour=جولة بالدراجات|Überraschung=المفاجأة|Mail=الإيميل|Anrede=صيغة المخاطبة|Bestellung=الطلبية|Gabel=الشوكة|Serviette=المنديل|Tasse=الفنجان|Bank=المقعد|Atmosphäre=الجو|Anmeldung=التسجيل|Anzeige=الإعلان|Karte=التذكرة|Natur=الطبيعة|Nacht=الليل|Aktivität=النشاط|Lust=الرغبة|Präposition=حرف الجر|Sonne=الشمس|Strandbar=بار على الشاطئ",n:"Fitness-Studio=صالة اللياقة|Ratebild=صورة للتخمين|Picknick=نزهة بالطعام|Fest=الحفلة|Geschenk=الهدية|Eis=الثلج|Trinkgeld=البقشيش|Messer=السكين|Präteritum=الماضي البسيط|Wetter=الطقس|Programm=البرنامج|Ereignis=الحدث|Fußballspiel=مباراة كرة القدم|Kaffeehaus=المقهى",v:"feiern=يحتفل|glauben=يعتقد|klettern=يتسلق|wandern=يتجول|einladen=يدعو|klingen=يبدو|schenken=يهدي|werden=يصبح|abholen=يحضر|anfangen=يبدأ|anrufen=يتصل|einsammeln=يجمع|mitbringen=يحضر معه|mitkommen=يأتي مع|mitmachen=يشارك|schicken=يرسل|wissen=يعرف|aufhören=يتوقف|bestellen=يطلب|bringen=يحضر|bezahlen=يدفع|zahlen=يدفع|geben=يعطي|passieren=يحدث|genießen=يستمتع|beginnen=يبدأ|enden=ينتهي|fehlen=ينقص|laufen=يمشي",a:"klar=واضح|kalt=بارد|warm=دافئ|voll=ممتلئ|typisch=نموذجي|früh=مبكراً|verboten=ممنوع|getrennt=منفصل|besondere=مميز|trennbar=منفصل|herzlich=ودي"},
+7:{m:"Ticketkauf=شراء التذاكر|Nachbar=الجار|Blog=المدونة|Fehler=الخطأ|Urlaub=الإجازة|Automat=الماكينة|Bäcker=الخباز|Zahnarzt=طبيب الأسنان|Hausmeister=البواب|Akku=البطارية|Drucker=الطابعة|Brief=الخطاب|Aufzug=المصعد|Zufall=الصدفة|Kundenbesuch=زيارة العملاء|Mitarbeiter=الموظف|Dativ=حالة الجر|Bericht=التقرير|Kontakt=التواصل|Absender=المرسل|Empfänger=المستلم",f:"Nachbarin=الجارة|Reihenfolge=الترتيب|Pause=الاستراحة|Aussprache=النطق|Post=البريد|Kreditkarte=بطاقة الائتمان|Datei=الملف|Politik=السياسة|Religion=الدين|Serie=المسلسل|Krankheit=المرض|Mittagspause=استراحة الغداء|Kontonummer=رقم الحساب|Zahnärztin=طبيبة الأسنان|Mitarbeiterin=الموظفة|Unterschrift=التوقيع|Grußformel=صيغة التحية|Dame=السيدة|Präsentation=التقديم|Spezialität=الأكلة المميزة",n:"Leben=الحياة|Lied=الأغنية|Praktikum=التدريب العملي|Sommerfest=حفلة صيفية|Konto=الحساب|Netz=الشبكة|Passwort=كلمة السر|WLAN=الواي فاي|Mitglied=العضو|Sprachinstitut=معهد اللغة|Fernsehen=التلفاز|Gesprächsthema=موضوع الحديث",v:"bedeuten=يعني|erklären=يوضّح|annehmen=يستلم|mitnehmen=يأخذ معه|verwenden=يستخدم|überweisen=يحوّل نقوداً|dauern=يستغرق|korrigieren=يصحح|holen=يحضر|drucken=يطبع|speichern=يحفظ|kennenlernen=يتعرف على|diskutieren=يناقش|denken=يفكر|interessieren=يهتم|formulieren=يصيغ|reden=يتكلم|regnen=يمطر|hochfahren=يشغّل الكمبيوتر|ausmachen=يطفئ|anmachen=يشغّل",a:"leicht=سهل|supernett=لطيف جداً|genug=كافٍ|bar=نقدي|leer=فارغ|offline=غير متصل|aktuell=حالي|argentinisch=أرجنتيني|beliebt=محبوب|langweilig=ممل|neutral=محايد|schwer=ثقيل|heiß=ساخن|schrecklich=مرعب|letzte=الأخير|normal=عادي"},
+8:{m:"Bauch=البطن|Fuß=القدم|Finger=الإصبع|Hals=الحلق|Kopf=الرأس|Körper=الجسم|Rücken=الظهر|Mund=الفم|Zahn=السن|Unfall=الحادث|Doktor=الطبيب|Verband=الضمادة|Hustensaft=دواء السعال|Schmerz=الألم|Tropfen=القطرة|Honig=العسل|Schnupfen=الزكام|Tipp=النصيحة|Zettel=الورقة|Arztbesuch=زيارة الطبيب|Comic=القصص المصورة|Sportschuh=حذاء رياضي",f:"Freizeit=وقت الفراغ|Süßigkeit=الحلوى|Sprachnachricht=رسالة صوتية|Fitness-App=تطبيق اللياقة|Größe=الحجم|Hand=الكف|Nase=الأنف|Doktorin=الطبيبة|Apotheke=الصيدلية|Wunde=الجرح|Salbe=المرهم|Kontrolle=التحقق|Hilfe=المساعدة|Schlaftablette=القرص المنوم|Übung=التمرين|Tafel=اللوحة",n:"Bett=السرير|Experiment=التجربة|Bein=الساق|Knie=الركبة|Auge=العين|Gesicht=الوجه|Haar=الشعر|Ohr=الأذن|Alter=السن|Gewicht=الوزن|Rezept=الروشتة|Fieber=الحمى|Blut=الدم|Ergebnis=النتيجة|Labor=المختبر",v:"leben=يعيش|wegräumen=يزيل|losgehen=يبدأ|schaffen=يُنجز|vergessen=ينسى|vermissen=يفتقد|anziehen=يرتدي|weitermachen=يواصل|aufmachen=يفتح|aufschreiben=يكتب|vorlesen=يقرأ أمام الحضور|wiederholen=يكرر|wiegen=يزن|riechen=يشم|bekommen=يحصل على|bewegen=يحرّك|hinlegen=يرقد|kontrollieren=يفحص|wehtun=يؤلم|sollen=ينبغي|husten=يسعل|baden=يستحم|dürfen=يُسمح له|rauchen=يدخّن|erschließen=يستنتج|untersuchen=يفحص|dazugehören=يتبع ذلك|zerlegen=يجزّئ|ausdrücken=يعبّر|wiedergeben=ينقل|inhalieren=يستنشق|vermuten=يظن|versuchen=يحاول|einschlafen=ينام|aufhängen=يعلّق",a:"fit=بصحة جيدة|egal=سيان|faul=كسول|hungrig=جوعان|müde=متعب|regelmäßig=بانتظام|sicher=أكيد|täglich=يومياً|gefährlich=خطير|aktiv=نشيط|sportlich=رياضي|leise=بصوت منخفض|verletzt=مجروح|erkältet=مصاب بالزكام|schlecht=سيئ|total=تماماً|erlaubt=مسموح|anstrengend=مرهق|glücklich=سعيد|perfekt=ممتاز"},
+9:{m:"Balkon=الشرفة|Fernseher=التلفاز|Flur=الممر|Herd=البوتاجاز|Kühlschrank=الثلاجة|Schrank=الخزانة|Schreibtisch=مكتب الكتابة|Sessel=الكرسي ذو المسندين|Stuhl=الكرسي|Teppich=السجادة|Wunsch=الرغبة|Stock=الدور|Garten=الحديقة|Raum=القاعة|Baum=الشجرة|Blick=النظرة|Vorteil=الميزة|Nachteil=العيب|Bewohner=المقيم|Lieblingsort=المكان المفضل|Vertrag=العقد|Umzug=الانتقال|Wohnort=محل الإقامة",f:"Küche=المطبخ|Lampe=المصباح|Toilette=دورة المياه|Waschmaschine=الغسالة|Wohnung=الشقة|Spülmaschine=غسالة الأطباق|Pflanze=النبات|Terrasse=الشرفة|Miete=الإيجار|Dusche=الدش|Treppe=الدرج|Decke=السقف|Überschrift=العنوان|Lage=الموقع|Feier=الحفلة|Einweihungsfeier=حفل التدشين|Kiste=الصندوق|Tür=الباب|Sache=الشيء|Wohnform=نمط السكن|Wohnfläche=مساحة السكن|Kaffeemaschine=ماكينة القهوة",n:"Arbeitszimmer=حجرة المكتب|Bad=الحمام|Gerät=الجهاز|Kinderzimmer=غرفة الأطفال|Regal=الرف|Schlafzimmer=غرفة النوم|Sofa=الأريكة|Wohnzimmer=غرفة المعيشة|Apartment=الشقة السكنية|Licht=النور|Holz=الخشب|Loft=الدور العلوي|Hochhaus=البرج السكني|Heft=الكراسة|Zentrum=مركز المدينة|Reihenhaus=بيوت مصفوفة",v:"ziehen=ينتقل|ausfüllen=يملأ|besichtigen=يزور|packen=يعبّئ|schließen=يغلق|umziehen=ينتقل إلى مسكن آخر|unterschreiben=يوقّع|zumachen=يقفل|freuen=يفرح|scheinen=يسطع|aussehen=يبدو|vermieten=يؤجّر",a:"hell=مضيء|dunkel=مظلم|günstig=مناسب|billig=رخيص|direkt=مباشر|elegant=أنيق|ideal=مثالي|jung=شاب|renoviert=مجدّد|top=ممتاز|zentral=مركزي|fehlend=ناقص|gemütlich=مريح|hässlich=قبيح|negativ=سلبي|positiv=إيجابي|braun=بني|gelb=أصفر|grau=رمادي|lila=بنفسجي|orange=برتقالي|schwarz=أسود|weiß=أبيض|blau=أزرق|grün=أخضر|rot=أحمر|zufrieden=راضٍ|weit=بعيد"},
+10:{m:"Künstler=الفنان|Arbeitsplatz=مكان العمل|Feierabend=نهاية العمل|Professor=الأستاذ الجامعي|Lehrer=المدرس|Friseur=الحلاق|Informatiker=مهندس الكمبيوتر|Ingenieur=المهندس|Verkäufer=البائع|Architekt=المهندس المعماري|Elektriker=فني الكهرباء|Erzieher=المربي|Handwerker=العامل اليدوي|Journalist=الصحفي|Jurist=رجل القانون|Koch=الطباخ|Mechaniker=الميكانيكي|Polizist=الشرطي|Sekretär=السكرتير|Job=الوظيفة|Anfang=البداية|Händler=التاجر|Zuschauer=المشاهد|Statist=الكومبارس|Anruf=المكالمة|Spaziergang=التنزه|Anhang=المرفق|Weihnachtsmarkt=سوق عيد الميلاد",f:"Karriere=المنصب|Prüfung=الامتحان|Statistik=الإحصائية|Aufgabe=المهمة|Agentur=الوكالة|Bewerbung=التقدم بطلب|Ehefrau=الزوجة|Heimat=الوطن|Hotelchefin=مديرة الفندق|Sekretärin=السكرتيرة|Stelle=الوظيفة|Lehrerin=المدرسة|Friseurin=الحلاقة|Ingenieurin=المهندسة|Architektin=المهندسة المعمارية|Verkäuferin=البائعة|Journalistin=الصحفية|Köchin=الطباخة|Polizistin=الشرطية|Künstlerin=الفنانة|Professorin=الأستاذة|Zuschauerin=المشاهدة|Attraktion=الجذب|Bühne=المسرح|Oper=الأوبرا|Ware=السلعة|Händlerin=التاجرة|Radiosendung=برنامج إذاعي|Werkstatt=الورشة|Baustelle=موقع البناء",n:"Studium=الدراسة|Projekt=المشروع|Semester=الفصل الدراسي|Partizip=اسم الفاعل|Perfekt=الماضي التام|Studio=الأستوديو|Unicafé=مقهى الجامعة|Internet=الإنترنت|Ausland=الخارج|Ende=النهاية|Kaufhaus=المتجر الكبير|Profil=الشخصية|Angebot=العرض",v:"betreuen=يشرف|malen=يرسم|segeln=يُبحر|verdienen=يتقاضى أجراً|trainieren=يتمرن|mischen=يخلط|fliegen=يطير|verkaufen=يبيع|stattfinden=يُقام|vorbeisein=ينقضي|nachfragen=يستعلم",a:"fleißig=مجتهد|beide=كلاهما|arbeitslos=عاطل عن العمل|eilig=مستعجل|freundlich=ودود|berühmt=مشهور"},
+11:{m:"Anzug=البدلة|Rock=التنورة|Pullover=البلوفر|Pulli=البلوفر|Mantel=المعطف|Schuh=الحذاء|Stiefel=الحذاء الطويل|Hut=القبعة|Schal=الوشاح|Bleistift=قلم الرصاص|Kugelschreiber=القلم الجاف|Buchladen=المكتبة|Laden=المتجر|Schmuck=المجوهرات|Quatsch=الهراء",f:"Jacke=الجاكيت|Hose=البنطلون|Geschichte=القصة|Kleidung=الملابس|Krawatte=رباط العنق|Bluse=البلوزة|Jeans=الجينز|Mütze=الطاقية|Tasche=الحقيبة|Reaktion=رد الفعل|Betonung=النبر|Entscheidung=القرار|Kamera=الكاميرا|Kasse=الخزينة|Kosmetik=مستحضرات التجميل|Mode=الموضة|Damenmode=موضة النساء|Bademode=ملابس السباحة|Abendkleidung=ملابس السهرة|Parfümerie=محل العطور|Sportkleidung=ملابس رياضية|Technik=التقنية|Uhr=الساعة|Zeitschrift=المجلة|CD=القرص المدمج",n:"Duschgel=جل الاستحمام|Elektrogerät=الجهاز الكهربائي|Fitnessgerät=جهاز اللياقة|Parfüm=العطر|Schild=اللوحة|Kleid=الفستان|Hemd=القميص|T-Shirt=التي شيرت|Tuch=المنديل|Sweatshirt=قميص سميك|Kleidergeschäft=محل الملابس|Untergeschoss=الطابق السفلي|Wortteil=جزء من الكلمة|Präfix=السابقة|Papier=الورقة|Produkt=المنتج",v:"gefallen=يستحسن|stehen=يناسب|ausgehen=يخرج|tragen=يرتدي|meinen=يقصد|ankommen=يصل|empfehlen=ينصح|entdecken=يكتشف|nerven=يزعج|passen=يناسب|umtauschen=يبدّل|zurückschicken=يُرجع|fernsehen=يشاهد التلفاز|anprobieren=يجرّب الملابس|ausziehen=ينتقل من المسكن|shoppen=يتسوق|danken=يشكر|kriegen=يحصل على|öffnen=يفتح|zuhaben=يقفل|schauen=ينظر|weiterhören=يواصل الاستماع",a:"doof=سخيف|eng=ضيق|gleich=متشابه|besser=أفضل|kaputt=معطل|geschlossen=مغلق|online=متصل بالإنترنت"},
+12:{m:"Badeurlaub=عطلة شاطئية|Campingurlaub=عطلة التخييم|Badeanzug=المايوه|Bikini=البكيني|Handschuh=القفاز|Helm=الخوذة|Regenschirm=مظلة المطر|Schlafsack=كيس النوم|Reisebericht=تقرير الرحلة|Ausweis=بطاقة الهوية|Pass=جواز السفر|Vorschlag=الاقتراح|Schluss=النهاية|Ausgang=المخرج|Bahnsteig=رصيف المحطة|Flughafen=المطار|Zoo=حديقة الحيوانات|Grund=السبب|Flug=رحلة الطيران|Strand=الشاطئ|Berg=الجبل|Grad=الدرجة|Traum=الحلم|Wind=الريح|Schnee=الثلج|Norden=الشمال|Osten=الشرق|Süden=الجنوب|Westen=الغرب|Wetterbericht=النشرة الجوية|Abschnitt=المقطع|Urlaubsort=مكان العطلة",f:"Badehose=لباس الاستحمام|Handtasche=حقيبة اليد|Regenjacke=جاكيت المطر|Reisetasche=حقيبة السفر|Seife=الصابون|Sonnenbrille=النظارة الشمسية|Sonnencreme=كريم الشمس|Winterjacke=الجاكيت الشتوي|Stadtführung=جولة المدينة|Rezeption=الاستقبال|Route=الطريق|Haltestelle=موقف الأتوبيس|Nummer=الرقم|Abfahrt=المغادرة|Ankunft=الوصول|Ecke=الركن|Tante=الخالة|Kunst=الفن|Sehenswürdigkeit=المعلم السياحي|Auskunft=المعلومات|Jugendherberge=بيت الشباب|Pension=البنسيون|Wolke=السحابة|Hitze=الحرارة|Insel=الجزيرة|Landschaft=المنظر الطبيعي|Bewegung=الحركة|Reise=الرحلة|Postkarte=البطاقة البريدية|Städtereise=رحلة بين المدن|Bergtour=جولة جبلية|Wortliste=قائمة الكلمات|Himmelsrichtung=الجهة الأصلية|Burg=القلعة|Art=الشكل|Weise=الطريقة",n:"Gepäck=الأمتعة|Geschirr=الأطباق والأواني|Zelt=الخيمة|Köfferpacken=تحضير الحقيبة|Gleis=رصيف القطار|Dorf=القرية|Video=الفيديو|Deutschbuch=كتاب تعليم الألمانية|Reiseziel=وجهة السفر|Fragewort=أداة الاستفهام|Skifahren=التزحلق|Pech=سوء الحظ",v:"einpacken=يحزم|spazierengehen=يتنزه|einsteigen=يركب|umsteigen=يغيّر المواصلة|benutzen=يستخدم|abfahren=يغادر|aussteigen=ينزل|reservieren=يحجز|wünschen=يتمنى|losfahren=ينطلق|zurückfahren=يعود|zurückfinden=يجد طريق العودة|wecken=يوقظ|verpassen=يفوت|übernachten=يبيت|chillen=يستجم|gehören=ينتمي|liegen=يقع|schneien=يتساقط الثلج|schütten=يهطل|orientieren=يهتدي",a:"wunderbar=رائع|wunderschön=رائع الجمال|bewölkt=غائم|sonnig=مشمس|windig=عاصف|selten=نادر|sauber=نظيف|froh=سعيد|populär=شائع|praktisch=عملي|originell=أصلي|bequem=مريح|individuell=فردي|attraktiv=جذاب|lebendig=حي"}};
+const ART={m:"der",f:"die",n:"das"};
+for(const k in RAW){WORDS["A1-"+k]={};for(const c in RAW[k])WORDS["A1-"+k][c]=RAW[k][c].split("|").map(s=>{const[x,y]=s.split("=");return[(ART[c]?ART[c]+" ":"")+x,y]})}
+const NOV=new Set("sein haben werden müssen wollen können dürfen sollen wissen leidtun wehtun fehlen stimmen passieren gefallen scheinen vorbeisein kosten regnen schneien schütten klingen dauern bedeuten heißen gehören dazugehören zusammengehören passen stattfinden interessieren orientieren freuen".split(" "));
+const NOA=new Set("andere beide besser erste letzte nächste besondere willkommen genug bar egal total täglich regelmäßig".split(" "));
+const PER=new Set("satt fit froh hungrig müde krank ledig verheiratet faul zufrieden glücklich arbeitslos eilig fleißig freundlich verletzt erkältet sportlich aktiv höflich unhöflich jung berühmt lustig bekannt pünktlich supernett herzlich".split(" "));
+const EX={
+"der Kindergarten":["Das Kind geht in den Kindergarten.","الطفل يذهب إلى الحضانة."],
+"der Koffer":["Mein Koffer ist sehr schwer.","حقيبتي ثقيلة جداً."],
+"der Name":["Mein Name ist Ali.","اسمي علي."],
+"der Nachname":["Wie ist Ihr Nachname?","ما اسم عائلتك؟"],
+"der Vorname":["Mein Vorname ist Sara.","اسمي الأول سارة."],
+"der Reiseführer":["Der Reiseführer erklärt die Stadt.","المرشد السياحي يشرح المدينة."],
+"der Aussagesatz":["„Ich wohne in Köln.“ ist ein Aussagesatz.","«أسكن في كولن» جملة خبرية."],
+"der Partner":["Mein Partner heißt Tom.","رفيقي في التمرين اسمه توم."],
+"der Buchstabe":["Der erste Buchstabe ist A.","الحرف الأول هو A."],
+"der Punkt":["Am Ende steht ein Punkt.","في النهاية توجد نقطة."],
+"der Unterstrich":["In der E-Mail steht ein Unterstrich.","في الإيميل يوجد خط سفلي."],
+"der Dialog":["Lesen Sie den Dialog.","اقرأ الحوار."],
+"der Text":["Der Text ist kurz.","النص قصير."],
+"die Autobahn":["Wir fahren auf der Autobahn.","نسير على الطريق السريع."],
+"die Flasche":["Ich kaufe eine Flasche Wasser.","أشتري زجاجة ماء."],
+"die Nudel":["Ich esse gern Nudeln.","أحب أكل المكرونة."],
+"die Sprache":["Welche Sprache sprichst du?","أي لغة تتحدث؟"],
+"die Entschuldigung":["Entschuldigung, wie spät ist es?","عفواً، كم الساعة؟"],
+"die Person":["Das ist eine nette Person.","هذا شخص لطيف."],
+"die Situation":["Die Situation ist schwierig.","الموقف صعب."],
+"die Antwort":["Die Antwort ist richtig.","الإجابة صحيحة."],
+"die Reiseführerin":["Die Reiseführerin kommt aus Berlin.","المرشدة السياحية من برلين."],
+"die W-Frage":["„Wo wohnst du?“ ist eine W-Frage.","«أين تسكن؟» سؤال بحرف W."],
+"die Partnerin":["Meine Partnerin liest den Text.","رفيقتي تقرأ النص."],
+"die Zahl":["Schreiben Sie die Zahl auf.","اكتب العدد."],
+"die Handynummer":["Wie ist deine Handynummer?","ما رقم جوالك؟"],
+"die Telefonnummer":["Das ist meine Telefonnummer.","هذا رقم هاتفي."],
+"die E-Mail-Adresse":["Ich schreibe dir meine E-Mail-Adresse.","سأكتب لك عنوان بريدي الإلكتروني."],
+"die Schweiz":["Sie kommt aus der Schweiz.","هي من سويسرا."],
+"die Tabelle":["Ergänzen Sie die Tabelle.","أكمل الجدول."],
+"die Türkei":["Er fährt in die Türkei.","هو يسافر إلى تركيا."],
+"die Ukraine":["Die Ukraine liegt in Europa.","أوكرانيا تقع في أوروبا."],
+"die Stadt":["Ich wohne in einer großen Stadt.","أسكن في مدينة كبيرة."],
+"die Grammatik":["Deutsche Grammatik ist nicht leicht.","القواعد الألمانية ليست سهلة."],
+"das Butterbrot":["Zum Frühstück esse ich ein Butterbrot.","على الفطور آكل خبزاً بالزبدة."],
+"das Handtuch":["Ich brauche ein Handtuch.","أحتاج منشفة."],
+"das Würstchen":["Das Würstchen schmeckt gut.","النقانق لذيذة."],
+"das Wort":["Ich kenne das Wort nicht.","لا أعرف هذه الكلمة."],
+"das Kursplakat":["Wir machen ein Kursplakat.","نصنع ملصقاً للكورس."],
+"das Personalpronomen":["„Ich“ ist ein Personalpronomen.","«أنا» ضمير شخصي."],
+"das Verb":["„Lernen“ ist ein Verb.","«يتعلم» فعل."],
+"das Telefon":["Das Telefon klingelt.","الهاتف يرن."],
+"das Interview":["Wir machen ein Interview.","نجري مقابلة."],
+"das Alphabet":["Das Alphabet hat 26 Buchstaben.","الأبجدية فيها 26 حرفاً."],
+"das Gespräch":["Das Gespräch war kurz.","كانت المحادثة قصيرة."],
+"das Land":["Welches Land ist das?","أي بلد هذا؟"],
+"das Befinden":["Er fragt nach meinem Befinden.","هو يسأل عن حالي."],
+"das Redemittel":["Lernen Sie die Redemittel.","تعلّم أساليب التعبير."],
+"das Subjekt":["Das Subjekt steht oft am Satzanfang.","الفاعل يأتي غالباً في بداية الجملة."],
+"das W-Wort":["„Wer“ ist ein W-Wort.","«من» أداة استفهام."],
+"zuordnen":["Bitte ordnen Sie die Bilder zu.","من فضلك رتّب الصور مع ما يناسبها."],
+"zusammengehören":["Die Wörter gehören zusammen.","هذه الكلمات تتلازم."],
+"heißen":["Wie heißt du?","ما اسمك؟"],
+"kennen":["Ich kenne ihn gut.","أعرفه جيداً."],
+"machen":["Was machst du heute?","ماذا تفعل اليوم؟"],
+"sammeln":["Wir sammeln neue Wörter.","نجمع كلمات جديدة."],
+"gehen":["Wir gehen ins Kino.","نذهب إلى السينما."],
+"hören":["Ich höre gern Musik.","أحب الاستماع إلى الموسيقى."],
+"lesen":["Er liest ein Buch.","هو يقرأ كتاباً."],
+"sein":["Ich bin Student.","أنا طالب."],
+"spielen":["Die Kinder spielen im Park.","الأطفال يلعبون في الحديقة."],
+"kommen":["Woher kommst du?","من أين أنت؟"],
+"sprechen":["Sie spricht Deutsch.","هي تتحدث الألمانية."],
+"wohnen":["Ich wohne in Kairo.","أسكن في القاهرة."],
+"ergänzen":["Ergänzen Sie die Sätze.","أكمل الجمل."],
+"notieren":["Notieren Sie die Antworten.","سجّل الإجابات."],
+"raten":["Kannst du raten, wer das ist?","هل تستطيع أن تخمّن من هذا؟"],
+"vorstellen":["Ich stelle meine Partnerin vor.","أقدّم رفيقتي."],
+"mitsprechen":["Bitte sprechen Sie mit.","من فضلكم رددوا معي."],
+"fragen":["Darf ich etwas fragen?","هل يمكنني أن أسأل شيئاً؟"],
+"mitlesen":["Lesen Sie bitte mit.","اقرأ معنا من فضلك."],
+"sagen":["Was sagst du?","ماذا تقول؟"],
+"schreiben":["Ich schreibe eine E-Mail.","أكتب إيميلاً."],
+"buchstabieren":["Können Sie das buchstabieren?","هل يمكنك تهجئة ذلك؟"],
+"verstehen":["Ich verstehe das nicht.","لا أفهم هذا."],
+"lernen":["Ich lerne Deutsch.","أتعلم الألمانية."],
+"variieren":["Variieren Sie das Gespräch.","نوّع المحادثة."],
+"grüßen":["Er grüßt seine Lehrerin.","هو يلقي التحية على مدرّسته."],
+"reagieren":["Wie reagiert er?","كيف يتصرف؟"],
+"verabschieden":["Wir verabschieden uns um acht.","نودّع بعضنا في الثامنة."],
+"gut":["Das Essen ist sehr gut.","الطعام جيد جداً."],
+"international":["Das ist ein internationales Wort.","هذه كلمة عالمية."],
+"deutsch":["Mein Lehrer ist deutsch.","مدرّسي ألماني."],
+"andere":["Ich habe eine andere Idee.","عندي فكرة أخرى."],
+"kurz":["Der Text ist kurz.","النص قصير."],
+"der Freund":["Mein Freund wohnt in Wien.","صديقي يسكن في فيينا."],
+"der Kollege":["Mein Kollege arbeitet im Büro.","زميلي يعمل في المكتب."],
+"der Kommentar":["Ich schreibe einen Kommentar.","أكتب تعليقاً."],
+"der Moment":["Einen Moment, bitte.","لحظة من فضلك."],
+"der Infinitiv":["Der Infinitiv endet auf -en.","المصدر ينتهي بـ -en."],
+"die Freundin":["Meine Freundin tanzt gern.","صديقتي تحب الرقص."],
+"die Kollegin":["Meine Kollegin spricht drei Sprachen.","زميلتي تتحدث ثلاث لغات."],
+"die Musik":["Diese Musik gefällt mir.","هذه الموسيقى تعجبني."],
+"die Sensation":["Das Konzert war eine Sensation.","كانت الحفلة حدثاً مذهلاً."],
+"die Form":["Das ist die richtige Form.","هذه هي الصيغة الصحيحة."],
+"die Endung":["Die Endung ist -t.","النهاية هي -t."],
+"das Kino":["Gehen wir heute ins Kino?","هل نذهب اليوم إلى السينما؟"],
+"das Buch":["Ich lese ein spannendes Buch.","أقرأ كتاباً مشوقاً."],
+"das Foto":["Das Foto ist schön.","الصورة جميلة."],
+"das Wochenende":["Am Wochenende schlafe ich lange.","في عطلة نهاية الأسبوع أنام طويلاً."],
+"das Hobby":["Mein Hobby ist Fotografieren.","هوايتي التصوير."],
+"fotografieren":["Ich fotografiere gern Tiere.","أحب تصوير الحيوانات."],
+"joggen":["Er joggt jeden Morgen.","هو يركض كل صباح."],
+"singen":["Sie singt sehr schön.","هي تغني بجمال."],
+"tanzen":["Wir tanzen am Samstag.","نرقص يوم السبت."],
+"ankreuzen":["Kreuzen Sie die richtige Antwort an.","ضع علامة على الإجابة الصحيحة."],
+"kochen":["Mein Vater kocht gern.","أبي يحب الطبخ."],
+"reisen":["Wir reisen im Sommer.","نسافر في الصيف."],
+"schwimmen":["Ich schwimme zweimal pro Woche.","أسبح مرتين في الأسبوع."],
+"antworten":["Bitte antworten Sie schnell.","من فضلك أجب بسرعة."],
+"arbeiten":["Er arbeitet bei einer Bank.","هو يعمل في بنك."],
+"lieben":["Ich liebe meine Familie.","أحب عائلتي."],
+"nennen":["Nennen Sie drei Hobbys.","اذكر ثلاث هوايات."],
+"bekannt":["Der Sänger ist sehr bekannt.","المغني مشهور جداً."],
+"lustig":["Der Film ist lustig.","الفيلم مضحك."],
+"toll":["Die Party war toll!","كانت الحفلة رائعة!"],
+"super":["Das ist super!","هذا ممتاز!"]};
+function autoEx(c,de,ar){
+ if(EX[de])return EX[de];
+ if(c==="v"){if(NOV.has(de)||!ar.startsWith("ي"))return[];const a=ar.startsWith("يأ")?"آ"+ar.slice(2):"أ"+ar.slice(1);return["Ich möchte "+de+".","أريد أن "+a+"."]}
+ if(c==="a"){if(NOA.has(de))return[];const p=PER.has(de);return[(p?"Er ist ":"Das ist ")+de+".",(p?"هو ":"هذا ")+ar+"."]}
+ return["Wo ist "+de+"?","أين "+ar+"؟"]}
+const CATS=[["m","المذكر (der)"],["f","المؤنث (die)"],["n","المحايد (das)"],["v","الأفعال"],["a","الصفات"]];
+const view=document.getElementById("view"),title=document.getElementById("title"),crumb=document.getElementById("crumb"),back=document.getElementById("back");
+let st=[];
+let LR=new Set();try{LR=new Set(JSON.parse(localStorage.getItem("de-learned")||"[]"))}catch(e){}
+const saveLR=()=>{try{localStorage.setItem("de-learned",JSON.stringify([...LR]))}catch(e){}};
+const wid=(l,i,c,de)=>l+"-"+i+"-"+c+"-"+de;
+function levelWords(l){const out=[];for(const k in WORDS){if(!k.startsWith(l+"-"))continue;const i=+k.split("-")[1]-1;for(const c in WORDS[k])WORDS[k][c].forEach(w=>out.push({l,i,c,de:w[0],ar:w[1],id:wid(l,i,c,w[0])}))}return out}
+const pct=l=>{const a=levelWords(l);return a.length?Math.round(a.filter(w=>LR.has(w.id)).length/a.length*100):0};
+function renderQuiz(l){
+ title.textContent="تمرين "+l;crumb.textContent="اختبار على الكلمات اللي علّمت عليها ✓";
+ const pool=levelWords(l),learned=pool.filter(w=>LR.has(w.id));
+ if(!learned.length){view.innerHTML='<div class="empty">علّم بعلامة ✓ على كلمات حفظتها الأول، وبعدها ارجع للتمرين.</div>';return}
+ const g=document.createElement("div");g.className="grid";
+ [["ma","الكلمة ← اختر المعنى"],["art","الكلمة ← اختر der / die / das"],["am","المعنى ← اختر الكلمة"]].forEach(([k,n])=>{
+  
+  g.append(btn(n,"box",()=>runQuiz(l,k,learned,pool)))});
+ view.append(g)}
+function runQuiz(l,mode,learned,pool){
+ const sh=a=>[...a].sort(()=>Math.random()-.5),art={m:"der",f:"die",n:"das"};
+ const qs=sh(mode==="art"?learned.filter(w=>"mfn".includes(w.c)):learned).slice(0,10);let n=0,score=0;
+ function show(){
+  view.innerHTML="";
+  if(!qs.length){view.innerHTML='<div class="empty">علّم بـ ✓ على أسماء (مذكر أو مؤنث أو محايد) الأول عشان تتدرب على الأدوات.</div>';view.append(btn("رجوع","go alt",()=>renderQuiz(l)));return}
+  if(n>=qs.length){view.innerHTML=`<div class="empty"><h2>النتيجة: ${score} من ${qs.length}</h2></div>`;view.append(btn("إعادة التمرين","go",()=>runQuiz(l,mode,learned,pool)),btn("نوع تمرين تاني","go alt",()=>renderQuiz(l)));return}
+  const w=qs[n],noun=w.de.replace(/^(der|die|das) /,"");
+  const same=pool.filter(x=>x.c===w.c),P=same.length>=4?same:pool;
+  let q,ans,all;
+  if(mode==="ma"){q=w.de;ans=w.ar;all=P.map(x=>x.ar)}
+  else if(mode==="art"){q=noun;ans=art[w.c];all=["der","die","das"]}
+  else{q=w.ar;ans=w.de;all=P.map(x=>x.de)}
+  const ch=mode==="art"?all:sh([ans,...sh([...new Set(all)].filter(o=>o!==ans)).slice(0,3)]);
+  let done=0;
+  view.innerHTML=`<p class="crumb">سؤال ${n+1} من ${qs.length}</p><div class="qbox ${mode==="am"?"":"de"}">${q}</div>`;
+  const g=document.createElement("div");g.className="grid cats";
+  ch.forEach(c=>{const b=btn(c,"box",()=>{if(done)return;done=1;
+   if(c===ans){score++;b.classList.add("ok")}else{b.classList.add("bad");[...g.children].find(x=>x.textContent===ans).classList.add("ok")}
+   view.append(btn(n+1<qs.length?"التالي":"شوف النتيجة","go",()=>{n++;show()}))});
+   if(mode!=="ma")b.style.direction="ltr";g.append(b)});
+  view.append(g)}
+ show()}
+const ICON='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 4V5L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>';
+/* m = رجل بالغ، f = شابة، n = طفل، وباقي الأقسام صوت عادي */
+function speak(t,c){
+ if(!("speechSynthesis" in window)){alert("المتصفح ده مش بيدعم النطق");return}
+ speechSynthesis.cancel();
+ const u=new SpeechSynthesisUtterance(t);u.lang="de-DE";
+ const de=speechSynthesis.getVoices().filter(x=>x.lang.replace("_","-").startsWith("de"));
+ const male=de.find(x=>/markus|stefan|hans|conrad|florian|jonas|martin|bernd|yannick|killian|\bmale\b/i.test(x.name));
+ const fem=de.find(x=>/female|anna|petra|katja|marlene|vicki|hedda|amala|google|seraphina|helena/i.test(x.name));
+ const P={m:[male?.8:.6,.85,male],f:[1.3,.9,fem],n:[1.9,1,fem]}[c]||[1,.9,fem||de[0]];
+ u.pitch=P[0];u.rate=P[1];const v=P[2]||de[0];if(v)u.voice=v;
+ speechSynthesis.speak(u)}
+function btn(html,cls,fn){const b=document.createElement("button");b.className=cls;b.innerHTML=html;b.onclick=fn;return b}
+function render(){
+ view.innerHTML="";const[l,i,c]=st;
+ back.hidden=!st.length;
+ if(i==="quiz"){renderQuiz(l);return}
+ if(!l){title.textContent="تعلّم الألماني";crumb.textContent="اختر مستواك";
+  const g=document.createElement("div");g.className="grid levels";
+  Object.keys(LESSONS).forEach(k=>g.append(btn(`<span class="lvl">${k}</span><small>${LEVEL_NAMES[k]}</small><span class="pct">${pct(k)}% محفوظ</span><span class="bar"><i style="width:${pct(k)}%"></i></span>`,"box",()=>go(k))));view.append(g)}
+ else if(i==null){title.textContent="المستوى "+l;crumb.textContent="اختر الدرس";
+  const g=document.createElement("div");g.className="grid lessons";
+  view.append(btn("ابدأ التمرين · "+pct(l)+"% محفوظ","go",()=>go(l,"quiz")));LESSONS[l].forEach((n,j)=>g.append(btn(`<span class="num">درس ${j+1}</span>${n}`,"box",()=>go(l,j))));view.append(g)}
+ else if(!c){title.textContent=LESSONS[l][i];crumb.textContent=l+" · اختر القسم";
+  const g=document.createElement("div");g.className="grid cats";
+  CATS.forEach(([k,n])=>g.append(btn(n,"box cat "+k,()=>go(l,i,k))));view.append(g)}
+ else{const name=CATS.find(x=>x[0]===c)[1];title.textContent=name;crumb.textContent=l+" · "+LESSONS[l][i];
+  const list=(WORDS[l+"-"+(i+1)]||{})[c]||[];
+  if(!list.length){view.innerHTML='<div class="empty">الكلمات هتتضاف هنا قريبًا.</div>';return}
+  const ul=document.createElement("ul");ul.className="words";
+  list.forEach(([de,ar,ex,exAr])=>{if(!ex)[ex,exAr]=autoEx(c,de,ar);const li=document.createElement("li");li.className="w "+c;
+   const row=btn(`<span class="de">${de}</span><span class="ar">${ar}</span>`,"row",()=>{const o=li.classList.toggle("open");row.setAttribute("aria-expanded",o)});
+   row.setAttribute("aria-expanded","false");li.append(row);
+   const id=wid(l,i,c,de),ck=btn("✓","chk",()=>{LR.has(id)?LR.delete(id):LR.add(id);saveLR();ck.setAttribute("aria-pressed",LR.has(id))});
+   ck.setAttribute("aria-pressed",LR.has(id));ck.setAttribute("aria-label","حفظت "+de);ck.title="حفظتها";li.append(ck);
+   const s=btn(ICON,"spk",()=>speak(de,c));s.setAttribute("aria-label","انطق "+de);li.append(s);
+   const e=document.createElement("div");e.className="ex";
+   if(ex){e.innerHTML=`<div class="exde">${ex}</div><div class="exar">${exAr||""}</div>`;const s2=btn(ICON,"spk sm",()=>speak(ex,c));s2.setAttribute("aria-label","انطق المثال");e.append(s2)}else e.textContent="المثال هيتضاف قريبًا.";
+   li.append(e);ul.append(li)});
+  view.append(ul)}
+ window.scrollTo(0,0)}
+function go(...a){st=a;render()}
+back.onclick=()=>{st.pop();render()};
+if("speechSynthesis" in window)speechSynthesis.getVoices();
+render();
+</script>
+</body>
+</html>
