@@ -376,9 +376,9 @@ function renderQuiz(l){if(EXAM!==null)return renderExam(l,EXAM);
  view.append(g)}
 let EXAM=null,QN=10;
 function renderExam(l,j){
- EXAM=j;QN=1e9;
+ EXAM=j;QN=10;
  const pool=levelWords(l),words=pool.filter(w=>w.i===j);
- title.textContent="امتحان: "+LESSONS[l][j];crumb.textContent="على كل كلمات الدرس ("+words.length+" كلمة)، سواء علّمت عليها أو لأ";
+ title.textContent="امتحان: "+LESSONS[l][j];crumb.textContent="10 أسئلة عشوائية من كلمات الدرس ("+words.length+" كلمة)، سواء علّمت عليها أو لأ";
  if(!words.length){view.innerHTML='<div class="empty">مفيش كلمات في الدرس ده لسه.</div>';return}
  const g=document.createElement("div");g.className="grid";
  [["ma","الكلمة ← اختر المعنى"],["art","الكلمة ← اختر der / die / das"],["am","المعنى ← اختر الكلمة"],["pl","الاسم ← اكتب شكل الجمع"]].forEach(([k,n])=>g.append(btn(n,"box",()=>runQuiz(l,k,words,pool))));
