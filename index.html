@@ -65,6 +65,16 @@ h1{margin:0;font-size:clamp(26px,5vw,38px);font-weight:900;flex:1}
 .fb:empty{display:none}
 .fb.ok{background:var(--n);color:#fff}
 .fb.bad{background:var(--f);color:#fff}
+.tile{display:flex;flex-direction:column;background:var(--card);border:1.5px solid var(--line);border-radius:12px;overflow:hidden}
+.t1{background:none;border:0;padding:16px 12px;color:var(--ink);font:700 18px Cairo,sans-serif;cursor:pointer;text-align:center}
+.t1:hover{background:var(--bg)}
+.t2{padding:8px 12px;border-top:1px solid var(--line);text-align:center}
+.t3{border:0;border-top:1px solid var(--line);padding:10px;background:var(--ink);color:var(--bg);font:700 15px Cairo,sans-serif;cursor:pointer}
+.sec{margin:34px 0 12px;font-size:22px;font-weight:900}
+.topic{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:6px;text-align:start}
+.topic .tt{direction:ltr;font-size:19px;font-weight:700}
+.topic .lv{background:var(--ink);color:var(--bg);border-radius:6px;padding:0 10px;font-size:14px}
+.topic small{flex-basis:100%;color:var(--mute);font-weight:500;font-size:14px;line-height:1.5}
 .pl{font-size:14px;color:var(--mute);font-weight:500}
 .chk{order:-1;width:38px;height:38px;border-radius:50%;border:2px solid var(--line);background:none;color:transparent;font-size:20px;line-height:1;cursor:pointer;flex:none}
 .chk[aria-pressed="true"]{background:var(--n);border-color:var(--n);color:#fff}
@@ -72,7 +82,7 @@ h1{margin:0;font-size:clamp(26px,5vw,38px);font-weight:900;flex:1}
 </head>
 <body>
 <div class="wrap">
-<header><h1 id="title">تعلّم الألماني</h1><button class="back" id="back" hidden>رجوع</button><button class="back" id="auth" hidden></button></header>
+<header><h1 id="title">تعلّم الألماني</h1><button class="back" id="back" hidden>رجوع</button><button class="back" id="auth" hidden></button><button class="back" id="exp">حفظ نسخة</button><button class="back" id="imp">استرجاع</button><input type="file" id="impf" accept=".json,application/json" hidden></header>
 <p class="crumb" id="crumb">اختر مستواك</p>
 <div id="view"></div>
 </div>
@@ -128,6 +138,86 @@ const RAW2={
 11:{m:"Hausmann=رب المنزل=^er|Papa=بابا=s|Werktag=يوم العمل=e|Export=التصدير=e|Import=الاستيراد=e|Beispielsatz=الجملة المثال=^e|Gegenvorschlag=الاقتراح المضاد=^e|Sprecher=المتحدث=|Apfelkuchen=كعكة التفاح=|Helfer=المساعد=|Notfall=حالة طوارئ=^e|Sprichwort=المثل الشعبي=^er",f:"Hausfrau=ربة المنزل=en|Ehe=الزواج=n|Frist=المهلة=en|Satzhälfte=نصف الجملة=n|Kategorie=القسم=n|Kajaktour=جولة بقوارب الكاياك=en|Sprecherin=المتحدثة=nen|Heizung=التدفئة=en|Helferin=المساعدة=nen|Kutsche=العربة التي تجرها الخيول=n|Lücke=الفجوة=n|Unterkunft=المأوى=^e|Morgenstunde=ساعة الصبح=n|Erklärung=التوضيح=en",n:"Feuer=النار=|Gas=الغاز=e",v:"verbringen=يقضي|vergehen=ينقضي|verreisen=يسافر|backen=يخبز|bauen=يبني|bluten=ينزف|brechen=ينكسر|einrichten=يفرش السكن|sparen=يدخر|verletzen=يجرح|behalten=يحتفظ بـ|entlassen=يفصل|hereinkommen=يدخل|klingeln=يرن|schimpfen=يشتم|ausschalten=يطفئ|dazuschreiben=يكتب إضافة|interessieren=يهتم|besitzen=يمتلك|heizen=يدفّئ|produzieren=ينتج|träumen=يحلم|füllen=يملأ|verzichten=يستغني عن|besorgen=يجلب|heilen=يشفي|äußern=يعبّر",a:"betrunken=سكران|ständig=دائم|altmodisch=موضة قديمة|kühl=بارد نسبيا|niedrig=منخفض|reich=غنى|meist=معظم"},
 12:{m:"König=الملك=e|Roman=الرواية=e|Synchronsprecher=المتحدث في الدبلجة=|Wanderer=ممارس لرياضة التجول=|Festivalbesuch=زيارة مهرجان=e|Hit=أغنية شعبية ناجحة=s|Musikstil=نمط موسيقي=e|Rap=موسيقى الراب=s|Einsatz=عمل أو مهمة=^e|Hörer=المستمع=|Radiosprecher=مذيع راديو=|Sammler=رجل هوايته جمع الأشياء=|Schritt=الخطوة=e|Sitzplatz=مكان للجلوس=^e|Stehplatz=مكان للوقوف=^e|Campingplatz=مكان التخييم=^e|Rucksack=حقيبة الظهر=^e|Warenkorb=سلة المشتريات=^e|Audioguide=إرشاد صوتي=s|Titel=العنوان=|Vordergrund=موقع الصدارة=^e|Hintergrund=الخلفية=^e|Ausblick=منظر=e",f:"Königin=الملكة=nen|Unterhaltung=التسلية=en|Gesellschaft=المجتمع=en|Kulisse=كواليس=n|Führung=شرح أثناء جولة=en|Abkürzung=الاختصار=en|Gebühr=الرسوم=en|Reihe=الصف=n|Rufnummer=رقم التليفون=n|Steuer=الضريبة=n|Überweisung=تحويل=en|Vorwahl=كود المدينة=en|Übernachtung=المبيت=en|Rückfrage=الاستفسار=n|Stimme=الصوت=n|Stimmung=الحالة المزاجية=en|Bedeutung=المعنى=en|Hauptrolle=الدور الرئيسي=n|Meldung=إخبار=en",n:"Schloss=القصر=^er|Märchenschloss=قصر القصص الخيالية=^er|Kinderbuch=كتاب أطفال=^er|Mobiltelefon=هاتف نقال=e|Relativpronomen=ضمير الصلة=|Bezugswort=الاسم الموصول=^er|Tierbild=صورة حيوان=er|Wildschwein=خنزير بري=e|Werk=عمل أدبي=e|Musikfestival=مهرجان موسيقى=s",v:"bestätigen=يؤكد|verschlafen=يفوته موعده بسبب النوم|deuten=يفسّر|auffallen=يلفت الانتباه|abmalen=يرسم صورة طبق الأصل|erhalten=يحصل على|stehen=يناسب",a:"jährlich=سنوي|knapp=تقريباً|wild=وحشي|unendlich=بلا نهاية|netto=صافي|melodisch=متناغم|befreundet=على صداقة|hübsch=جميل|verrückt=مجنون|uninteressant=ممل|abstrakt=تجريدي|hell=فاتح|dunkel=غامق"}};
 for(const k in RAW2){WORDS["A2-"+k]={};for(const c in RAW2[k])WORDS["A2-"+k][c]=RAW2[k][c].split("|").map(s=>{const[x,y,z]=s.split("=");if(z!==undefined&&"mfn".includes(c))PL[x]=z;return[(ART[c]?ART[c]+" ":"")+x,y]})}
+const TOPICS=[
+{de:"Zu Person und Familie",lv:"A1",ar:"التحدث عن الاسم، العمر، العنوان، رقم الهاتف، تاريخ الميلاد، الموطن الأصلي، الحالة الاجتماعية، ووصف أفراد العائلة",w:{
+m:"Name|Nachname|Vorname|Familienname=اسم العائلة=n|Vater|Bruder|Sohn|Onkel|Opa|Großvater|Ehemann=الزوج=^er|Mann=الرجل=^er|Freund|Kollege|Partner|Geburtstag|Geburtsort=محل الميلاد=e|Wohnort",
+f:"Familie|Mutter|Schwester|Tochter|Oma|Großmutter|Frau=المرأة=en|Ehefrau|Freundin|Kollegin|Partnerin|Person|Adresse=العنوان=n|Postleitzahl=الرمز البريدي=en|Hausnummer=رقم المنزل=n|Telefonnummer|Handynummer|E-Mail-Adresse|Stadt|Heimat|Schweiz|Türkei",
+n:"Kind|Mädchen|Alter|Geburtsdatum=تاريخ الميلاد|Land|Telefon|Hobby|Familienfoto|Haus|Deutschland=ألمانيا=@|Österreich=النمسا=@|Ägypten=مصر=@",
+v:"heißen|wohnen|kommen|sein|haben|sprechen|lernen|arbeiten|leben|kennen|schreiben|fragen|antworten|buchstabieren|vorstellen|lieben|besuchen|verstehen",
+a:"verheiratet|ledig|deutsch|jung|alt=كبير في السن|klein=صغير|groß=كبير|krank|bekannt|freundlich|männlich=ذكر|weiblich=أنثى|nett=لطيف|glücklich|müde"}},
+{de:"Wohnen und Umgebung",lv:"A1",ar:"وصف الشقة أو المنزل (الغرف، الأثاث)، والحي السكني، والأماكن الهامة في المدينة",w:{
+m:"Balkon|Flur|Herd|Kühlschrank|Schrank|Schreibtisch|Sessel|Stuhl|Teppich|Tisch|Garten|Stock|Raum|Baum|Fernseher|Park|Markt|Bahnhof|Hafen|Fluss|See|Turm|Weg|Zoo|Flughafen|Ort|Nachbar|Wohnort|Vertrag",
+f:"Küche|Lampe|Toilette|Waschmaschine|Wohnung|Treppe|Miete|Dusche|Terrasse|Stadt|Kirche|Brücke|Straße=الشارع=n|Bibliothek|Schule=المدرسة=n|Apotheke|Bäckerei|Post|Pension|Tür|Decke|Lage|Haltestelle|Insel|Landschaft|Nachbarin|Wohnfläche",
+n:"Bad|Wohnzimmer|Schlafzimmer|Kinderzimmer|Arbeitszimmer|Zimmer=الغرفة|Haus|Hochhaus|Sofa|Regal|Bett|Licht|Rathaus|Hotel|Theater|Kino|Museum=المتحف|Restaurant=المطعم=s|Stadion=الملعب|Krankenhaus=المستشفى=^er|Schwimmbad=حمام السباحة=^er|Dorf|Zentrum|Apartment|Reihenhaus|Kaufhaus",
+v:"wohnen|liegen|stehen|ziehen|umziehen|vermieten|suchen=يبحث عن|finden|gehen|kommen|fahren=يسير أو يسافر|zeigen|beschreiben|besichtigen",
+a:"groß=كبير|klein=صغير|hell|dunkel|gemütlich|schön|billig|günstig|ideal|elegant|zentral|hässlich|renoviert|bequem|neu=جديد|alt=قديم|teuer|laut=عالي الصوت|weit"}},
+{de:"Alltag und Routinen",lv:"A1",ar:"وصف الجدول اليومي، معرفة وقراءة الوقت، أيام الأسبوع، الأشهر، وفصول السنة",w:{
+m:"Alltag|Tag=اليوم=e|Morgen|Vormittag=قبل الظهر=e|Mittag|Nachmittag=بعد الظهر=e|Abend=المساء=e|Feierabend|Montag|Dienstag|Mittwoch|Donnerstag|Freitag|Samstag|Sonntag|Monat|Frühling|Sommer|Herbst|Winter|Januar=يناير|Februar=فبراير|März=مارس|April=أبريل|Mai=مايو|Juni=يونيو|Juli=يوليو|August=أغسطس|September=سبتمبر|Oktober=أكتوبر|November=نوفمبر|Dezember=ديسمبر|Kalender|Termin|Urlaub",
+f:"Uhrzeit|Zeit|Uhr|Stunde=الساعة=n|Minute|Sekunde|Woche=الأسبوع=n|Jahreszeit|Nacht|Arbeit=العمل=en|Pause|Mittagspause|Verabredung=الموعد=en|Pünktlichkeit|Verspätung",
+n:"Wochenende|Jahr=السنة=e|Datum=التاريخ|Frühstück|Mittagessen|Abendessen|Büro|Training",
+v:"aufstehen|frühstücken=يفطر|arbeiten|schlafen=ينام|duschen|essen|trinken|kochen|einkaufen|lernen|treffen|anfangen|aufhören|fernsehen|besuchen|joggen|schwimmen|ausgehen|telefonieren|einschlafen|freihaben=يأخذ راحة|beginnen|enden",
+a:"früh|spät=متأخر|pünktlich|täglich|regelmäßig|müde|wach=مستيقظ|fleißig|frei=حر أو خالٍ|offen|geschlossen"}},
+{de:"Essen, Trinken und Einkaufen",lv:"A1",ar:"شراء المواد الغذائية، فهم الأسعار والكميات، اختيار الملابس، بالإضافة إلى الطلب والدفع في المطعم",w:{
+m:"Apfelsaft|Käse|Kaffee|Kuchen|Salat|Schinken|Zucker|Apfel|Fisch|Reis|Saft|Becher|Preis|Pfeffer|Tee|Orangensaft|Supermarkt|Einkaufszettel|Einkaufswagen|Liter|Cent|Euro|Kunde|Löffel|Teller|Durst|Hunger|Kassenzettel|Kellner=النادل|Laden|Markt|Anzug|Rock|Pullover|Mantel|Schuh|Stiefel|Hut|Schal",
+f:"Banane|Butter|Kartoffel|Milch|Marmelade|Tomate|Wurst|Suppe|Schokolade|Sahne|Birne|Olive|Dose|Packung|Limonade|Bäckerei|Metzgerei|Tüte|Flasche|Nudel|Gabel|Serviette|Tasse|Rechnung=الفاتورة=en|Speisekarte=قائمة الطعام=n|Kasse|Kellnerin=النادلة=nen|Pizza=البيتزا=s|Jacke|Hose|Bluse|Jeans|Mütze|Tasche|Krawatte|Kleidung|Größe|Mode|Mahlzeit",
+n:"Brötchen|Ei|Fleisch|Frühstück|Gemüse|Müsli|Öl|Salz|Wasser|Brot|Mittagessen|Abendessen|Essen|Getränk|Hähnchen|Geschäft|Stück|Gramm|Kilo|Kilogramm|Fett|Lebensmittel|Obst=الفاكهة|Eis|Messer|Glas=الكأس=^er|Trinkgeld|Kleid|Hemd|T-Shirt|Kleidergeschäft|Kaufhaus|Café=المقهى=s|Restaurant=المطعم=s|Geld=النقود=er",
+v:"essen|trinken|kaufen|einkaufen|kosten|schmecken|bezahlen|zahlen|bestellen|bringen|nehmen|brauchen|möchten=يريد|probieren=يجرب|kochen|grillen|wechseln|tragen|anprobieren|passen|gefallen|stimmen|geben",
+a:"lecker|süß|teuer|billig|günstig|frisch=طازج|satt|hungrig|kalt|warm|fertig|gut|schlecht|eng|weit|blau|grün|gelb|grau|rot|schwarz|weiß|braun|orange|lila"}},
+{de:"Den eigenen Beruf, den Arbeitsplatz",lv:"A1",ar:"التحدث عن المهنة الحالية، مكان العمل، أو الخلفية الدراسية والجامعية بشكل بسيط",w:{
+m:"Beruf=المهنة=e|Arzt=الطبيب=^e|Architekt|Elektriker|Erzieher|Friseur|Handwerker|Informatiker|Ingenieur|Journalist|Jurist|Koch|Kellner=النادل|Lehrer|Mechaniker|Polizist|Sekretär|Verkäufer|Student=الطالب الجامعي=en|Taxifahrer=سائق التاكسي|Krankenpfleger=الممرض|Chef=المدير=s|Kollege|Arbeitsplatz|Job|Künstler|Computer=الكمبيوتر",
+f:"Ärztin=الطبيبة=nen|Lehrerin|Verkäuferin|Friseurin|Ingenieurin|Journalistin|Köchin|Polizistin|Sekretärin|Studentin=الطالبة الجامعية=nen|Krankenpflegerin=الممرضة=nen|Kollegin|Chefin=المديرة=nen|Arbeit=العمل=en|Firma=الشركة|Universität=الجامعة=en|Uni|Schule=المدرسة=n|Werkstatt|Baustelle|Bank|Karriere|Aufgabe|Agentur|Bewerbung|Prüfung|Pause|Stelle|Architektin|Künstlerin",
+n:"Büro|Kaufhaus|Krankenhaus=المستشفى=^er|Restaurant=المطعم=s|Hotel|Geschäft|Studium|Praktikum|Projekt|Seminar=الندوة=e|Telefon|Studio",
+v:"arbeiten|studieren=يدرس بالجامعة|lernen|verdienen|helfen=يساعد|verkaufen|kochen|fahren=يقود أو يسافر|schreiben|telefonieren|betreuen|anrufen|machen|malen|fliegen|unterrichten=يُدرّس|besuchen",
+a:"arbeitslos|fleißig|freundlich|nett=لطيف|berühmt|kreativ=مبدع|wichtig=مهم|müde|zufrieden|schwer|leicht|bekannt"}},
+{de:"Über Interessen, Sport, Musik, Wochenendpläne und persönliche Vorlieben sprechen",lv:"A1",ar:"التحدث عن الاهتمامات، الرياضة، الموسيقى، خطط عطلة نهاية الأسبوع، والتفضيلات الشخصية",w:{
+m:"Sport|Ball|Film|Ausflug|Spaziergang|Park|Strand|Samstag|Sonntag|Urlaub|Besuch|Spielplatz|Marathon|Ski|Freund|Gast|Zoo",
+f:"Musik|Freizeit|Freundin|Party|Grillparty|Einladung|Verabredung=الموعد=en|Fahrradtour|Aktivität|Lust|Natur|Geige|Trompete|Oper|Kneipe=الحانة=n|Pantomime|Überraschung|Sensation|Zeitung|Serie",
+n:"Hobby|Kino|Theater|Museum=المتحف|Konzert|Buch|Foto|Wochenende|Spiel|Fußballspiel|Training|Fitness-Studio|Schwimmbad=حمام السباحة=^er|Stadion=الملعب|Festival|Picknick|Fest|Programm|Kaffeehaus|Radio=الراديو=s|Video|Fernsehen|Motorrad|Fahrrad|Fußball=كرة القدم=@|Tennis=التنس=@|Yoga=اليوجا=@",
+v:"spielen|tanzen|singen|joggen|schwimmen|reisen|kochen|fotografieren|lesen|hören|sehen|fernsehen|wandern|klettern|feiern|einladen|lieben|gehen|treffen|besuchen|mitmachen|mitkommen|grillen|fahren=يسير أو يسافر|genießen|malen|segeln|trainieren|ausgehen|shoppen|gefallen|mögen=يحب|möchten=يريد",
+a:"toll|super|lustig|interessant|schön|langweilig|sportlich|aktiv|beliebt|bekannt|kreativ=مبدع|gesund=سليم|fit|faul|müde"}},
+{de:"Reisen und Verkehr",lv:"A1",ar:"فهم وصف الطرق البسيط، استخدام وسائل النقل العام، شراء التذاكر، وتسمية الدول والمدن",w:{
+m:"Bahnhof|Zug|Bus|Flughafen|Flug|Hafen|Reiseführer|Koffer|Urlaub|Badeanzug|Rucksack=حقيبة الظهر=^e|Regenschirm|Schlafsack|Ausweis|Pass|Strand|Berg|Fluss|See|Plan|Weg|Euro|Ausgang|Bahnsteig|Reisebericht|Ort|Stadtplan=خريطة المدينة=^e|Taxifahrer=سائق التاكسي|Zoo",
+f:"Reise|Reisetasche|Handtasche|Fahrkarte|U-Bahn|S-Bahn|Straßenbahn|Haltestelle|Station|Stadt|Hauptstadt=العاصمة=^e|Rezeption|Pension|Jugendherberge|Ankunft|Abfahrt|Route|Nummer|Postkarte|Städtereise|Sehenswürdigkeit|Brücke|Kirche|Schweiz|Türkei|Ukraine|Insel|Landschaft|Sonnenbrille|Sonnencreme|Bergtour|Autobahn|Straße=الشارع=n|Welt|Wegbeschreibung=وصف الطريق=en|Stadtführung",
+n:"Flugzeug|Fahrrad|Auto=السيارة=s|Taxi=التاكسي=s|Hotel|Gepäck|Zelt|Schiff|Meer|Gleis|Reiseziel|Land|Wetter|Dorf|Ticket|Ziel|Zimmer=الغرفة|Doppelzimmer=غرفة مزدوجة|Einzelzimmer=غرفة فردية|Motorrad|Museum=المتحف|Boot=القارب=e|Deutschland=ألمانيا=@|Österreich=النمسا=@|Italien=إيطاليا=@|Frankreich=فرنسا=@|Spanien=إسبانيا=@|England=إنجلترا=@|Ägypten=مصر=@|Europa=أوروبا=@|Berlin=برلين=@|Wien=فيينا=@|Hamburg=هامبورغ=@|München=ميونخ=@|Kairo=القاهرة=@|Japan=اليابان=@|Griechenland=اليونان=@|Polen=بولندا=@|Portugal=البرتغال=@",
+v:"reisen|fahren=يسير أو يسافر|fliegen|abfahren|ankommen|einsteigen|aussteigen|umsteigen|landen=يهبط|buchen=يحجز|reservieren|packen|einpacken|besuchen|zeigen|finden|suchen=يبحث عن|gehen|kommen|bleiben=يبقى|übernachten|wandern|losfahren|zurückfahren|spazierengehen|kosten|fragen|benutzen|nehmen|abholen|wünschen",
+a:"lang|breit|hoch|schnell|langsam=ببطء|weit|nah=قريب|direkt|richtig|falsch|interessant|schön|wunderschön|kalt|warm|heiß|windig|sonnig|bewölkt|billig|teuer|bequem|sauber|klein=صغير|groß=كبير|offen|geschlossen|frei=حر أو خالٍ"}}
+];
+const A1IDX={};
+for(const k in WORDS){if(!k.startsWith("A1-"))continue;for(const c in WORDS[k])WORDS[k][c].forEach(([de,ar])=>{A1IDX[c+de.replace(/^(der|die|das) /,"")]=[de,ar]})}
+const TOPIC_MISSING=[];
+TOPICS.forEach(t=>{t.words={};for(const c of "mfnva"){t.words[c]=(t.w[c]||"").split("|").filter(Boolean).map(s=>{const[x,y,z]=s.split("=");let r;
+ if(y){const na=z==="@";r=[(ART[c]&&!na?ART[c]+" ":"")+x,y];if(z!==undefined&&!na&&"mfn".includes(c))PL[x]=z}
+ else{r=A1IDX[c+x];if(!r)TOPIC_MISSING.push(c+":"+x)}
+ return r}).filter(Boolean)}});
+/* مراجعة: كلمات لا تخص الموضوع تتشال هنا، وكلمات ناقصة تتضاف */
+const DROP=[
+{m:"Kollege",f:"Kollegin",n:"Hobby Haus",v:"lernen arbeiten schreiben besuchen verstehen",a:"krank bekannt müde"},
+{m:"Hafen Fluss See Turm Zoo Flughafen Ort Weg Vertrag Baum",f:"Insel Landschaft Pension",v:"gehen kommen fahren zeigen"},
+{m:"Urlaub",n:"Büro Training",v:"schwimmen ausgehen besuchen",a:"fleißig offen geschlossen"},
+{v:"wechseln"},
+{f:"Pause",v:"besuchen machen",a:"müde bekannt"},
+{m:"Gast",f:"Pantomime Überraschung Sensation Zeitung",n:"Programm Motorrad",a:"bekannt müde"},
+{m:"Reisebericht Zoo",f:"Welt",v:"wünschen",a:"breit hoch"}];
+const ADD=[{v:"feiern"},{f:"Spülmaschine|Pflanze"}];
+TOPICS.forEach((t,i)=>{const d=DROP[i]||{};for(const c in d){const s=new Set(d[c].split(" "));t.words[c]=t.words[c].filter(([de])=>!s.has(de.replace(/^(der|die|das) /,"")))}
+ const a=ADD[i]||{};for(const c in a)a[c].split("|").forEach(w=>{const r=A1IDX[c+w];if(r)t.words[c].push(r)})});
+/* تقسيم موضوع Essen, Trinken und Einkaufen إلى ثلاثة مواضيع */
+{const t=TOPICS[3],bare=de=>de.replace(/^(der|die|das) /,"");
+ const SH={m:"Supermarkt Einkaufszettel Einkaufswagen Liter Cent Euro Kunde Kassenzettel Preis Laden Markt Anzug Rock Pullover Mantel Schuh Stiefel Hut Schal",f:"Tüte Packung Dose Kasse Jacke Hose Bluse Jeans Mütze Tasche Krawatte Kleidung Größe Mode Bäckerei Metzgerei",n:"Geschäft Stück Gramm Kilo Kilogramm Kleid Hemd T-Shirt Kleidergeschäft Kaufhaus Geld",v:"kaufen einkaufen kosten bezahlen zahlen tragen anprobieren passen gefallen stimmen brauchen nehmen",a:"teuer billig günstig eng weit blau grün gelb grau rot schwarz weiß braun orange lila"};
+ const TR={m:"Apfelsaft Saft Tee Orangensaft Becher Durst Kaffee",f:"Milch Limonade Flasche Tasse",n:"Wasser Getränk Glas",v:"trinken"};
+ const sp=(o,c)=>new Set((o[c]||"").split(" "));
+ const mk=(de,ar)=>({de,lv:"A1",ar,words:{}});
+ const es=mk("Essen","الطعام والوجبات وأدوات المائدة، والطلب في المطعم"),tr=mk("Trinken","المشروبات، والطلب في المطعم أو المقهى"),sh=mk("Einkaufen und Kleidung","شراء المواد الغذائية، فهم الأسعار والكميات، واختيار الملابس والدفع");
+ for(const c of "mfnva"){const a=sp(SH,c),b=sp(TR,c);
+  sh.words[c]=t.words[c].filter(([d])=>a.has(bare(d)));
+  tr.words[c]=t.words[c].filter(([d])=>b.has(bare(d)));
+  es.words[c]=t.words[c].filter(([d])=>!a.has(bare(d))&&!b.has(bare(d)))}
+ const cp=(x,c,ws)=>{const S=new Set(ws.split(" "));t.words[c].forEach(e=>{if(S.has(bare(e[0])))x.words[c].push(e)})};
+ cp(es,"v","nehmen bezahlen zahlen");cp(tr,"v","möchten bestellen bringen nehmen");cp(tr,"a","kalt warm süß frisch");
+ tr.words.m.push(["der Wein","النبيذ"]);PL.Wein="e";tr.words.n.push(["das Bier","البيرة"]);PL.Bier="e";tr.words.a.push(["durstig","عطشان"]);
+ for(const c of "mfnva"){const seen=new Set();es.words[c]=es.words[c].concat(tr.words[c]).filter(([d])=>!seen.has(d)&&seen.add(d))}
+ es.de="Essen und Trinken";es.ar="الطعام والمشروبات والوجبات وأدوات المائدة، والطلب في المطعم أو المقهى";
+ TOPICS.splice(3,1,es,sh)}
 const NOV=new Set("sein haben werden müssen wollen können dürfen sollen wissen leidtun wehtun fehlen stimmen passieren gefallen scheinen vorbeisein kosten regnen schneien schütten klingen dauern bedeuten heißen gehören dazugehören zusammengehören passen stattfinden interessieren orientieren freuen".split(" "));
 const NOA=new Set("andere beide besser erste letzte nächste besondere willkommen genug bar egal total täglich regelmäßig".split(" "));
 const PER=new Set("satt fit froh hungrig müde krank ledig verheiratet faul zufrieden glücklich arbeitslos eilig fleißig freundlich verletzt erkältet sportlich aktiv höflich unhöflich jung berühmt lustig bekannt pünktlich supernett herzlich".split(" "));
@@ -264,7 +354,7 @@ function levelWords(l){const out=[];for(const k in WORDS){if(!k.startsWith(l+"-"
 const pct=l=>{const a=levelWords(l);return a.length?Math.round(a.filter(w=>LR.has(w.id)).length/a.length*100):0};
 const cp=(l,i,c)=>{const a=levelWords(l).filter(w=>w.i===i&&w.c===c);if(!a.length)return"";const p=Math.round(a.filter(w=>LR.has(w.id)).length/a.length*100);return`<span class="pct" style="font-size:16px">${p}%</span><span class="bar"><i style="width:${p}%;background:currentColor"></i></span>`};
 const lp=(l,j)=>{const a=levelWords(l).filter(w=>w.i===j);if(!a.length)return"";const p=Math.round(a.filter(w=>LR.has(w.id)).length/a.length*100);return`<span class="pct" style="font-size:16px">${p}%</span><span class="bar"><i style="width:${p}%"></i></span>`};
-function renderQuiz(l){
+function renderQuiz(l){if(EXAM!==null)return renderExam(l,EXAM);
  title.textContent="تمرين "+l;crumb.textContent="اختبار على الكلمات اللي علّمت عليها ✓";
  const pool=levelWords(l),learned=pool.filter(w=>LR.has(w.id));
  if(!learned.length){view.innerHTML='<div class="empty">علّم بعلامة ✓ على كلمات حفظتها الأول، وبعدها ارجع للتمرين.</div>';return}
@@ -273,10 +363,41 @@ function renderQuiz(l){
   
   g.append(btn(n,"box",()=>runQuiz(l,k,learned,pool)))});
  view.append(g)}
+let EXAM=null,QN=10;
+function renderExam(l,j){
+ EXAM=j;QN=1e9;
+ const pool=levelWords(l),words=pool.filter(w=>w.i===j);
+ title.textContent="امتحان: "+LESSONS[l][j];crumb.textContent="على كل كلمات الدرس ("+words.length+" كلمة)، سواء علّمت عليها أو لأ";
+ if(!words.length){view.innerHTML='<div class="empty">مفيش كلمات في الدرس ده لسه.</div>';return}
+ const g=document.createElement("div");g.className="grid";
+ [["ma","الكلمة ← اختر المعنى"],["art","الكلمة ← اختر der / die / das"],["am","المعنى ← اختر الكلمة"],["pl","الاسم ← اكتب شكل الجمع"]].forEach(([k,n])=>g.append(btn(n,"box",()=>runQuiz(l,k,words,pool))));
+ view.append(g)}
+function renderTopicList(){
+ const h=document.createElement("h2");h.className="sec";h.textContent="مواضيع للتحدث";view.append(h);
+ const g=document.createElement("div");g.className="grid";
+ TOPICS.forEach((t,i)=>g.append(btn(`<span class="tt">${t.de}</span><span class="lv">${t.lv}</span><small>${t.ar}</small>`,"box topic",()=>go("T",i))));
+ view.append(g)}
+function renderTopic(i,c){
+ const t=TOPICS[i];
+ if(!c){title.textContent=t.de;crumb.textContent=t.lv+" · "+t.ar;
+  const g=document.createElement("div");g.className="grid cats";
+  CATS.forEach(([k,n])=>g.append(btn(n,"box cat "+k,()=>go("T",i,k))));view.append(g);return}
+ const name=CATS.find(x=>x[0]===c)[1];title.textContent=name;crumb.textContent=t.de+" · "+t.lv;
+ const list=t.words[c]||[];
+ if(!list.length){view.innerHTML='<div class="empty">لسه مفيش كلمات هنا.</div>';return}
+ const ul=document.createElement("ul");ul.className="words";
+ list.forEach(([de,ar])=>{const li=document.createElement("li");li.className="w "+c;
+  const row=btn(`<span class="de">${de}</span><span class="ar">${ar}</span>${plHtml(c,de)}`,"row",()=>{const o=li.classList.toggle("open");row.setAttribute("aria-expanded",o)});
+  row.setAttribute("aria-expanded","false");li.append(row);
+  const s=btn(ICON,"spk",()=>speak(de,c));s.setAttribute("aria-label","انطق "+de);li.append(s);
+  const[ex,exAr]=autoEx(c,de,ar);const e=document.createElement("div");e.className="ex";
+  if(ex){e.innerHTML=`<div class="exde">${ex}</div><div class="exar">${exAr||""}</div>`;const s2=btn(ICON,"spk sm",()=>speak(ex,c));s2.setAttribute("aria-label","انطق المثال");e.append(s2)}else e.textContent="المثال هيتضاف قريبًا.";
+  li.append(e);ul.append(li)});
+ view.append(ul)}
 function plOf(w){const code=PL[w];if(code===undefined)return null;let p=w;if(code[0]==="^")p=p.replace(/(au|[aou])(?!.*(?:au|[aou]))/i,m=>{const t={au:"äu",a:"ä",o:"ö",u:"ü"}[m.toLowerCase()];return m[0]===m[0].toUpperCase()?t[0].toUpperCase()+t.slice(1):t});return p+code.replace("^","")}
 function runPlural(l,learned){
  const sh=a=>[...a].sort(()=>Math.random()-.5);
- const qs=sh(learned.filter(w=>"mfn".includes(w.c)&&plOf(w.de.replace(/^(der|die|das) /,""))!==null)).slice(0,10);
+ const qs=sh(learned.filter(w=>"mfn".includes(w.c)&&plOf(w.de.replace(/^(der|die|das) /,""))!==null)).slice(0,QN);
  let n=0,score=0;
  function show(){
   view.innerHTML="";
@@ -296,7 +417,7 @@ function runPlural(l,learned){
  show()}
 function runQuiz(l,mode,learned,pool){if(mode==="pl")return runPlural(l,learned);
  const sh=a=>[...a].sort(()=>Math.random()-.5),art={m:"der",f:"die",n:"das"};
- const qs=sh(mode==="art"?learned.filter(w=>"mfn".includes(w.c)):learned).slice(0,10);let n=0,score=0;
+ const qs=sh(mode==="art"?learned.filter(w=>"mfn".includes(w.c)):learned).slice(0,QN);let n=0,score=0;
  function show(){
   view.innerHTML="";
   if(!qs.length){view.innerHTML='<div class="empty">علّم بـ ✓ على أسماء (مذكر أو مؤنث أو محايد) الأول عشان تتدرب على الأدوات.</div>';view.append(btn("رجوع","go alt",()=>renderQuiz(l)));return}
@@ -333,13 +454,19 @@ function btn(html,cls,fn){const b=document.createElement("button");b.className=c
 function render(){
  view.innerHTML="";const[l,i,c]=st;
  back.hidden=!st.length;
- if(i==="quiz"){renderQuiz(l);return}
+ if(l==="T"){renderTopic(i,c);return}
+ if(i==="quiz"){EXAM=null;QN=10;renderQuiz(l);return}
+ if(i==="exam"){renderExam(l,EXAM);return}
  if(!l){title.textContent="تعلّم الألماني";crumb.textContent="اختر مستواك";
   const g=document.createElement("div");g.className="grid levels";
-  Object.keys(LESSONS).forEach(k=>g.append(btn(`<span class="lvl">${k}</span><small>${LEVEL_NAMES[k]}</small><span class="pct">${pct(k)}% محفوظ</span><span class="bar"><i style="width:${pct(k)}%"></i></span>`,"box",()=>go(k))));view.append(g)}
+  Object.keys(LESSONS).forEach(k=>g.append(btn(`<span class="lvl">${k}</span><small>${LEVEL_NAMES[k]}</small><span class="pct">${pct(k)}% محفوظ</span><span class="bar"><i style="width:${pct(k)}%"></i></span>`,"box",()=>go(k))));view.append(g);renderTopicList()}
  else if(i==null){title.textContent="المستوى "+l;crumb.textContent="اختر الدرس";
   const g=document.createElement("div");g.className="grid lessons";
-  view.append(btn("ابدأ التمرين · "+pct(l)+"% محفوظ","go",()=>go(l,"quiz")));LESSONS[l].forEach((n,j)=>g.append(btn(`<span class="num">درس ${j+1}</span>${n}${lp(l,j)}`,"box",()=>go(l,j))));view.append(g)}
+  view.append(btn("ابدأ التمرين · "+pct(l)+"% محفوظ","go",()=>go(l,"quiz")));LESSONS[l].forEach((n,j)=>{const t=document.createElement("div");t.className="tile";
+  const a=btn(`<span class="num">درس ${j+1}</span>${n}`,"t1",()=>go(l,j));
+  const p=document.createElement("div");p.className="t2";p.innerHTML=lp(l,j)||'<span class="num">—</span>';
+  const e=btn("امتحان ✎","t3",()=>{EXAM=j;go(l,"exam")});
+  t.append(a,p,e);g.append(t)});view.append(g)}
  else if(!c){title.textContent=LESSONS[l][i];crumb.textContent=l+" · اختر القسم";
   const g=document.createElement("div");g.className="grid cats";
   CATS.forEach(([k,n])=>g.append(btn(n+cp(l,i,k),"box cat "+k,()=>go(l,i,k))));view.append(g)}
@@ -373,6 +500,11 @@ function initCloud(){
    try{const d=await db.collection("users").doc(u.uid).get();
     if(d.exists){LR=new Set(d.data().learned||[]);try{localStorage.setItem("de-learned",JSON.stringify([...LR]))}catch(e){}}else saveLR();
     render()}catch(e){console.error(e)}})}catch(e){console.error(e)}}
+try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
+document.getElementById("exp").onclick=()=>{const b=new Blob([JSON.stringify({learned:[...LR]})],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="german-progress.json";document.body.appendChild(a);a.click();a.remove()};
+const impf=document.getElementById("impf");
+document.getElementById("imp").onclick=()=>impf.click();
+impf.onchange=()=>{const f=impf.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!Array.isArray(d.learned))throw 0;LR=new Set(d.learned);saveLR();render();alert("تم استرجاع التقدم")}catch(e){alert("الملف غير صالح")}impf.value=""};r.readAsText(f)};
 authUI();window.addEventListener("load",initCloud);
 render();
 </script>
