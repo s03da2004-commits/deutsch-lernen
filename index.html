@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>تعلّم الألماني</title>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;900&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#f6f4ef;--card:#fff;--ink:#1c1f26;--mute:#6a707c;--line:#dcd8cf;
@@ -69,7 +72,7 @@ h1{margin:0;font-size:clamp(26px,5vw,38px);font-weight:900;flex:1}
 </head>
 <body>
 <div class="wrap">
-<header><h1 id="title">تعلّم الألماني</h1><button class="back" id="back" hidden>رجوع</button></header>
+<header><h1 id="title">تعلّم الألماني</h1><button class="back" id="back" hidden>رجوع</button><button class="back" id="auth" hidden></button></header>
 <p class="crumb" id="crumb">اختر مستواك</p>
 <div id="view"></div>
 </div>
@@ -255,7 +258,7 @@ const CATS=[["m","المذكر (der)"],["f","المؤنث (die)"],["n","المح
 const view=document.getElementById("view"),title=document.getElementById("title"),crumb=document.getElementById("crumb"),back=document.getElementById("back");
 let st=[];
 let LR=new Set();try{LR=new Set(JSON.parse(localStorage.getItem("de-learned")||"[]"))}catch(e){}
-const saveLR=()=>{try{localStorage.setItem("de-learned",JSON.stringify([...LR]))}catch(e){}};
+const saveLR=()=>{try{localStorage.setItem("de-learned",JSON.stringify([...LR]))}catch(e){}if(fbUser&&db)db.collection("users").doc(fbUser.uid).set({learned:[...LR]}).catch(e=>console.error(e))};
 const wid=(l,i,c,de)=>l+"-"+i+"-"+c+"-"+de;
 function levelWords(l){const out=[];for(const k in WORDS){if(!k.startsWith(l+"-"))continue;const i=+k.split("-")[1]-1;for(const c in WORDS[k])WORDS[k][c].forEach(w=>out.push({l,i,c,de:w[0],ar:w[1],id:wid(l,i,c,w[0])}))}return out}
 const pct=l=>{const a=levelWords(l);return a.length?Math.round(a.filter(w=>LR.has(w.id)).length/a.length*100):0};
@@ -358,6 +361,19 @@ function render(){
 function go(...a){st=a;render()}
 back.onclick=()=>{st.pop();render()};
 if("speechSynthesis" in window)speechSynthesis.getVoices();
+/* حفظ التقدم على حساب جوجل: الصق إعدادات Firebase مكان null في السطر التالي */
+const FIREBASE_CONFIG=null;
+var fbUser=null,db=null;const authBtn=document.getElementById("auth");
+function authUI(){if(!FIREBASE_CONFIG){authBtn.hidden=true;return}authBtn.hidden=false;authBtn.textContent=fbUser?"خروج · "+(fbUser.displayName||fbUser.email):"دخول بجوجل لحفظ التقدم"}
+function initCloud(){
+ if(!FIREBASE_CONFIG||!window.firebase)return;
+ try{firebase.initializeApp(FIREBASE_CONFIG);const auth=firebase.auth();db=firebase.firestore();
+  authBtn.onclick=()=>fbUser?auth.signOut():auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(e=>alert("تعذّر تسجيل الدخول: "+e.message));
+  auth.onAuthStateChanged(async u=>{fbUser=u;authUI();if(!u)return;
+   try{const d=await db.collection("users").doc(u.uid).get();
+    if(d.exists){LR=new Set(d.data().learned||[]);try{localStorage.setItem("de-learned",JSON.stringify([...LR]))}catch(e){}}else saveLR();
+    render()}catch(e){console.error(e)}})}catch(e){console.error(e)}}
+authUI();window.addEventListener("load",initCloud);
 render();
 </script>
 </body>
