@@ -87,6 +87,10 @@ h1{margin:0;font-size:clamp(26px,5vw,38px);font-weight:900;flex:1}
 .lvA2 .lv{background:#fff;color:#DD0000}
 .lvB1 .lv{background:#fff;color:#000}
 .lvA1:hover,.lvA2:hover,.lvB1:hover{filter:brightness(1.08)}
+.para{background:var(--card);border:1.5px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:12px}
+.prow{display:flex;gap:12px;align-items:flex-start}
+.pde{flex:1;direction:ltr;text-align:left;font-size:20px;font-weight:600;margin:0 0 8px;line-height:1.7}
+.par{margin:0;color:var(--mute);font-size:16px;line-height:1.8;border-top:1px dashed var(--line);padding-top:8px}
 .chk{order:-1;width:38px;height:38px;border-radius:50%;border:2px solid var(--line);background:none;color:transparent;font-size:20px;line-height:1;cursor:pointer;flex:none}
 .chk[aria-pressed="true"]{background:var(--n);border-color:var(--n);color:#fff}
 </style>
@@ -229,6 +233,91 @@ TOPICS.forEach((t,i)=>{const d=DROP[i]||{};for(const c in d){const s=new Set(d[c
  for(const c of "mfnva"){const seen=new Set();es.words[c]=es.words[c].concat(tr.words[c]).filter(([d])=>!seen.has(d)&&seen.add(d))}
  es.de="Essen und Trinken";es.ar="الطعام والمشروبات والوجبات وأدوات المائدة، والطلب في المطعم أو المقهى";
  TOPICS.splice(3,1,es,sh)}
+/* مواضيع جديدة: عن النفس، العائلة، الشقة، المدينة (مع نصوص وترجمتها) */
+const PARSE=(c,s)=>{const[x,y,z]=s.split("=");if(y){const na=z==="@";if(z!==undefined&&!na&&"mfn".includes(c))PL[x]=z;return[(ART[c]&&!na?ART[c]+" ":"")+x,y]}return A1IDX[c+x]};
+const NT=(de,ar,w,text)=>{const t={de,lv:"A1",ar,words:{},text};for(const c of "mfnva")t.words[c]=(w[c]||"").split("|").filter(Boolean).map(s=>{const r=PARSE(c,s);if(!r)TOPIC_MISSING.push(c+":"+s);return r}).filter(Boolean);return t};
+TOPICS.splice(0,2,
+NT("Zu Person","التحدث عن النفس: الاسم، العمر، العنوان، رقم الهاتف، تاريخ الميلاد، الموطن الأصلي، الحالة الاجتماعية",{
+m:"Name|Nachname|Vorname|Familienname=اسم العائلة=n|Geburtstag|Geburtsort=محل الميلاد=e|Wohnort|Lehrer",
+f:"Person|Adresse=العنوان=n|Postleitzahl=الرمز البريدي=en|Hausnummer=رقم المنزل=n|Telefonnummer|Handynummer|E-Mail-Adresse|Stadt|Heimat|Schweiz|Türkei|Sprache|Musik|Schule=المدرسة=n",
+n:"Alter|Geburtsdatum=تاريخ الميلاد|Land|Telefon|Hobby|Buch|Deutschland=ألمانيا=@|Österreich=النمسا=@|Ägypten=مصر=@|Kairo=القاهرة=@|Fußball=كرة القدم=@",
+v:"heißen|wohnen|kommen|sein|haben|sprechen|leben|kennen|buchstabieren|vorstellen|arbeiten|lernen|spielen|hören|lesen|finden",
+a:"verheiratet|ledig|deutsch|jung|alt=كبير في السن|klein=صغير|groß=كبير|männlich=ذكر|weiblich=أنثى|interessant"},
+[["Hallo! Ich heiße Ahmed und bin 25 Jahre alt.","مرحبًا! اسمي أحمد وعمري 25 سنة."],
+["Ich komme aus Ägypten und wohne in Kairo.","أنا من مصر وأسكن في القاهرة."],
+["Ich spreche Arabisch und ein bisschen Deutsch.","أتحدث العربية وقليلًا من الألمانية."],
+["Ich bin Lehrer und arbeite in einer Schule.","أنا مدرّس وأعمل في مدرسة."],
+["Meine Hobbys sind Fußball spielen, Musik hören und Bücher lesen.","هواياتي هي لعب كرة القدم والاستماع إلى الموسيقى وقراءة الكتب."],
+["Ich lerne Deutsch, denn ich finde die Sprache interessant.","أتعلّم الألمانية لأنني أجد اللغة مثيرة للاهتمام."],
+["Vielen Dank!","شكرًا جزيلًا!"]]),
+NT("Zu Familie","التحدث عن العائلة: وصف أفراد العائلة المقربين",{
+m:"Vater|Bruder|Sohn|Onkel|Opa|Großvater|Ehemann=الزوج=^er|Mann=الرجل=^er|Freund|Partner|Lehrer|Student=الطالب الجامعي=en|Tag=اليوم=e|Abend=المساء=e",
+f:"Familie|Mutter|Schwester|Tochter|Oma|Großmutter|Frau=المرأة=en|Ehefrau|Freundin|Partnerin|Tante|Hausfrau=ربة المنزل=en|Schule=المدرسة=n|Musik",
+n:"Kind|Mädchen|Familienfoto|Haus|Wohnzimmer|Wochenende|Fußball=كرة القدم=@",
+v:"lieben|feiern|helfen=يساعد|kochen|besuchen|verbringen=يقضي|sitzen|spielen|hören|wohnen|sprechen|arbeiten",
+a:"freundlich|nett=لطيف|hilfsbereit=مستعد للمساعدة|glücklich|zufrieden|groß=كبير|klein=صغير|alt=كبير في السن|jung"},
+[["Ich möchte meine Familie vorstellen.","أريد أن أقدّم عائلتي."],
+["Meine Familie ist nicht sehr groß. Wir sind fünf Personen: mein Vater, meine Mutter, mein Bruder, meine Schwester und ich. Wir wohnen zusammen in einem Haus in Ägypten.","عائلتي ليست كبيرة جداً. نحن خمسة أشخاص: أبي وأمي وأخي وأختي وأنا. نسكن معاً في بيت في مصر."],
+["Mein Vater ist 50 Jahre alt und arbeitet als Lehrer. Er ist sehr freundlich und hilfsbereit. Er arbeitet jeden Tag und verbringt am Abend gern Zeit mit uns.","عمر أبي 50 سنة ويعمل مدرّساً. هو لطيف جداً ومستعد دائماً للمساعدة. يعمل كل يوم ويحب أن يقضي الوقت معنا في المساء."],
+["Meine Mutter ist 45 Jahre alt und ist Hausfrau. Sie kocht sehr gut und macht viele Dinge im Haus. Sie ist sehr nett und kümmert sich um die ganze Familie.","عمر أمي 45 سنة وهي ربّة منزل. تطبخ جيداً جداً وتقوم بأشياء كثيرة في البيت. هي لطيفة جداً وتهتم بالعائلة كلها."],
+["Mein Bruder ist 20 Jahre alt. Er ist Student und spielt gern Fußball. Meine Schwester ist 15 Jahre alt. Sie geht zur Schule und hört gern Musik.","عمر أخي 20 سنة. هو طالب جامعي ويحب لعب كرة القدم. عمر أختي 15 سنة. تذهب إلى المدرسة وتحب الاستماع إلى الموسيقى."],
+["Wir verbringen gern Zeit zusammen. Am Abend sitzen wir oft im Wohnzimmer und sprechen über unseren Tag. Am Wochenende essen wir zusammen oder besuchen unsere Verwandten.","نحب قضاء الوقت معاً. في المساء نجلس كثيراً في غرفة المعيشة ونتحدث عن يومنا. في عطلة نهاية الأسبوع نأكل معاً أو نزور أقاربنا."],
+["Ich liebe meine Familie sehr, denn sie ist immer für mich da. Wir helfen uns gegenseitig und sind gern zusammen.","أحب عائلتي كثيراً لأنها دائماً بجانبي. نساعد بعضنا بعضاً ونحب أن نكون معاً."],
+["Das ist meine Familie. Vielen Dank fürs Zuhören!","هذه هي عائلتي. شكراً على الاستماع!"]]),
+NT("Die Wohnung","وصف الشقة أو المنزل (الغرف، الأثاث)",{
+m:"Balkon|Flur|Herd|Kühlschrank|Schrank|Schreibtisch|Sessel|Stuhl|Teppich|Tisch|Garten|Stock|Raum|Fernseher|Nachbar|Spiegel=المرآة|Teller",
+f:"Küche|Lampe|Toilette|Waschmaschine|Wohnung|Treppe|Miete|Dusche|Terrasse|Tür|Decke|Lage|Wohnfläche|Spülmaschine|Pflanze|Nachbarin|Wand=الجدار=^e|Seife|Kleidung",
+n:"Bad|Badezimmer=الحمام|Wohnzimmer|Schlafzimmer|Kinderzimmer|Arbeitszimmer|Zimmer=الغرفة|Haus|Hochhaus|Sofa|Regal|Bett|Licht|Apartment|Reihenhaus|Fenster=النافذة|Bild|Waschbecken=المغسلة|Glas=الكأس=^er",
+v:"wohnen|liegen|stehen|ziehen|umziehen|vermieten|suchen=يبحث عن|finden|beschreiben|besichtigen|hängen=يعلّق|mögen=يحب|haben",
+a:"groß=كبير|klein=صغير|hell|dunkel|gemütlich|schön|sauber|bequem|neu=جديد|alt=قديم|hässlich|renoviert|günstig|billig|teuer"},
+[["Meine Wohnung ist schön und gemütlich. Sie hat ein Wohnzimmer, ein Schlafzimmer, eine Küche und ein Badezimmer.","شقتي جميلة ومريحة. فيها غرفة معيشة وغرفة نوم ومطبخ وحمّام."],
+["Im Wohnzimmer stehen ein Sofa und ein Tisch. Der Fernseher steht auf dem Tisch. Neben dem Sofa steht eine Lampe. Vor dem Sofa liegt ein Teppich. An der Wand hängt ein Bild. Neben dem Tisch stehen zwei Stühle. Das Fenster ist groß und hell.","في غرفة المعيشة أريكة وطاولة. التلفاز على الطاولة. بجانب الأريكة مصباح. أمام الأريكة سجادة. على الجدار صورة معلّقة. بجانب الطاولة كرسيان. النافذة كبيرة ومضيئة."],
+["In meinem Schlafzimmer stehen ein Bett, ein Schrank und ein Schreibtisch. Die Lampe steht auf dem Schreibtisch. Meine Bücher liegen auf dem Tisch. Neben dem Bett steht ein kleiner Tisch. Meine Kleidung ist im Schrank.","في غرفة نومي سرير وخزانة ومكتب. المصباح على المكتب. كتبي على الطاولة. بجانب السرير طاولة صغيرة. ملابسي في الخزانة."],
+["In der Küche stehen ein Kühlschrank und ein Herd. Auf dem Tisch stehen Teller und Gläser. Neben dem Kühlschrank steht ein Schrank.","في المطبخ ثلاجة وموقد. على الطاولة أطباق وأكواب. بجانب الثلاجة خزانة."],
+["Das Badezimmer ist klein, aber sauber. Der Spiegel hängt an der Wand. Neben dem Waschbecken steht eine Seife.","الحمّام صغير لكنه نظيف. المرآة معلّقة على الجدار. بجانب المغسلة صابونة."],
+["Ich mag meine Wohnung sehr, denn sie ist schön und gemütlich.","أحب شقتي كثيراً لأنها جميلة ومريحة."]]),
+NT("Die Stadt","الحي السكني والأماكن الهامة في المدينة",{
+m:"Park|Markt|Bahnhof|Bus|Fluss|Nil=النيل|Platz=الميدان=^e|Tourist=السائح=en|Einwohner=الساكن|Zug|Flughafen",
+f:"Stadt|Hauptstadt=العاصمة=^e|Kirche|Brücke|Straße=الشارع=n|Bibliothek|Schule=المدرسة=n|Apotheke|Bäckerei|Post|Haltestelle|Sehenswürdigkeit|Pyramide=الهرم=n|Moschee=المسجد=n|Straßenbahn|U-Bahn",
+n:"Rathaus|Hotel|Theater|Kino|Museum=المتحف|Restaurant=المطعم=s|Stadion=الملعب|Krankenhaus=المستشفى=^er|Schwimmbad=حمام السباحة=^er|Dorf|Zentrum|Kaufhaus|Geschäft|Café=المقهى=s|Wetter|Auto=السيارة=s|Obst=الفاكهة|Gemüse|Land|Ägypten=مصر=@|Kairo=القاهرة=@",
+v:"geben|besuchen|kaufen|sehen|liegen|wohnen|mögen=يحب|gehen|fahren=يسير أو يسافر|finden|beschreiben|zeigen",
+a:"groß=كبير|klein=صغير|laut=عالي الصوت|schön|interessant|warm|heiß|voll|freundlich|stolz=فخور|hilfsbereit=مستعد للمساعدة|berühmt"},
+[["Kairo","القاهرة"],
+["Ich möchte Kairo beschreiben. Kairo ist die Hauptstadt von Ägypten. Die Stadt ist sehr groß und hat viele Einwohner.","أريد أن أصف القاهرة. القاهرة هي عاصمة مصر. المدينة كبيرة جداً وفيها سكان كثيرون."],
+["In Kairo gibt es viele Häuser, Geschäfte, Restaurants und Cafés. Die Straßen sind oft voll und es gibt viele Autos und Busse. Die Stadt ist manchmal laut, aber auch sehr schön.","في القاهرة بيوت ومحلات ومطاعم ومقاهٍ كثيرة. الشوارع مزدحمة غالباً وفيها سيارات وحافلات كثيرة. المدينة أحياناً صاخبة لكنها أيضاً جميلة جداً."],
+["In Kairo gibt es viele Sehenswürdigkeiten, zum Beispiel die Pyramiden und den Nil. Viele Touristen besuchen die Stadt jedes Jahr.","في القاهرة معالم سياحية كثيرة، مثل الأهرامات والنيل. يزور المدينة سياح كثيرون كل عام."],
+["Das Wetter ist meistens warm und im Sommer sehr heiß. Es gibt viele Märkte, und die Menschen kaufen dort Obst, Gemüse und Kleidung.","الطقس دافئ في الغالب وحارّ جداً في الصيف. توجد أسواق كثيرة، ويشتري الناس هناك الفواكه والخضراوات والملابس."],
+["Die Menschen in Kairo sind freundlich und hilfsbereit. Ich mag Kairo, denn die Stadt ist interessant und es gibt viel zu sehen.","الناس في القاهرة لطفاء ومستعدون للمساعدة. أحب القاهرة لأن المدينة مثيرة للاهتمام وفيها الكثير لنراه."],
+["Kairo ist eine schöne Stadt und ich bin stolz auf mein Land.","القاهرة مدينة جميلة وأنا فخور ببلدي."]]));
+/* نصوص باقي المواضيع */
+const TX=(de,text)=>{const t=TOPICS.find(x=>x.de===de);if(t)t.text=text};
+TX("Alltag und Routinen",[["Mein Tagesablauf","جدولي اليومي"],
+["Ich stehe jeden Tag um sieben Uhr auf. Dann gehe ich ins Badezimmer und wasche mein Gesicht. Danach putze ich meine Zähne und ziehe mich an.","أستيقظ كل يوم في الساعة السابعة. ثم أذهب إلى الحمّام وأغسل وجهي. بعد ذلك أنظّف أسناني وأرتدي ملابسي."],
+["Um halb acht frühstücke ich. Ich esse Brot und Käse und trinke Tee. Um acht Uhr gehe ich zur Universität. Ich fahre mit dem Bus.","في السابعة والنصف أتناول الفطور. آكل خبزاً وجبناً وأشرب شاياً. في الثامنة أذهب إلى الجامعة. أذهب بالحافلة."],
+["An der Universität lerne ich Deutsch und treffe meine Freunde. Wir sprechen zusammen und machen unsere Aufgaben. Um zwei Uhr fahre ich nach Hause.","في الجامعة أتعلّم الألمانية وألتقي بأصدقائي. نتحدث معاً ونقوم بمهامنا. في الساعة الثانية أعود إلى البيت."],
+["Zu Hause esse ich mit meiner Familie zu Mittag. Am Nachmittag lerne ich Deutsch und mache meine Hausaufgaben.","في البيت أتناول الغداء مع عائلتي. بعد الظهر أتعلّم الألمانية وأقوم بواجباتي المنزلية."],
+["Am Abend sehe ich fern oder höre Musik. Manchmal spiele ich Fußball oder gehe mit meinen Freunden spazieren.","في المساء أشاهد التلفاز أو أستمع إلى الموسيقى. أحياناً ألعب كرة القدم أو أتنزّه مع أصدقائي."],
+["Um neun Uhr esse ich zu Abend. Danach putze ich meine Zähne und wasche mein Gesicht.","في التاسعة أتناول العشاء. بعد ذلك أنظّف أسناني وأغسل وجهي."],
+["Um elf Uhr gehe ich ins Bett und schlafe.","في الحادية عشرة أذهب إلى السرير وأنام."]]);
+TX("Essen und Trinken",[["Ich möchte über mein Essen und meine Getränke sprechen.","أريد أن أتحدث عن طعامي ومشروباتي."],
+["Zum Frühstück esse ich gern Brot, Käse und Eier. Ich trinke meistens Tee mit Milch. Zum Mittagessen esse ich gern Reis mit Fleisch oder Hähnchen. Manchmal esse ich auch Nudeln. Ich trinke Wasser oder Orangensaft.","على الفطور أحب أن آكل خبزاً وجبناً وبيضاً. أشرب غالباً شاياً بالحليب. على الغداء أحب أن آكل أرزاً مع لحم أو دجاج. أحياناً آكل مكرونة أيضاً. أشرب ماءً أو عصير برتقال."],
+["Am Abend esse ich gern Sandwiches mit Käse oder einen Hamburger. Mein Lieblingsessen ist Pizza, denn sie schmeckt sehr gut. Zwischen den Mahlzeiten esse ich gern Obst, besonders Äpfel und Bananen. Manchmal esse ich auch Schokolade oder Kekse.","في المساء أحب أن آكل ساندويتشات بالجبن أو همبرغر. طعامي المفضل هو البيتزا لأن طعمها لذيذ جداً. بين الوجبات أحب أن آكل الفاكهة، خصوصاً التفاح والموز. أحياناً آكل الشوكولاتة أو البسكويت أيضاً."],
+["Mein Lieblingsgetränk ist Orangensaft, aber ich trinke auch gern Wasser, Tee und Milch. Cola trinke ich manchmal, aber nicht jeden Tag. Am Wochenende esse ich manchmal mit meiner Familie im Restaurant. Wir essen zusammen und trinken Saft. Ich esse gern mit meiner Familie, denn das macht Spaß.","مشروبي المفضل هو عصير البرتقال، لكنني أحب أيضاً شرب الماء والشاي والحليب. أشرب الكولا أحياناً لكن ليس كل يوم. في عطلة نهاية الأسبوع آكل أحياناً مع عائلتي في مطعم. نأكل معاً ونشرب عصيراً. أحب الأكل مع عائلتي لأن ذلك ممتع."]]);
+TX("Den eigenen Beruf, den Arbeitsplatz",[["Ich arbeite in einer Firma und meine Arbeit ist interessant.","أعمل في شركة وعملي مثير للاهتمام."],
+["Mein Chef ist nett und freundlich, aber er ist manchmal streng. Meine Kollegen sind auch nett und wir helfen uns.","مديري لطيف وودود لكنه أحياناً صارم. زملائي أيضاً لطفاء ونساعد بعضنا."],
+["Ich spreche jeden Tag mit vielen Kunden und ich helfe ihnen gern. Die Kunden sind meistens freundlich, aber manchmal sind sie nicht zufrieden.","أتحدث كل يوم مع عملاء كثيرين وأحب مساعدتهم. العملاء ودودون في الغالب لكنهم أحياناً لا يكونون راضين."],
+["Für mich ist Freundlichkeit sehr wichtig und ich möchte gute Kollegen haben. Geld ist auch wichtig, aber es ist nicht alles. Ich möchte genug Freizeit haben und meine Arbeit gern machen.","بالنسبة لي اللطف مهم جداً وأريد أن يكون لدي زملاء جيدون. المال مهم أيضاً لكنه ليس كل شيء. أريد أن يكون لدي وقت فراغ كافٍ وأن أحب عملي."],
+["Ich mag Stress nicht, denn ich möchte ruhig arbeiten. Ich arbeite gern mit Menschen und ich helfe ihnen gern. Bei der Arbeit spreche ich mit meinen Kollegen oder mit den Kunden.","لا أحب التوتر لأنني أريد أن أعمل بهدوء. أحب العمل مع الناس وأحب مساعدتهم. في العمل أتحدث مع زملائي أو مع العملاء."]]);
+TX("Über Interessen, Sport, Musik, Wochenendpläne und persönliche Vorlieben sprechen",[["Ich möchte über meine Hobbys sprechen.","أريد أن أتحدث عن هواياتي."],
+["Ich spiele gern Fußball und höre gern Musik. Ich lese auch gern Bücher und sehe manchmal fern. Am Montag und Mittwoch spiele ich Fußball mit meinen Freunden, denn Sport macht Spaß.","أحب لعب كرة القدم والاستماع إلى الموسيقى. أحب أيضاً قراءة الكتب وأشاهد التلفاز أحياناً. يوم الاثنين والأربعاء ألعب كرة القدم مع أصدقائي لأن الرياضة ممتعة."],
+["Am Freitag bleibe ich zu Hause oder gehe mit meinen Freunden spazieren. Am Samstag lese ich Bücher und höre Musik, aber ich sehe nicht viel fern.","يوم الجمعة أبقى في البيت أو أتنزّه مع أصدقائي. يوم السبت أقرأ الكتب وأستمع إلى الموسيقى، لكنني لا أشاهد التلفاز كثيراً."],
+["Im Frühling gehe ich gern spazieren, denn das Wetter ist schön. Im Sommer schwimme ich gern und spiele Fußball. Im Herbst lese ich mehr Bücher, aber im Winter bleibe ich lieber zu Hause und sehe fern.","في الربيع أحب التنزّه لأن الطقس جميل. في الصيف أحب السباحة ولعب كرة القدم. في الخريف أقرأ كتباً أكثر، لكن في الشتاء أفضّل البقاء في البيت ومشاهدة التلفاز."],
+["Mein Lieblingsmonat ist April, denn das Wetter ist nicht zu kalt und nicht zu heiß. Im Dezember höre ich gern Musik und verbringe Zeit mit meiner Familie.","شهري المفضل هو أبريل لأن الطقس ليس بارداً جداً ولا حارّاً جداً. في ديسمبر أحب الاستماع إلى الموسيقى وقضاء الوقت مع عائلتي."],
+["Meine Hobbys sind wichtig für mich, denn ich bin gern aktiv und möchte auch Spaß haben.","هواياتي مهمة بالنسبة لي لأنني أحب أن أكون نشيطاً وأريد أيضاً أن أستمتع."]]);
+TX("Reisen und Verkehr",[["Gehen Sie zuerst geradeaus bis zur Bushaltestelle. Nehmen Sie den Bus Nummer 5 und steigen Sie an der nächsten Haltestelle aus.","اذهب أولاً مباشرة حتى موقف الحافلة. استقلّ الحافلة رقم 5 وانزل عند المحطة التالية."],
+["Dann gehen Sie zur U-Bahn-Station und kaufen Sie eine Fahrkarte. Nehmen Sie die U-Bahn und steigen Sie an der zweiten Station aus.","ثم اذهب إلى محطة المترو واشترِ تذكرة. استقلّ المترو وانزل عند المحطة الثانية."],
+["Danach steigen Sie in den Bus Nummer 10 um. Fahren Sie zwei Stationen und steigen Sie aus.","بعد ذلك غيّر إلى الحافلة رقم 10. سر لمحطتين ثم انزل."],
+["Zum Schluss gehen Sie nach rechts. Der Bahnhof ist neben dem Supermarkt.","في النهاية اذهب إلى اليمين. محطة القطار بجانب السوبر ماركت."]]);
 const NOV=new Set("sein haben werden müssen wollen können dürfen sollen wissen leidtun wehtun fehlen stimmen passieren gefallen scheinen vorbeisein kosten regnen schneien schütten klingen dauern bedeuten heißen gehören dazugehören zusammengehören passen stattfinden interessieren orientieren freuen".split(" "));
 const NOA=new Set("andere beide besser erste letzte nächste besondere willkommen genug bar egal total täglich regelmäßig".split(" "));
 const PER=new Set("satt fit froh hungrig müde krank ledig verheiratet faul zufrieden glücklich arbeitslos eilig fleißig freundlich verletzt erkältet sportlich aktiv höflich unhöflich jung berühmt lustig bekannt pünktlich supernett herzlich".split(" "));
@@ -405,6 +494,53 @@ function renderTopic(i,c){
   if(ex){e.innerHTML=`<div class="exde">${ex}</div><div class="exar">${exAr||""}</div>`;const s2=btn(ICON,"spk sm",()=>speak(ex,c));s2.setAttribute("aria-label","انطق المثال");e.append(s2)}else e.textContent="المثال هيتضاف قريبًا.";
   li.append(e);ul.append(li)});
  view.append(ul)}
+let RTOK=0,READING=0;
+function stopRead(){RTOK++;READING=0;try{if("speechSynthesis" in window)speechSynthesis.cancel()}catch(e){}}
+function readAll(list,b){
+ if(!("speechSynthesis" in window)){alert("المتصفح ده مش بيدعم النطق");return}
+ if(READING){stopRead();b.textContent="🔊 اقرأ النص كله";return}
+ stopRead();const tok=RTOK;READING=1;b.textContent="⏹ إيقاف القراءة";
+ const v=speechSynthesis.getVoices().find(x=>x.lang.replace("_","-").startsWith("de"));let k=0;
+ const next=()=>{if(tok!==RTOK)return;if(k>=list.length){READING=0;b.textContent="🔊 اقرأ النص كله";return}
+  const u=new SpeechSynthesisUtterance(list[k++]);u.lang="de-DE";u.rate=.85;if(v)u.voice=v;u.onend=next;u.onerror=next;speechSynthesis.speak(u)};
+ setTimeout(next,150)}
+function renderText(t){
+ title.textContent="نص";crumb.textContent=t.de;
+ if(!t.text){view.innerHTML='<div class="empty">النص هيتضاف قريبًا.</div>';return}
+ const all=btn("🔊 اقرأ النص كله","go",()=>readAll(t.text.map(p=>p[0]),all));view.append(all);
+ t.text.forEach(([de,ar])=>{const d=document.createElement("div");d.className="para";
+  const r=document.createElement("div");r.className="prow";r.innerHTML=`<p class="pde">${de}</p>`;
+  const s=btn(ICON,"spk sm",()=>speak(de));s.setAttribute("aria-label","اقرأ الفقرة");r.append(s);d.append(r);
+  const p=document.createElement("p");p.className="par";p.textContent=ar;d.append(p);view.append(d)})}
+function renderSpeakLevels(){
+ const h=document.createElement("h2");h.className="sec";h.textContent="مواضيع للتحدث";view.append(h);
+ const g=document.createElement("div");g.className="grid levels";
+ Object.keys(LESSONS).forEach(k=>{const n=TOPICS.filter(t=>t.lv===k).length;g.append(btn(`<span class="lvl">${k}</span><small>${n?n+" مواضيع":"قريبًا"}</small>`,"box lv"+k,()=>go("S",k)))});
+ view.append(g)}
+function renderSpeak(lv,ti,cat){
+ if(ti===undefined){title.textContent="التحدث · "+lv;crumb.textContent="اختر الموضوع";
+  const idx=TOPICS.map((t,i)=>i).filter(i=>TOPICS[i].lv===lv);
+  if(!idx.length){view.innerHTML='<div class="empty">مفيش مواضيع للمستوى ده لسه.</div>';return}
+  const g=document.createElement("div");g.className="grid";
+  idx.forEach(i=>{const t=TOPICS[i];g.append(btn(`<span class="tt">${t.de}</span><span class="lv">${t.lv}</span><small>${t.ar}</small>`,"box topic lv"+t.lv,()=>go("S",lv,i)))});
+  view.append(g);return}
+ const t=TOPICS[ti];
+ if(!cat){title.textContent=t.de;crumb.textContent=t.lv+" · "+t.ar;
+  const g=document.createElement("div");g.className="grid cats";
+  CATS.concat([["x","نص"]]).forEach(([k,n])=>g.append(btn(n,"box cat "+k,()=>go("S",lv,ti,k))));view.append(g);return}
+ if(cat==="x"){renderText(t);return}
+ const c=cat,name=CATS.find(x=>x[0]===c)[1];title.textContent=name;crumb.textContent=t.de+" · "+t.lv;
+ const list=t.words[c]||[];
+ if(!list.length){view.innerHTML='<div class="empty">لسه مفيش كلمات هنا.</div>';return}
+ const ul=document.createElement("ul");ul.className="words";
+ list.forEach(([de,ar])=>{const li=document.createElement("li");li.className="w "+c;
+  const row=btn(`<span class="de">${de}</span><span class="ar">${ar}</span>${plHtml(c,de)}`,"row",()=>{const o=li.classList.toggle("open");row.setAttribute("aria-expanded",o)});
+  row.setAttribute("aria-expanded","false");li.append(row);
+  const s=btn(ICON,"spk",()=>speak(de,c));s.setAttribute("aria-label","انطق "+de);li.append(s);
+  const[ex,exAr]=autoEx(c,de,ar);const e=document.createElement("div");e.className="ex";
+  if(ex){e.innerHTML=`<div class="exde">${ex}</div><div class="exar">${exAr||""}</div>`;const s2=btn(ICON,"spk sm",()=>speak(ex,c));s2.setAttribute("aria-label","انطق المثال");e.append(s2)}else e.textContent="المثال هيتضاف قريبًا.";
+  li.append(e);ul.append(li)});
+ view.append(ul)}
 function plOf(w){const code=PL[w];if(code===undefined)return null;let p=w;if(code[0]==="^")p=p.replace(/(au|[aou])(?!.*(?:au|[aou]))/i,m=>{const t={au:"äu",a:"ä",o:"ö",u:"ü"}[m.toLowerCase()];return m[0]===m[0].toUpperCase()?t[0].toUpperCase()+t.slice(1):t});return p+code.replace("^","")}
 function runPlural(l,learned){
  const sh=a=>[...a].sort(()=>Math.random()-.5);
@@ -463,14 +599,14 @@ function speak(t,c){
  speechSynthesis.speak(u)}
 function btn(html,cls,fn){const b=document.createElement("button");b.className=cls;b.innerHTML=html;b.onclick=fn;return b}
 function render(){
- view.innerHTML="";const[l,i,c]=st;
+ view.innerHTML="";const[l,i,c,d]=st;stopRead();
  back.hidden=!st.length;
- if(l==="T"){renderTopic(i,c);return}
+ if(l==="S"){renderSpeak(i,c,d);return}
  if(i==="quiz"){EXAM=null;QN=10;renderQuiz(l);return}
  if(i==="exam"){renderExam(l,EXAM);return}
  if(!l){title.textContent="تعلّم الألماني";crumb.textContent="اختر مستواك";
   const g=document.createElement("div");g.className="grid levels";
-  Object.keys(LESSONS).forEach(k=>g.append(btn(`<span class="lvl">${k}</span><small>${LEVEL_NAMES[k]}</small><span class="pct">${pct(k)}% محفوظ</span><span class="bar"><i style="width:${pct(k)}%"></i></span>`,"box lv"+k,()=>go(k))));view.append(g);renderTopicList()}
+  Object.keys(LESSONS).forEach(k=>g.append(btn(`<span class="lvl">${k}</span><small>${LEVEL_NAMES[k]}</small><span class="pct">${pct(k)}% محفوظ</span><span class="bar"><i style="width:${pct(k)}%"></i></span>`,"box lv"+k,()=>go(k))));view.append(g);renderSpeakLevels()}
  else if(i==null){title.textContent="المستوى "+l;crumb.textContent="اختر الدرس";
   const g=document.createElement("div");g.className="grid lessons";
   view.append(btn("ابدأ التمرين · "+pct(l)+"% محفوظ","go",()=>go(l,"quiz")));LESSONS[l].forEach((n,j)=>{const t=document.createElement("div");t.className="tile";
@@ -496,8 +632,9 @@ function render(){
    li.append(e);ul.append(li)});
   view.append(ul)}
  window.scrollTo(0,0)}
-function go(...a){st=a;render()}
-back.onclick=()=>{st.pop();render()};
+let HIST=true;
+function go(...a){st=a;try{history.pushState({st:a,ex:EXAM},"")}catch(e){HIST=false}render()}
+back.onclick=()=>{if(HIST){try{history.back();return}catch(e){HIST=false}}st.pop();if(st.length===1&&(st[0]==="S"||st[0]==="T"))st=[];render()};
 if("speechSynthesis" in window)speechSynthesis.getVoices();
 /* حفظ التقدم على حساب جوجل: الصق إعدادات Firebase مكان null في السطر التالي */
 const FIREBASE_CONFIG=null;
@@ -516,6 +653,8 @@ document.getElementById("exp").onclick=()=>{const b=new Blob([JSON.stringify({le
 const impf=document.getElementById("impf");
 document.getElementById("imp").onclick=()=>impf.click();
 impf.onchange=()=>{const f=impf.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!Array.isArray(d.learned))throw 0;LR=new Set(d.learned);saveLR();render();alert("تم استرجاع التقدم")}catch(e){alert("الملف غير صالح")}impf.value=""};r.readAsText(f)};
+try{history.replaceState({st:[],ex:null},"")}catch(e){HIST=false}
+window.addEventListener("popstate",e=>{const s=e.state;st=(s&&s.st)||[];if(s&&"ex" in s)EXAM=s.ex;render()});
 authUI();window.addEventListener("load",initCloud);
 render();
 </script>
