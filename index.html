@@ -696,7 +696,15 @@ function go(...a){st=a;try{history.pushState({st:a,ex:EXAM},"")}catch(e){HIST=fa
 back.onclick=()=>{if(HIST){try{history.back();return}catch(e){HIST=false}}st.pop();if(st.length===1&&(st[0]==="S"||st[0]==="T"))st=[];render()};
 if("speechSynthesis" in window)speechSynthesis.getVoices();
 /* حفظ التقدم على حساب جوجل: الصق إعدادات Firebase مكان null في السطر التالي */
-const FIREBASE_CONFIG=null;
+const FIREBASE_CONFIG={
+ apiKey: "AIzaSyB9rvJLEOBP0s7E33PRkugAP7bunZjx2U8",
+ authDomain: "deutsch-92c70.firebaseapp.com",
+ projectId: "deutsch-92c70",
+ storageBucket: "deutsch-92c70.firebasestorage.app",
+ messagingSenderId: "363816409439",
+ appId: "1:363816409439:web:249806f814832b29923eea",
+ measurementId: "G-D3ZFRMDTTJ"
+};
 var fbUser=null,db=null;const authBtn=document.getElementById("auth");
 function authUI(){if(!FIREBASE_CONFIG){authBtn.hidden=true;return}authBtn.hidden=false;authBtn.textContent=fbUser?"خروج · "+(fbUser.displayName||fbUser.email):"دخول بجوجل لحفظ التقدم"}
 function initCloud(){
