@@ -91,13 +91,16 @@ h1{margin:0;font-size:clamp(26px,5vw,38px);font-weight:900;flex:1}
 .prow{display:flex;gap:12px;align-items:flex-start}
 .pde{flex:1;direction:ltr;text-align:left;font-size:20px;font-weight:600;margin:0 0 8px;line-height:1.7}
 .par{margin:0;color:var(--mute);font-size:16px;line-height:1.8;border-top:1px dashed var(--line);padding-top:8px}
+.welcome{min-height:72vh;display:grid;place-items:center}
+.wbox{width:min(78vw,340px);aspect-ratio:1;border-radius:22px;border:3px solid #FFCE00;background:#111;color:#FFCE00;font:900 clamp(28px,8vw,42px) Cairo,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;cursor:pointer;line-height:1.5;text-align:center;padding:16px}
+.wbox small{font-size:14px;font-weight:500;color:#fff;opacity:.8}
 .chk{order:-1;width:38px;height:38px;border-radius:50%;border:2px solid var(--line);background:none;color:transparent;font-size:20px;line-height:1;cursor:pointer;flex:none}
 .chk[aria-pressed="true"]{background:var(--n);border-color:var(--n);color:#fff}
 </style>
 </head>
 <body>
 <div class="wrap">
-<header><h1 id="title">تعلّم الألماني</h1><button class="back" id="back" hidden>رجوع</button><button class="back" id="auth" hidden></button><button class="back" id="exp">حفظ نسخة</button><button class="back" id="imp">استرجاع</button><input type="file" id="impf" accept=".json,application/json" hidden></header>
+<header id="hdr"><h1 id="title">تعلّم الألماني</h1><button class="back" id="back" hidden>رجوع</button><button class="back" id="auth" hidden></button><button class="back" id="exp">حفظ نسخة</button><button class="back" id="imp">استرجاع</button><input type="file" id="impf" accept=".json,application/json" hidden></header>
 <p class="crumb" id="crumb">اختر مستواك</p>
 <div id="view"></div>
 </div>
@@ -318,6 +321,55 @@ TX("Reisen und Verkehr",[["Gehen Sie zuerst geradeaus bis zur Bushaltestelle. Ne
 ["Dann gehen Sie zur U-Bahn-Station und kaufen Sie eine Fahrkarte. Nehmen Sie die U-Bahn und steigen Sie an der zweiten Station aus.","ثم اذهب إلى محطة المترو واشترِ تذكرة. استقلّ المترو وانزل عند المحطة الثانية."],
 ["Danach steigen Sie in den Bus Nummer 10 um. Fahren Sie zwei Stationen und steigen Sie aus.","بعد ذلك غيّر إلى الحافلة رقم 10. سر لمحطتين ثم انزل."],
 ["Zum Schluss gehen Sie nach rechts. Der Bahnhof ist neben dem Supermarkt.","في النهاية اذهب إلى اليمين. محطة القطار بجانب السوبر ماركت."]]);
+/* مواضيع التحدث للمستوى A2 (كلمات من ملف A2) */
+{const w=WORDS["A2-6"],i=w.f.findIndex(e=>e[0]==="die Mediziner");if(i>=0){w.f.splice(i,1);w.m.push(["der Mediziner","الطبيب"])}}
+const A2IDX={};
+for(const k in WORDS){if(!k.startsWith("A2-"))continue;for(const c in WORDS[k])WORDS[k][c].forEach(([de,ar])=>{A2IDX[c+de.replace(/^(der|die|das) /,"")]=[de,ar]})}
+const PARSE2=(c,s)=>{const[x,y]=s.split("=");return y?PARSE(c,s):(A2IDX[c+x]||A1IDX[c+x])};
+const NT2=(de,ar,w)=>{const t={de,lv:"A2",ar,words:{}};for(const c of "mfnva"){const seen=new Set();t.words[c]=(w[c]||"").split("|").filter(Boolean).map(s=>{const r=PARSE2(c,s);if(!r)TOPIC_MISSING.push("A2 "+c+":"+s);return r}).filter(r=>r&&!seen.has(r[0])&&seen.add(r[0]))}return t};
+TOPICS.push(
+NT2("Zu Person und Familie","عن الشخص والعائلة",{
+m:"Enkel|Cousin|Papa|Hausmann|Rentner",
+f:"Enkelin|Hausfrau|Rentnerin|Mama|Ehe|Geburt|Hochzeit|Erinnerung|Freundschaft|Freude|Sorge|Laune|Emotion|Meinung|Erfahrung|Cousine=ابنة العم أو العمة=n|Kindheit=الطفولة|Zukunft=المستقبل|Liebe=الحب",
+n:"Gefühl|Brautpaar|Leben",
+v:"heiraten|zusammenleben|gratulieren|erinnern|kümmern|verbringen|aufwachsen=يكبر|fühlen|hoffen|träumen|streiten|beruhigen|bedanken|entscheiden|verändern",
+a:"geschieden|romantisch|gemeinsam|erwachsen|ehrlich|sozial|unabhängig|selbstständig|stolz|traurig|unglücklich|fröhlich|nervös|aufgeregt|genervt|wütend|ärgerlich|emotional|gestresst|einsam|treu|sympathisch|hilfsbereit|hübsch|schwanger|befreundet|fremd|streng|witzig|verheiratet|ledig|glücklich"}),
+NT2("Wohnen und Umgebung","السكن والمحيط (البيئة المحيطة)",{
+m:"Keller|Boden|Mieter|Mitbewohner|Briefkasten|Wohnungsschlüssel|Quadratmeter|Bauernhof|Blumentopf|Besitzer|Parkplatz|Wald|Nachbar",
+f:"Ferienwohnung|Fläche|Höhe|Länge|Breite|Mieterin|Mitbewohnerin|Wohnungstür|Dekoration|Garage|Heizung|Unterkunft|Großstadt|Innenstadt|Umgebung|Zulassung|Lebenssituation|Wohnung|Küche|Miete",
+n:"Hausboot|Gartenhaus|Kissen|Poster|Stockwerk|Parkhaus|Gebäude|Wohnheim|Gas|Feuer|Schloss|Zimmer=الغرفة|Haus",
+v:"einziehen|auskennen|auspacken|kündigen|einrichten|heizen|mieten|legen|hängen|stehen|liegen|bauen|renovieren|putzen|aufräumen|spülen|reparieren|besitzen|umziehen|wohnen",
+a:"möbliert|nass|schmutzig|ordentlich|unordentlich|einsam|modern|voll|hell|dunkel|ruhig=هادئ|nah|umweltfreundlich|praktisch|bequem|altmodisch|niedrig|kühl|riesig|gemütlich|leer|sauber"}),
+NT2("Alltag und Routinen / Tagesablauf und Freizeit","الحياة اليومية والروتين / مجريات اليوم وأوقات الفراغ",{
+m:"Werktag|Feiertag|Zeitraum|Zeitplan|Stundenplan|Schultag|Sommertag|Schulweg|Club|Sportverein|Wettbewerb|Alltag|Tag=اليوم=e",
+f:"Tätigkeit|Überstunde|Runde|Morgenstunde|Frist|Radtour|Wanderung|Freizeit|Pause|Uhrzeit|Zeit",
+n:"Rad|Mountainbike|Instrument|Klavier|Radio=الراديو=s|Wochenende|Hobby|Training",
+v:"ausschlafen|üben|jobben|organisieren|putzen|aufräumen|spülen|sparen|backen|entspannen|ausruhen|basteln|mitspielen|tauchen|surfen|langlaufen|lächeln|einhalten|verbringen|erledigen|vorhaben|aufstehen|frühstücken=يفطر",
+a:"ständig|häufig|regelmäßig|hektisch|spontan|spannend|fröhlich|einmalig|jährlich|meist|früh|langweilig|müde|faul|aktiv|sportlich"}),
+NT2("Einkaufen / Ernährung","التسوق / التغذية",{
+m:"Apfelkuchen|Wein|Betrag|Warenkorb|Kundenservice|Tarif|Artikel|Katalog|Zucker|Kunde|Preis|Supermarkt",
+f:"Torte|Zitrone|Zutat|Portion|Gebühr|Steuer|Überweisung|Währung|Bezahlung|Bankkarte|Geldbörse|Ermäßigung|Werbung|Kasse|Bäckerei|Milch|Banane",
+n:"Bier|Mineralwasser|Käsebrot|Päckchen|Geld=النقود=er|Brot|Gemüse|Obst=الفاكهة|Fleisch",
+v:"backen|sparen|servieren|abheben|ausgeben|leihen|reduzieren|anbieten|bedienen|verzichten|bezahlen|kaufen|einkaufen|kosten|bestellen|schmecken|essen|trinken",
+a:"kostenlos|netto|preiswert=بسعر رخيص مناسب|fett|reich|süß|lecker|teuer|billig|günstig|bitter=مر|salzig=مالح|sauer=حامض|scharf=حار|gesund=سليم|frisch=طازج|kühl"}),
+NT2("Arbeit / Schule","العمل / المدرسة",{
+m:"Bankkaufmann|Altenpfleger|Grafiker|Hotelkaufmann|Schüler|Gärtner|Abschluss|Schulweg|Arbeitgeber|Auftrag|Kursleiter|Lernhelfer|Prüfer|Autor|Stundenplan|Zeitplan|Berufswechsel|Busfahrer|Leiter|Fahrer|Maler|Politiker|Helfer|Sprecher|Experte|Zuhörer|Workshop|Mediziner|Student=الطالب الجامعي=en",
+f:"Ausbildung|Bankkauffrau|Arbeit|Überstunde|Krankenschwester|Berufsschule|Klasse|Lehre|Schülerin|Vorlesung|Beamtin|Fahrerin|Aushilfe|Stellenanzeige|Fabrik|Kompetenz|Chance|Tätigkeit|Fahrstunde|Abschlussprüfung|Beratung|Konferenz|Videokonferenz|Telefonkonferenz|Leiterin|Musikerin|Sängerin|Autorin|Übersetzung|Behörde|Rente|Maschine|Universität=الجامعة=en",
+n:"Fach|Zeugnis|Vokabeltest|Reisebüro|Gehalt|Vorstellungsgespräch|Telefonat|Sekretariat|Amt|Dokument|Grundeinkommen|Praktikum|Büro",
+v:"jobben|anmelden|abschließen|bewerben|anstellen|kündigen|entlassen|bearbeiten|beraten|einhalten|zusammenarbeiten|organisieren|unterrichten|üben|bestehen|prüfen|beantragen|ausfüllen|abgeben|erledigen|übersetzen|dolmetschen|begleiten|teilnehmen|mithelfen|konzentrieren|arbeiten|verdienen|lernen|studieren=يدرس بالجامعة",
+a:"selbstständig|erfolgreich|erfahren|notwendig|pensioniert|kompliziert|schwierig|intelligent|klug|neugierig|mündlich|schriftlich|finanziell|befristet|fest|flexibel|streng|ehrlich|nützlich|arbeitslos|fleißig|wichtig=مهم|erforderlich"}),
+NT2("Feste / Gesundheit","الأعياد والمناسبات / الصحة",{
+m:"Ring|Lampion|Tango|Notfall|Rollstuhl|Arzthelfer=مساعد الطبيب|Mediziner|Arzt=الطبيب=^e",
+f:"Hochzeit|Geburt|Torte|Kerze|Dekoration|Glückwunschkarte|Dankeskarte|Karte|Medaille|Freude|Emotion|Absage|Grippe|Operation|Untersuchung|Energie|Sorge|Behinderung|Krankenschwester|Gesundheit=الصحة|Beratung|Katastrophe|Krankheit",
+n:"Brautpaar|Feuerwerk|Kursfest|Gefühl|Musikfestival|Fest|Geschenk|Festival|Fieber|Blut",
+v:"gratulieren|schmücken|bedanken|absagen|zusagen|überraschen|feiern|einladen|heilen|bluten|brechen|verletzen|pflegen|ausruhen|entspannen|beruhigen|tanzen|fallen",
+a:"fröhlich|aufgeregt|romantisch|bunt|einmalig|jährlich|schwanger|gesund=سليم|krank|müde|stark|schlimm|besorgt|nervös|gestresst|erkältet|fit"}),
+NT2("Reisen und Verkehr","السفر والمواصلات",{
+m:"Motor|Parkplatz|Reifen|Stau|Abflug|Diesel|Pkw|Kinderwagen|E-Scooter|Tarif|Fahrgast|Fahrplan|Schalter|Gang|Lastwagen|Busfahrer|Fahrer|Rucksack|Campingplatz|Sitzplatz|Stehplatz|Wanderer|Tourist|Stadtplan|Roller",
+f:"Ampel|Panne|Garage|Tankstelle|Versicherung|Fahrt|Bahn|Durchsage|Zugverbindung|Ermäßigung|Linie|Kreuzung|Seilbahn|Großstadt|Innenstadt|Stadtbesichtigung|Übernachtung|Anreise|Bergstation|Wanderung|Weltreise|Geschäftsreise|Strecke|Fahrerin|Gebühr",
+n:"Navi|Parkhaus|Kennzeichen|Fahrzeug|Kinderabteil|E-Bike|Verkehrsproblem|Verkehrsmittel|Reisebüro|Gasthaus|Hausboot|Gepäck",
+v:"tanken|abfliegen|bremsen|buchen|landen|parken|abstellen|erreichen|vorbeigehen|weiterfahren|weitergehen|einzeichnen|bestimmen|registrieren|halten|wegfahren|verreisen|übernachten|wandern|reisen|fahren=يسير أو يسافر|fliegen|einsteigen|aussteigen|umsteigen|reservieren",
+a:"flexibel|elektrisch|nervig|ungeduldig|indirekt|direkt|unterschiedlich|umweltfreundlich|öffentlich|kulturell|dringend|möglich|nah|weit|lang|schnell"}));
 const NOV=new Set("sein haben werden müssen wollen können dürfen sollen wissen leidtun wehtun fehlen stimmen passieren gefallen scheinen vorbeisein kosten regnen schneien schütten klingen dauern bedeuten heißen gehören dazugehören zusammengehören passen stattfinden interessieren orientieren freuen".split(" "));
 const NOA=new Set("andere beide besser erste letzte nächste besondere willkommen genug bar egal total täglich regelmäßig".split(" "));
 const PER=new Set("satt fit froh hungrig müde krank ledig verheiratet faul zufrieden glücklich arbeitslos eilig fleißig freundlich verletzt erkältet sportlich aktiv höflich unhöflich jung berühmt lustig bekannt pünktlich supernett herzlich".split(" "));
@@ -541,6 +593,12 @@ function renderSpeak(lv,ti,cat){
   if(ex){e.innerHTML=`<div class="exde">${ex}</div><div class="exar">${exAr||""}</div>`;const s2=btn(ICON,"spk sm",()=>speak(ex,c));s2.setAttribute("aria-label","انطق المثال");e.append(s2)}else e.textContent="المثال هيتضاف قريبًا.";
   li.append(e);ul.append(li)});
  view.append(ul)}
+let WELCOME=true;const hdr=document.getElementById("hdr");
+function renderWelcome(){
+ hdr.style.display="none";crumb.style.display="none";
+ const w=document.createElement("div");w.className="welcome";
+ w.append(btn("صلِّ على النبي ﷺ<small>اضغط للدخول</small>","wbox",()=>{WELCOME=false;hdr.style.display="";crumb.style.display="";render()}));
+ view.append(w)}
 function plOf(w){const code=PL[w];if(code===undefined)return null;let p=w;if(code[0]==="^")p=p.replace(/(au|[aou])(?!.*(?:au|[aou]))/i,m=>{const t={au:"äu",a:"ä",o:"ö",u:"ü"}[m.toLowerCase()];return m[0]===m[0].toUpperCase()?t[0].toUpperCase()+t.slice(1):t});return p+code.replace("^","")}
 function runPlural(l,learned){
  const sh=a=>[...a].sort(()=>Math.random()-.5);
@@ -599,7 +657,8 @@ function speak(t,c){
  speechSynthesis.speak(u)}
 function btn(html,cls,fn){const b=document.createElement("button");b.className=cls;b.innerHTML=html;b.onclick=fn;return b}
 function render(){
- view.innerHTML="";const[l,i,c,d]=st;stopRead();
+ view.innerHTML="";if(WELCOME){renderWelcome();return}
+ const[l,i,c,d]=st;stopRead();
  back.hidden=!st.length;
  if(l==="S"){renderSpeak(i,c,d);return}
  if(i==="quiz"){EXAM=null;QN=10;renderQuiz(l);return}
@@ -655,6 +714,13 @@ document.getElementById("imp").onclick=()=>impf.click();
 impf.onchange=()=>{const f=impf.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!Array.isArray(d.learned))throw 0;LR=new Set(d.learned);saveLR();render();alert("تم استرجاع التقدم")}catch(e){alert("الملف غير صالح")}impf.value=""};r.readAsText(f)};
 try{history.replaceState({st:[],ex:null},"")}catch(e){HIST=false}
 window.addEventListener("popstate",e=>{const s=e.state;st=(s&&s.st)||[];if(s&&"ex" in s)EXAM=s.ex;render()});
+/* شاشة الترحيب تظهر كل مرة تدخل الموقع حتى لو التبويب كان مفتوح في الخلفية */
+let HIDDEN_AT=0;
+function showWelcomeAgain(){stopRead();WELCOME=true;st=[];try{history.replaceState({st:[],ex:null},"")}catch(e){}render()}
+document.addEventListener("visibilitychange",()=>{
+ if(document.visibilityState==="hidden")HIDDEN_AT=Date.now();
+ else if(HIDDEN_AT&&Date.now()-HIDDEN_AT>30000){HIDDEN_AT=0;showWelcomeAgain()}});
+window.addEventListener("pageshow",e=>{if(e.persisted)showWelcomeAgain()});
 authUI();window.addEventListener("load",initCloud);
 render();
 </script>
