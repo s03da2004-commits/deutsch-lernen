@@ -96,11 +96,23 @@ h1{margin:0;font-size:clamp(26px,5vw,38px);font-weight:900;flex:1}
 .wbox small{font-size:14px;font-weight:500;color:#fff;opacity:.8}
 .chk{order:-1;width:38px;height:38px;border-radius:50%;border:2px solid var(--line);background:none;color:transparent;font-size:20px;line-height:1;cursor:pointer;flex:none}
 .chk[aria-pressed="true"]{background:var(--n);border-color:var(--n);color:#fff}
+.dash-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.rank-card{background:var(--ink);color:var(--bg);border-radius:14px;padding:20px;margin:12px 0 18px}
+.rank-name{font-size:28px;font-weight:900;margin:0}
+.xp-line{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-weight:700}
+.dash-grid{grid-template-columns:repeat(auto-fit,minmax(145px,1fr))}
+.stat{background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:15px;text-align:center}
+.stat strong{display:block;font-size:28px;line-height:1.3}
+.stat span{color:var(--mute);font-size:14px}
+.dash-list{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+.dash-list li{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 12px;overflow-wrap:anywhere}
+.progress-row{display:grid;grid-template-columns:85px 1fr 36px;gap:8px;align-items:center;margin:8px 0;font-size:14px}
+.progress-row .bar{margin:0}
 </style>
 </head>
 <body>
 <div class="wrap">
-<header id="hdr"><h1 id="title">تعلّم الألماني</h1><button class="back" id="back" hidden>رجوع</button><button class="back" id="auth" hidden></button><button class="back" id="exp">حفظ نسخة</button><button class="back" id="imp">استرجاع</button><input type="file" id="impf" accept=".json,application/json" hidden></header>
+<header id="hdr"><h1 id="title">تعلّم الألماني</h1><button class="back" id="back" hidden>رجوع</button><button class="back" id="dashboard">لوحتي</button><button class="back" id="auth" hidden></button></header>
 <p class="crumb" id="crumb">اختر مستواك</p>
 <div id="view"></div>
 </div>
@@ -513,9 +525,41 @@ function autoEx(c,de,ar){
 const CATS=[["m","المذكر (der)"],["f","المؤنث (die)"],["n","المحايد (das)"],["v","الأفعال"],["a","الصفات"]];
 const view=document.getElementById("view"),title=document.getElementById("title"),crumb=document.getElementById("crumb"),back=document.getElementById("back");
 let st=[];
-let LR=new Set();try{LR=new Set(JSON.parse(localStorage.getItem("de-learned")||"[]"))}catch(e){}
-const saveLR=()=>{try{localStorage.setItem("de-learned",JSON.stringify([...LR]))}catch(e){}if(fbUser&&db)db.collection("users").doc(fbUser.uid).set({learned:[...LR]}).catch(e=>console.error(e))};
+let LR=new Set();
+const PROFILE_KEY="de-profile-v2";
+let profile={xp:0,wordXP:[],completedLessons:[],perfectTests:[],studyDays:{},examResults:[],reviewWords:[]};
+try{LR=new Set(JSON.parse(localStorage.getItem("de-learned")||"[]"))}catch(e){}
+try{const old=JSON.parse(localStorage.getItem(PROFILE_KEY)||"{}");profile={...profile,...old}}catch(e){}
+function persistProfile(){
+ const data={learned:[...LR],xp:profile.xp||0,wordXP:profile.wordXP||[],completedLessons:profile.completedLessons||[],perfectTests:profile.perfectTests||[],studyDays:profile.studyDays||{},examResults:profile.examResults||[],reviewWords:profile.reviewWords||[]};
+ try{localStorage.setItem("de-learned",JSON.stringify(data.learned));localStorage.setItem(PROFILE_KEY,JSON.stringify({...profile}))}catch(e){}
+ if(fbUser&&db)db.collection("users").doc(fbUser.uid).set(data,{merge:true}).catch(e=>console.error("Cloud save failed",e));
+}
+const saveLR=()=>persistProfile();
 const wid=(l,i,c,de)=>l+"-"+i+"-"+c+"-"+de;
+const RANKS=[{name:"الرايق",min:0,next:100},{name:"الجامد",min:100,next:300},{name:"القادر",min:300,next:600},{name:"المطرشم",min:600,next:1000},{name:"الادولف",min:1000,next:Infinity}];
+function currentRank(){let r=RANKS[0];for(const x of RANKS)if((profile.xp||0)>=x.min)r=x;return r}
+function todayKey(d=new Date()){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function studyActivity(){const k=todayKey();profile.studyDays=profile.studyDays||{};profile.studyDays[k]=(profile.studyDays[k]||0)+1}
+function streakCount(){const days=profile.studyDays||{};let n=0,d=new Date(),k=todayKey(d);if(!days[k]){d.setDate(d.getDate()-1);k=todayKey(d);if(!days[k])return 0}while(days[k]){n++;d.setDate(d.getDate()-1);k=todayKey(d)}return n}
+function awardXP(n){profile.xp=Math.max(0,(profile.xp||0)+n);}
+function markWordLearned(id,l,i){
+ const isNew=!LR.has(id);if(isNew){LR.add(id);profile.wordXP=profile.wordXP||[];if(!profile.wordXP.includes(id)){profile.wordXP.push(id);awardXP(1)}}
+ studyActivity();
+ const lessonKey=l+"-"+i,lessonWords=levelWords(l).filter(w=>w.i===i);
+ if(lessonWords.length&&lessonWords.every(w=>LR.has(w.id))){profile.completedLessons=profile.completedLessons||[];if(!profile.completedLessons.includes(lessonKey)){profile.completedLessons.push(lessonKey);awardXP(50);alert("عاش! خلصت الدرس وكسبت 50 XP 🎉")}}
+ persistProfile();renderDashboardIfVisible();
+}
+function finishQuiz(l,mode,score,total,lessonIndex){
+ const now=new Date(),perfect=total>0&&score===total;
+ profile.examResults=profile.examResults||[];
+ profile.examResults.unshift({date:now.toISOString(),level:l,lesson:lessonIndex==null?null:lessonIndex,mode,score,total,perfect});profile.examResults=profile.examResults.slice(0,100);
+ studyActivity();
+ if(perfect){const key=(lessonIndex==null?l+"-practice-"+mode:l+"-lesson-"+lessonIndex+"-"+mode)+"-"+now.getTime();profile.perfectTests=profile.perfectTests||[];profile.perfectTests.push(key);profile.perfectTests=profile.perfectTests.slice(-500);awardXP(100);alert("درجة كاملة! كسبت 100 XP 💯")}
+ persistProfile();
+}
+function addReviewWord(w,wrong){profile.reviewWords=profile.reviewWords||[];if(wrong){if(!profile.reviewWords.includes(w.id))profile.reviewWords.push(w.id)}else profile.reviewWords=profile.reviewWords.filter(id=>id!==w.id);persistProfile()}
+function renderDashboardIfVisible(){if(st[0]==="D")renderDashboard() }
 function levelWords(l){const out=[];for(const k in WORDS){if(!k.startsWith(l+"-"))continue;const i=+k.split("-")[1]-1;for(const c in WORDS[k])WORDS[k][c].forEach(w=>out.push({l,i,c,de:w[0],ar:w[1],id:wid(l,i,c,w[0])}))}return out}
 const pct=l=>{const a=levelWords(l);return a.length?Math.round(a.filter(w=>LR.has(w.id)).length/a.length*100):0};
 const cp=(l,i,c)=>{const a=levelWords(l).filter(w=>w.i===i&&w.c===c);if(!a.length)return"";const p=Math.round(a.filter(w=>LR.has(w.id)).length/a.length*100);return`<span class="pct" style="font-size:16px">${p}%</span><span class="bar"><i style="width:${p}%;background:currentColor"></i></span>`};
@@ -621,7 +665,7 @@ function runPlural(l,learned){
  function show(){
   view.innerHTML="";
   if(!qs.length){view.innerHTML='<div class="empty">علّم بـ ✓ على أسماء ليها جمع الأول عشان تتدرب.</div>';view.append(btn("رجوع","go alt",()=>renderQuiz(l)));return}
-  if(n>=qs.length){view.innerHTML=`<div class="empty"><h2>النتيجة: ${score} من ${qs.length}</h2></div>`;view.append(btn("إعادة التمرين","go",()=>runPlural(l,learned)),btn("نوع تمرين تاني","go alt",()=>renderQuiz(l)));return}
+  if(n>=qs.length){finishQuiz(l,"pl",score,qs.length,EXAM);view.innerHTML=`<div class="empty"><h2>النتيجة: ${score} من ${qs.length}</h2></div>`;view.append(btn("إعادة التمرين","go",()=>runPlural(l,learned)),btn("نوع تمرين تاني","go alt",()=>renderQuiz(l)));return}
   const w=qs[n],ans=plOf(w.de.replace(/^(der|die|das) /,""));
   view.innerHTML=`<p class="crumb">سؤال ${n+1} من ${qs.length} · اكتب شكل الجمع</p><div class="qbox de">${w.de}</div>`;
   const inp=document.createElement("input");inp.className="pin";inp.dir="ltr";inp.placeholder="die ...";inp.autocomplete="off";inp.setAttribute("autocapitalize","off");inp.setAttribute("aria-label","الجمع");
@@ -629,7 +673,7 @@ function runPlural(l,learned){
   let done=0;
   const nz=s=>s.trim().toLowerCase().replace(/^die\s+/,"").replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/ß/g,"ss");
   const check=()=>{if(done||!inp.value.trim())return;done=1;inp.disabled=true;
-   if(nz(inp.value)===nz(ans)){score++;fb.className="fb ok";fb.textContent="صح! die "+ans}else{fb.className="fb bad";fb.textContent="الصح: die "+ans}
+   if(nz(inp.value)===nz(ans)){score++;addReviewWord(w,false);fb.className="fb ok";fb.textContent="صح! die "+ans}else{addReviewWord(w,true);fb.className="fb bad";fb.textContent="الصح: die "+ans}
    view.append(btn(n+1<qs.length?"التالي":"شوف النتيجة","go",()=>{n++;show()}))};
   inp.onkeydown=e=>{if(e.key==="Enter")check()};
   view.append(inp,btn("تحقق","go",check),fb);inp.focus()}
@@ -640,7 +684,7 @@ function runQuiz(l,mode,learned,pool){if(mode==="pl")return runPlural(l,learned)
  function show(){
   view.innerHTML="";
   if(!qs.length){view.innerHTML='<div class="empty">علّم بـ ✓ على أسماء (مذكر أو مؤنث أو محايد) الأول عشان تتدرب على الأدوات.</div>';view.append(btn("رجوع","go alt",()=>renderQuiz(l)));return}
-  if(n>=qs.length){view.innerHTML=`<div class="empty"><h2>النتيجة: ${score} من ${qs.length}</h2></div>`;view.append(btn("إعادة التمرين","go",()=>runQuiz(l,mode,learned,pool)),btn("نوع تمرين تاني","go alt",()=>renderQuiz(l)));return}
+  if(n>=qs.length){finishQuiz(l,mode,score,qs.length,EXAM);view.innerHTML=`<div class="empty"><h2>النتيجة: ${score} من ${qs.length}</h2></div>`;view.append(btn("إعادة التمرين","go",()=>runQuiz(l,mode,learned,pool)),btn("نوع تمرين تاني","go alt",()=>renderQuiz(l)));return}
   const w=qs[n],noun=w.de.replace(/^(der|die|das) /,"");
   const same=pool.filter(x=>x.c===w.c),P=same.length>=4?same:pool;
   let q,ans,all;
@@ -652,7 +696,7 @@ function runQuiz(l,mode,learned,pool){if(mode==="pl")return runPlural(l,learned)
   view.innerHTML=`<p class="crumb">سؤال ${n+1} من ${qs.length}</p><div class="qbox ${mode==="am"?"":"de"}">${q}</div>`;
   const g=document.createElement("div");g.className="grid cats";
   ch.forEach(c=>{const b=btn(c,"box",()=>{if(done)return;done=1;
-   if(c===ans){score++;b.classList.add("ok")}else{b.classList.add("bad");[...g.children].find(x=>x.textContent===ans).classList.add("ok")}
+   if(c===ans){score++;addReviewWord(w,false);b.classList.add("ok")}else{addReviewWord(w,true);b.classList.add("bad");[...g.children].find(x=>x.textContent===ans).classList.add("ok")}
    view.append(btn(n+1<qs.length?"التالي":"شوف النتيجة","go",()=>{n++;show()}))});
    if(mode!=="ma")b.style.direction="ltr";g.append(b)});
   view.append(g)}
@@ -675,6 +719,7 @@ function render(){
  const[l,i,c,d]=st;stopRead();
  back.hidden=!st.length;
  if(l==="S"){renderSpeak(i,c,d);return}
+ if(l==="D"){renderDashboard();return}
  if(i==="quiz"){EXAM=null;QN=10;renderQuiz(l);return}
  if(i==="exam"){renderExam(l,EXAM);return}
  if(!l){title.textContent="تعلّم الألماني";crumb.textContent="اختر مستواك";
@@ -697,7 +742,7 @@ function render(){
   list.forEach(([de,ar,ex,exAr])=>{if(!ex)[ex,exAr]=autoEx(c,de,ar);const li=document.createElement("li");li.className="w "+c;
    const row=btn(`<span class="de">${de}</span><span class="ar">${ar}</span>${plHtml(c,de)}`,"row",()=>{const o=li.classList.toggle("open");row.setAttribute("aria-expanded",o)});
    row.setAttribute("aria-expanded","false");li.append(row);
-   const id=wid(l,i,c,de),ck=btn("✓","chk",()=>{LR.has(id)?LR.delete(id):LR.add(id);saveLR();ck.setAttribute("aria-pressed",LR.has(id))});
+   const id=wid(l,i,c,de),ck=btn("✓","chk",()=>{if(LR.has(id)){LR.delete(id);persistProfile()}else markWordLearned(id,l,i);ck.setAttribute("aria-pressed",LR.has(id));if(st[0]==="D")renderDashboard()});
    ck.setAttribute("aria-pressed",LR.has(id));ck.setAttribute("aria-label","حفظت "+de);ck.title="حفظتها";li.append(ck);
    const s=btn(ICON,"spk",()=>speak(de,c));s.setAttribute("aria-label","انطق "+de);li.append(s);
    const e=document.createElement("div");e.className="ex";
@@ -705,9 +750,32 @@ function render(){
    li.append(e);ul.append(li)});
   view.append(ul)}
  window.scrollTo(0,0)}
+function renderDashboard(){
+ title.textContent="لوحة تحكمي";crumb.textContent=fbUser?"تقدمك محفوظ على حساب جوجل":"تقدمك محفوظ على هذا الجهاز · سجّل بجوجل لمزامنته";view.innerHTML="";
+ const r=currentRank(),xp=profile.xp||0,progress=r.next===Infinity?100:Math.min(100,Math.round((xp-r.min)/(r.next-r.min)*100));
+ const learned=LR.size,completed=(profile.completedLessons||[]).length,review=(profile.reviewWords||[]).filter(id=>levelWords(id.split("-")[0]).some(w=>w.id===id));
+ const head=document.createElement("div");head.className="dash-head";head.innerHTML='<h2 class="sec" style="margin:0">أهلاً بيك يا بطل 👑</h2>';
+ head.append(btn("عرض الدروس","back",()=>go()));view.append(head);
+ const rank=document.createElement("section");rank.className="rank-card";rank.innerHTML=`<p style="margin:0 0 4px;opacity:.8">رتبتك الحالية</p><p class="rank-name">${r.name}</p><div class="xp-line"><span>${xp} XP</span><span>${r.next===Infinity?"وصلت لأعلى رتبة!":"الرتبة التالية عند "+r.next+" XP"}</span></div><span class="bar" style="background:rgba(255,255,255,.25);height:10px"><i style="width:${progress}%;background:#FFCE00"></i></span><small>سلسلة المذاكرة: 🔥 ${streakCount()} يوم</small>`;view.append(rank);
+ const stats=document.createElement("div");stats.className="grid dash-grid";
+ [[learned,"كلمة متعلّمة"],[completed,"درس مكتمل"],[review.length,"كلمة للمراجعة"],[(profile.examResults||[]).length,"اختبار تم حله"]].forEach(([n,t])=>{const d=document.createElement("div");d.className="stat";d.innerHTML=`<strong>${n}</strong><span>${t}</span>`;stats.append(d)});view.append(stats);
+ const allWords=[];for(const l of Object.keys(LESSONS))allWords.push(...levelWords(l));
+ const byId=new Map(allWords.map(w=>[w.id,w]));const saved=[...LR].reverse().map(id=>byId.get(id)).filter(Boolean);
+ const h1=document.createElement("h2");h1.className="sec";h1.textContent="الكلمات المحفوظة";view.append(h1);
+ if(saved.length){const list=document.createElement("ul");list.className="dash-list";saved.slice(-12).reverse().forEach(w=>{const li=document.createElement("li");li.innerHTML=`<b dir="ltr">${w.de}</b> — ${w.ar} <small style="color:var(--mute)">(${w.l} · ${LESSONS[w.l][w.i]})</small>`;list.append(li)});view.append(list);if(saved.length>12){const small=document.createElement("p");small.className="crumb";small.textContent=`يعرض آخر 12 كلمة من إجمالي ${saved.length} كلمة.`;view.append(small)}}else{const e=document.createElement("div");e.className="empty";e.textContent="لسه ما حفظتش كلمات. ابدأ بأول درس!";view.append(e)}
+ const h2=document.createElement("h2");h2.className="sec";h2.textContent="الكلمات اللي محتاجة مراجعة";view.append(h2);
+ if(review.length){const list=document.createElement("ul");list.className="dash-list";review.slice(0,20).forEach(w=>{const li=document.createElement("li");li.innerHTML=`<b dir="ltr">${w.de}</b> — ${w.ar} <small style="color:var(--mute)">(${w.l} · ${LESSONS[w.l][w.i]})</small>`;list.append(li)});view.append(list)}else{const e=document.createElement("div");e.className="empty";e.textContent="مفيش كلمات للمراجعة حاليًا. حل اختبارًا وهتظهر هنا الكلمات اللي تغلط فيها.";view.append(e)}
+ const h3=document.createElement("h2");h3.className="sec";h3.textContent="تقدمك خلال الأسبوع";view.append(h3);renderActivityBars(view,7);
+ const h4=document.createElement("h2");h4.className="sec";h4.textContent="تقدمك خلال الشهر";view.append(h4);renderActivityBars(view,30);
+ const h5=document.createElement("h2");h5.className="sec";h5.textContent="نتائج الاختبارات";view.append(h5);
+ const results=profile.examResults||[];if(results.length){const list=document.createElement("ul");list.className="dash-list";results.slice(0,10).forEach(x=>{const li=document.createElement("li"),date=new Date(x.date);const label=x.lesson==null?"تدريب "+x.level:"امتحان "+x.level+" · "+(LESSONS[x.level]?.[x.lesson]||"");li.textContent=`${date.toLocaleDateString("ar-EG")} — ${label} — ${x.score}/${x.total}${x.perfect?" · درجة كاملة 🏆":""}`;list.append(li)});view.append(list)}else{const e=document.createElement("div");e.className="empty";e.textContent="لسه مفيش نتائج اختبارات.";view.append(e)}
+ window.scrollTo(0,0);
+}
+function renderActivityBars(root,days){const wrap=document.createElement("div");wrap.className="para";const data=profile.studyDays||{};const vals=[];for(let i=days-1;i>=0;i--){const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-i);const key=todayKey(d);vals.push({key,n:data[key]||0,label:days===7?d.toLocaleDateString("ar-EG",{weekday:"short"}):d.getDate()+"/"+(d.getMonth()+1)})}const max=Math.max(1,...vals.map(x=>x.n));vals.forEach(x=>{const row=document.createElement("div");row.className="progress-row";row.innerHTML=`<span>${x.label}</span><span class="bar"><i style="width:${Math.round(x.n/max*100)}%"></i></span><b>${x.n}</b>`;wrap.append(row)});const total=vals.reduce((a,x)=>a+x.n,0);const note=document.createElement("p");note.className="crumb";note.style.margin="8px 0 0";note.textContent=`إجمالي أنشطة المذاكرة في الفترة: ${total}`;wrap.append(note);root.append(wrap)}
 let HIST=true;
 function go(...a){st=a;try{history.pushState({st:a,ex:EXAM},"")}catch(e){HIST=false}render()}
 back.onclick=()=>{if(HIST){try{history.back();return}catch(e){HIST=false}}st.pop();if(st.length===1&&(st[0]==="S"||st[0]==="T"))st=[];render()};
+document.getElementById("dashboard").onclick=()=>go("D");
 if("speechSynthesis" in window)speechSynthesis.getVoices();
 /* حفظ التقدم على حساب جوجل: الصق إعدادات Firebase مكان null في السطر التالي */
 const FIREBASE_CONFIG={
@@ -725,15 +793,12 @@ function initCloud(){
  if(!FIREBASE_CONFIG||!window.firebase)return;
  try{firebase.initializeApp(FIREBASE_CONFIG);const auth=firebase.auth();db=firebase.firestore();
   authBtn.onclick=()=>fbUser?auth.signOut():auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(e=>alert("تعذّر تسجيل الدخول: "+e.message));
-  auth.onAuthStateChanged(async u=>{fbUser=u;authUI();if(!u)return;
+  auth.onAuthStateChanged(async u=>{fbUser=u;authUI();if(!u){renderDashboardIfVisible();return}
    try{const d=await db.collection("users").doc(u.uid).get();
-    if(d.exists){LR=new Set(d.data().learned||[]);try{localStorage.setItem("de-learned",JSON.stringify([...LR]))}catch(e){}}else saveLR();
-    render()}catch(e){console.error(e)}})}catch(e){console.error(e)}}
+    if(d.exists){const cloud=d.data();LR=new Set(cloud.learned||[]);profile={...profile,xp:cloud.xp||0,wordXP:cloud.wordXP||[],completedLessons:cloud.completedLessons||[],perfectTests:cloud.perfectTests||[],studyDays:cloud.studyDays||{},examResults:cloud.examResults||[],reviewWords:cloud.reviewWords||[]};persistProfile()}
+    else persistProfile();
+    render()}catch(e){console.error(e);alert("تم تسجيل الدخول، لكن تعذرت قراءة التقدم من Google. تأكد من إعدادات Firestore.")}})}catch(e){console.error(e)}}
 try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
-document.getElementById("exp").onclick=()=>{const b=new Blob([JSON.stringify({learned:[...LR]})],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="german-progress.json";document.body.appendChild(a);a.click();a.remove()};
-const impf=document.getElementById("impf");
-document.getElementById("imp").onclick=()=>impf.click();
-impf.onchange=()=>{const f=impf.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!Array.isArray(d.learned))throw 0;LR=new Set(d.learned);saveLR();render();alert("تم استرجاع التقدم")}catch(e){alert("الملف غير صالح")}impf.value=""};r.readAsText(f)};
 try{history.replaceState({st:[],ex:null},"")}catch(e){HIST=false}
 window.addEventListener("popstate",e=>{const s=e.state;st=(s&&s.st)||[];if(s&&"ex" in s)EXAM=s.ex;render()});
 /* شاشة الترحيب تظهر كل مرة تدخل الموقع حتى لو التبويب كان مفتوح في الخلفية */
