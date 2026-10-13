@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -9,16 +9,16 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;900&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f6f4ef;--card:#fff;--ink:#1c1f26;--mute:#6a707c;--line:#dcd8cf;
+:root{--bg:#F7F5FB;--card:#FFFFFF;--ink:#302B3D;--mute:#706A7D;--line:#E7E0F0;--primary:#B2A0D6;--primary-dark:#70569B;
 --m:#1d5fd1;--f:#d62839;--n:#1f9d55;--v:#111;--a:#7b3fc4;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14161b;--card:#1e222a;--ink:#eef0f4;--mute:#9aa1ae;--line:#323845;--m:#5b9bff;--f:#ff6b7a;--n:#4cd08a;--v:#f2f2f2;--a:#b58cff}}
-:root[data-theme="dark"]{--bg:#14161b;--card:#1e222a;--ink:#eef0f4;--mute:#9aa1ae;--line:#323845;--m:#5b9bff;--f:#ff6b7a;--n:#4cd08a;--v:#f2f2f2;--a:#b58cff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#241F1D;--card:#302825;--ink:#F8EEE7;--mute:#C0ADA1;--line:#4A3D36;--m:#5b9bff;--f:#ff6b7a;--n:#4cd08a;--v:#f2f2f2;--a:#b58cff}}
+:root[data-theme="dark"]{--bg:#241F1D;--card:#302825;--ink:#F8EEE7;--mute:#C0ADA1;--line:#4A3D36;--m:#5b9bff;--f:#ff6b7a;--n:#4cd08a;--v:#f2f2f2;--a:#b58cff}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 Cairo,Tahoma,sans-serif}
 .wrap{max-width:860px;margin:0 auto;padding:20px}
-:focus-visible{outline:3px solid var(--m);outline-offset:3px}
+:focus-visible{outline:3px solid var(--primary-dark);outline-offset:3px}
 header{display:flex;align-items:center;gap:14px;margin-bottom:8px;flex-wrap:wrap}
 h1{margin:0;font-size:clamp(26px,5vw,38px);font-weight:900;flex:1}.brand-stack{flex:1;min-width:0}.brand-stack h1{direction:ltr;text-align:right}.brand-logo{display:inline-block;background:#050505;color:#fff;border-radius:7px;padding:3px 11px;font-size:clamp(17px,3.8vw,25px);line-height:1.45;letter-spacing:.2px;white-space:nowrap;box-shadow:0 2px 5px #0002}.brand-logo .logo-deutsch{color:#fff}.brand-logo .logo-mit{color:#dd2434}.brand-logo .logo-so3da{color:#ffce00}.brand-note{margin:5px 0 0;color:var(--mute);font-size:12px;line-height:1.5}.brand-note[hidden]{display:none}
 .back{border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:6px 16px;font:700 15px Cairo,sans-serif;cursor:pointer}
@@ -32,7 +32,7 @@ h1{margin:0;font-size:clamp(26px,5vw,38px);font-weight:900;flex:1}.brand-stack{f
 .lessons{grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}
 .cats{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
 .box{background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:22px 16px;text-align:center;cursor:pointer;color:var(--ink);font:700 18px Cairo,sans-serif}
-.box:hover{border-color:var(--ink)}
+.box:hover{border-color:var(--primary-dark)}
 .lvl{font-size:56px;font-weight:900;display:block;line-height:1.1}
 .lvl+small{color:var(--mute);font-weight:500}
 .num{display:block;color:var(--mute);font-size:14px;font-weight:500}
@@ -58,7 +58,7 @@ h1{margin:0;font-size:clamp(26px,5vw,38px);font-weight:900;flex:1}.brand-stack{f
 .pct{display:block;font-size:20px;font-weight:700;margin-top:8px}
 .bar{display:block;height:8px;border-radius:99px;background:var(--line);margin-top:6px;overflow:hidden}
 .bar i{display:block;height:100%;background:var(--n)}
-.go{display:block;width:100%;margin:18px 0;padding:14px;border:0;border-radius:10px;background:var(--ink);color:var(--bg);font:700 17px Cairo,sans-serif;cursor:pointer}
+.go{display:block;width:100%;margin:18px 0;padding:14px;border:0;border-radius:10px;background:var(--primary-dark);color:#FFFFFF;font:700 17px Cairo,sans-serif;cursor:pointer}
 .go.alt{background:var(--card);color:var(--ink);border:1.5px solid var(--line);margin-top:10px}
 .qbox{background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:28px 16px;text-align:center;font-size:32px;font-weight:900;margin-bottom:16px}
 .qbox.de{direction:ltr}
@@ -73,7 +73,7 @@ h1{margin:0;font-size:clamp(26px,5vw,38px);font-weight:900;flex:1}.brand-stack{f
 .t1{background:none;border:0;padding:16px 12px;color:var(--ink);font:700 18px Cairo,sans-serif;cursor:pointer;text-align:center}
 .t1:hover{background:var(--bg)}
 .t2{padding:8px 12px;border-top:1px solid var(--line);text-align:center}
-.t3{border:0;border-top:1px solid var(--line);padding:10px;background:var(--ink);color:var(--bg);font:700 15px Cairo,sans-serif;cursor:pointer}
+.t3{border:0;border-top:1px solid var(--line);padding:10px;background:var(--primary-dark);color:#FFFFFF;font:700 15px Cairo,sans-serif;cursor:pointer}
 .sec{margin:34px 0 12px;font-size:22px;font-weight:900}
 .topic{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:6px;text-align:start}
 .topic .tt{direction:ltr;font-size:19px;font-weight:700}
@@ -164,6 +164,24 @@ h1{margin:0;font-size:clamp(26px,5vw,38px);font-weight:900;flex:1}.brand-stack{f
   #hdr #dashboard,#hdr #social{order:2;flex:0 0 100%;width:42px;min-width:42px;height:42px;margin:2px auto 0;justify-self:center}
   #hdr #dashboard:not([hidden]),#hdr #social:not([hidden]){display:inline-grid;margin-right:auto;margin-left:auto}
 }
+
+
+/* Lavender accents: highlight navigation, profile and friends without changing vocabulary/category colors */
+#hdr .icon-nav{border-color:#D8C9EE;background:#F0EAF9;color:#70569B;transition:background .18s ease,border-color .18s ease,transform .18s ease}
+#hdr .icon-nav:hover,#hdr .icon-nav:focus-visible{border-color:#70569B;background:#E5DAF5;color:#5D438A}
+#hdr .icon-nav:active{transform:translateY(1px)}
+#hdr .icon-nav svg{stroke:currentColor}
+.google-profile-photo{border:3px solid #B2A0D6;box-shadow:0 0 0 3px #F0EAF9}
+.name-edit{border-color:#D8C9EE;background:#F7F2FD;color:#70569B}
+.name-edit:hover{border-color:#70569B;background:#EDE4F8;color:#5D438A}
+.social-card{border-color:#E3D9F1;box-shadow:0 3px 12px rgba(112,86,155,.045)}
+.social-card h2,.social-card h3{border-right:3px solid #B2A0D6;padding-right:9px}
+.social-person{border-color:#E7E0F0}
+.social-avatar:not(img){background:#F0EAF9;color:#70569B;border:1px solid #D8C9EE}
+.friend-row .social-avatar{border:2px solid #D8C9EE}
+.social-card .go.alt,.social-person .go.alt{border-color:#D8C9EE;color:#70569B;background:#F7F2FD}
+.social-card .go.alt:hover,.social-person .go.alt:hover{border-color:#70569B;background:#EDE4F8}
+.social-input:focus,.social-select:focus{outline:2px solid #B2A0D6;border-color:#70569B}
 
 </style>
 </head>
@@ -921,7 +939,7 @@ async function renderSocial(){
     const ref=db.collection("publicProfiles").doc(targetUid),ps=await ref.get(),pd=ps.exists?ps.data():{};
     await db.collection("friendRequests").doc(fbUser.uid+"_"+targetUid).set({fromUid:fbUser.uid,toUid:targetUid,fromName:mine.displayName||profile.displayName||fbUser.displayName||mine.username,fromUsername:mine.username,status:"pending",createdAt:firebase.firestore.FieldValue.serverTimestamp()});
     result.textContent="اتبعث طلب الصداقة إلى @"+(pd.username||un)+" بنجاح!";updateSocialBadge();
-   }catch(e){console.error(e);result.textContent="فشل إرسال الطلب. تأكد من نشر قواعد Firestore."}
+   }catch(e){console.error("Friend request failed:",e);const code=e&&e.code?e.code:"unknown";const detail=e&&e.message?e.message:"خطأ غير معروف";result.textContent="فشل إرسال الطلب ("+code+"): "+detail+". راجع قواعد Firestore المنشورة."}
   }));
   if(challengeTarget&&challengeTarget.uid){
    const setup=socialCard(view,"⚔️ تحدي @"+(challengeTarget.username||challengeTarget.displayName||"صديق"),"اختار المستوى والدرس؛ الموقع هيخلط تلقائيًا بين المعاني والأدوات والجمع وأنواع كلمات مختلفة.");
