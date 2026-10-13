@@ -933,10 +933,16 @@ async function renderSocial(){
    if(un===mine.username){result.textContent="مينفعش تضيف نفسك 😄";return}
    result.textContent="جارٍ البحث…";
    try{const us=await db.collection("usernames").doc(un).get();if(!us.exists){result.textContent="مش لاقيين اسم المستخدم ده.";return}const targetUid=us.data().uid;if(targetUid===fbUser.uid){result.textContent="مينفعش تضيف نفسك 😄";return}
-    const [friendSnap,reverseSnap,reqSnap]=await Promise.all([db.collection("users").doc(fbUser.uid).collection("friends").doc(targetUid).get(),db.collection("friendRequests").doc(targetUid+"_"+fbUser.uid).get(),db.collection("friendRequests").doc(fbUser.uid+"_"+targetUid).get()]);
+    // Query by participant fields instead of get() on potentially missing request documents.
+    // Firestore rules can authorize these constrained queries without granting access to arbitrary IDs.
+    const [friendSnap,reverseSnap,reqSnap]=await Promise.all([
+     db.collection("users").doc(fbUser.uid).collection("friends").doc(targetUid).get(),
+     db.collection("friendRequests").where("toUid","==",fbUser.uid).get(),
+     db.collection("friendRequests").where("fromUid","==",fbUser.uid).get()
+    ]);
     if(friendSnap.exists){result.textContent="الشخص ده موجود بالفعل في قائمة أصدقائك.";return}
-    if(reverseSnap.exists&&reverseSnap.data().status==="pending"){result.textContent="الشخص ده بعتلك طلب صداقة بالفعل؛ اقبل الطلب الوارد تحت.";return}
-    if(reqSnap.exists&&reqSnap.data().status==="pending"){result.textContent="طلب الصداقة اتبعت بالفعل.";return}
+    if(reverseSnap.docs.some(d=>d.data().fromUid===targetUid&&d.data().status==="pending")){result.textContent="الشخص ده بعتلك طلب صداقة بالفعل؛ اقبل الطلب الوارد تحت.";return}
+    if(reqSnap.docs.some(d=>d.data().toUid===targetUid&&d.data().status==="pending")){result.textContent="طلب الصداقة اتبعت بالفعل.";return}
     const ref=db.collection("publicProfiles").doc(targetUid),ps=await ref.get(),pd=ps.exists?ps.data():{};
     await db.collection("friendRequests").doc(fbUser.uid+"_"+targetUid).set({fromUid:fbUser.uid,toUid:targetUid,fromName:mine.displayName||profile.displayName||fbUser.displayName||mine.username,fromUsername:mine.username,status:"pending",createdAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
     result.textContent="اتبعث طلب الصداقة إلى @"+(pd.username||un)+" بنجاح!";updateSocialBadge();
