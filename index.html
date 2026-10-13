@@ -20,7 +20,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 Cairo,Tahoma,s
 .wrap{max-width:860px;margin:0 auto;padding:20px}
 :focus-visible{outline:3px solid var(--primary-dark);outline-offset:3px}
 header{display:flex;align-items:center;gap:14px;margin-bottom:8px;flex-wrap:wrap}
-h1{margin:0;font-size:clamp(26px,5vw,38px);font-weight:900;flex:1}.brand-stack{flex:1;min-width:0}.brand-stack h1{direction:ltr;text-align:right}.brand-logo{display:inline-block;background:#050505;color:#fff;border-radius:7px;padding:3px 11px;font-size:clamp(17px,3.8vw,25px);line-height:1.45;letter-spacing:.2px;white-space:nowrap;box-shadow:0 2px 5px #0002}.brand-logo .logo-deutsch{color:#fff}.brand-logo .logo-mit{color:#dd2434}.brand-logo .logo-so3da{color:#ffce00}.brand-note{margin:5px 0 0;color:var(--mute);font-size:12px;line-height:1.5}.brand-note[hidden]{display:none}
+h1{margin:0;font-size:clamp(26px,5vw,38px);font-weight:900;flex:1}.brand-stack{flex:1;min-width:0}.brand-stack h1{direction:ltr;text-align:right}.brand-logo{display:inline-block;background:#050505;color:#fff;border-radius:7px;padding:3px 11px;font-size:clamp(17px,3.8vw,25px);line-height:1.45;letter-spacing:.2px;white-space:nowrap;box-shadow:0 2px 5px #0002}.brand-logo .logo-deutsch{color:#fff}.brand-logo .logo-mit{color:#dd2434}.brand-logo .logo-so3da{color:#ffce00}.brand-note{margin:5px 0 0;color:#4b267e;font-size:13px;font-weight:800;line-height:1.65;text-shadow:0 0.2px 0 currentColor}.brand-note[hidden]{display:none}
 .back{border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:6px 16px;font:700 15px Cairo,sans-serif;cursor:pointer}
 .icon-nav{width:42px;height:42px;min-width:42px;padding:0;display:inline-grid;place-items:center;border-radius:12px;flex:none}
 .icon-nav svg{width:23px;height:23px;display:block}
@@ -183,6 +183,23 @@ h1{margin:0;font-size:clamp(26px,5vw,38px);font-weight:900;flex:1}.brand-stack{f
 .social-card .go.alt,.social-person .go.alt{border-color:#D8C9EE;color:#70569B;background:#F7F2FD}
 .social-card .go.alt:hover,.social-person .go.alt:hover{border-color:#70569B;background:#EDE4F8}
 .social-input:focus,.social-select:focus{outline:2px solid #B2A0D6;border-color:#70569B}
+
+
+/* restrained white + lavender app styling; preserve original level and word-type colors */
+:root{--primary:#8b6bc1;--primary-dark:#62458f;--bg:#fbfaff;--card:#ffffff;--line:#e9e3f2}
+body{background:var(--bg)}
+.box{border-radius:14px;box-shadow:0 2px 9px rgba(79,55,119,.045);transition:border-color .18s,box-shadow .18s,transform .18s}
+.box:hover{border-color:var(--primary);box-shadow:0 5px 15px rgba(79,55,119,.09)}
+.go,.t3{background:var(--primary-dark)}
+.back:focus-visible,.box:focus-visible,button:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+/* These shortcuts are duplicated in the bottom navigation */
+#dashboard,#social{display:none!important}
+body{padding-bottom:82px}
+#app-bottom-nav{position:fixed;z-index:9999;bottom:0;left:0;right:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;padding:7px max(10px,env(safe-area-inset-right)) calc(7px + env(safe-area-inset-bottom,0px)) max(10px,env(safe-area-inset-left));background:rgba(255,255,255,.97);border-top:1px solid #e9e3f2;box-shadow:0 -4px 18px rgba(79,55,119,.06)}
+#app-bottom-nav button{border:0;background:transparent;color:#777080;border-radius:12px;min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;font:700 11px/1.4 Cairo,Tahoma,sans-serif;cursor:pointer;padding:4px 2px}
+#app-bottom-nav .nav-ico{font-size:20px;line-height:1.2;display:flex;align-items:center;justify-content:center}#app-bottom-nav .nav-ico svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+#app-bottom-nav button[aria-current=page]{background:#f1ecf9;color:#62458f}
+@media(min-width:800px){#app-bottom-nav{left:50%;right:auto;transform:translateX(-50%);width:min(540px,calc(100% - 32px));border:1px solid #e9e3f2;border-bottom:0;border-radius:16px 16px 0 0}}
 
 </style>
 </head>
@@ -1108,6 +1125,32 @@ document.addEventListener("visibilitychange",()=>{
 window.addEventListener("pageshow",e=>{if(e.persisted)showWelcomeAgain()});
 authUI();window.addEventListener("load",initCloud);
 render();
+</script>
+
+<nav id="app-bottom-nav" aria-label="التنقل الرئيسي">
+ <button type="button" data-app-tab="home" aria-current="page"><span class="nav-ico">⌂</span><span>الرئيسية</span></button>
+ <button type="button" data-app-tab="friends"><span class="nav-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3.5 19v-1.2A4.8 4.8 0 0 1 8.3 13h1.4a4.8 4.8 0 0 1 4.8 4.8V19"/><path d="M16 5.4a3 3 0 0 1 0 5.8M17 13.3a4.8 4.8 0 0 1 3.5 4.6V19"/></svg></span><span>الأصدقاء</span></button>
+ <button type="button" data-app-tab="challenges"><span class="nav-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7.2 8h9.6a4 4 0 0 1 3.8 3l1 4.1a2.5 2.5 0 0 1-4.1 2.4l-2.1-1.8H8.6l-2.1 1.8a2.5 2.5 0 0 1-4.1-2.4l1-4.1a4 4 0 0 1 3.8-3Z"/><path d="M7 10.5v4M5 12.5h4M16.5 11.5h.01M18.5 14h.01"/></svg></span><span>التحديات</span></button>
+ <button type="button" data-app-tab="profile"><span class="nav-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="9" cy="11" r="2.2"/><path d="M5.8 16a3.3 3.3 0 0 1 6.4 0M14.5 10h4M14.5 13h4"/></svg></span><span>ملفي</span></button>
+</nav>
+
+<script>
+(function(){
+ const nav=document.getElementById('app-bottom-nav');if(!nav)return;
+ nav.addEventListener('click',function(e){
+  const b=e.target.closest('button[data-app-tab]');if(!b)return;const tab=b.dataset.appTab;
+  nav.querySelectorAll('button').forEach(x=>{if(x===b)x.setAttribute('aria-current','page');else x.removeAttribute('aria-current')});
+  if(typeof WELCOME!=='undefined')WELCOME=false;
+  const h=document.getElementById('hdr'),c=document.getElementById('crumb');if(h)h.style.display='';if(c)c.style.display='';
+  if(tab==='home')st=[];else if(tab==='friends')st=['SOCIAL'];else if(tab==='profile')st=['D'];else st=['SOCIAL'];
+  try{history.pushState({st,ex:null},'')}catch(_){}
+  if(typeof render==='function')render();
+  if(tab==='challenges')setTimeout(()=>{const t=[...document.querySelectorAll('h2,h3,.social-card,.box,.empty')].find(x=>/تحدي|التحديات/.test(x.textContent||''));if(t)t.scrollIntoView({behavior:'smooth',block:'start'})},120);else window.scrollTo({top:0,behavior:'smooth'});
+ });
+ const sync=()=>{if(typeof WELCOME!=='undefined'&&WELCOME)nav.style.display='none';else nav.style.display='grid'};
+ const oldRender=window.render;if(typeof oldRender==='function'){window.render=function(){const r=oldRender.apply(this,arguments);sync();return r}}
+ document.addEventListener('click',e=>{if(e.target.closest('#view'))setTimeout(sync,0)});setTimeout(sync,0);
+})();
 </script>
 </body>
 </html>
