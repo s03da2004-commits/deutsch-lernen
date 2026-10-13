@@ -9,6 +9,9 @@
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
 <link rel="manifest" href="./manifest.webmanifest">
 <meta name="theme-color" content="#B2A0D6">
+<script>
+(function(){try{var saved=localStorage.getItem("de-theme");if(saved==="dark"||saved==="light")document.documentElement.setAttribute("data-theme",saved)}catch(e){}})();
+</script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -17,8 +20,8 @@
 :root{--bg:#F7F5FB;--card:#FFFFFF;--ink:#302B3D;--mute:#706A7D;--line:#E7E0F0;--primary:#B2A0D6;--primary-dark:#70569B;
 --m:#1d5fd1;--f:#d62839;--n:#1f9d55;--v:#111;--a:#7b3fc4;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#241F1D;--card:#302825;--ink:#F8EEE7;--mute:#C0ADA1;--line:#4A3D36;--m:#5b9bff;--f:#ff6b7a;--n:#4cd08a;--v:#f2f2f2;--a:#b58cff}}
-:root[data-theme="dark"]{--bg:#241F1D;--card:#302825;--ink:#F8EEE7;--mute:#C0ADA1;--line:#4A3D36;--m:#5b9bff;--f:#ff6b7a;--n:#4cd08a;--v:#f2f2f2;--a:#b58cff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0B0A10;--card:#15131D;--ink:#F4F0FA;--mute:#B5AEC4;--line:#302B3D;--m:#78A9FF;--f:#FF7887;--n:#53D69A;--v:#F4F0FA;--a:#C3A0FF}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#0B0A10;--card:#15131D;--ink:#F4F0FA;--mute:#B5AEC4;--line:#302B3D;--m:#78A9FF;--f:#FF7887;--n:#53D69A;--v:#F4F0FA;--a:#C3A0FF}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 Cairo,Tahoma,sans-serif}
@@ -212,6 +215,28 @@ body{padding-bottom:82px}
 .friend-search-bar .social-input{flex:3 1 0;width:0;min-width:0;margin:0}
 .friend-search-bar .go{flex:1 1 0;min-width:0;margin:0;padding:10px 6px;white-space:nowrap}
 @media(max-width:380px){.friend-search-bar{gap:5px}.friend-search-bar .go{font-size:13px}}
+/* إعدادات المظهر داخل الملف الشخصي */
+.theme-setting{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:0 0 16px;padding:15px 16px;background:var(--card);color:var(--ink);border:1.5px solid var(--line);border-radius:14px;box-shadow:0 2px 9px rgba(79,55,119,.045)}
+.theme-setting-copy{display:grid;gap:2px}.theme-setting-copy strong{font-size:16px}.theme-setting-copy span{font-size:13px;color:var(--mute)}
+.theme-toggle{border:0;border-radius:11px;padding:10px 15px;background:var(--primary-dark);color:#fff;font:700 14px Cairo,Tahoma,sans-serif;cursor:pointer;white-space:nowrap}
+:root[data-theme="dark"] body{background:var(--bg);color:var(--ink)}
+:root[data-theme="dark"] #app-bottom-nav{background:rgba(15,13,21,.98);border-color:var(--line);box-shadow:0 -4px 22px rgba(0,0,0,.42)}
+:root[data-theme="dark"] #app-bottom-nav button{color:#d0c4bc}
+:root[data-theme="dark"] #app-bottom-nav button[aria-current=page]{background:#292136;color:#E2D2FF}
+:root[data-theme="dark"] .social-card,:root[data-theme="dark"] .social-person{background:var(--card);border-color:var(--line);color:var(--ink)}
+:root[data-theme="dark"] .social-card .go.alt,:root[data-theme="dark"] .social-person .go.alt{background:#211B2D;color:#E2D4FF;border-color:#49405B}
+:root[data-theme="dark"] .social-avatar:not(img){background:#211B2D;color:#E2D4FF;border-color:#49405B}
+ :root[data-theme="dark"] .brand-note{color:#D7C2FF}
+:root[data-theme="dark"] #hdr .icon-nav{border-color:#393047;background:#211B2D;color:#D7C2FF}
+:root[data-theme="dark"] #hdr .icon-nav:hover,:root[data-theme="dark"] #hdr .icon-nav:focus-visible{border-color:#8B6BC1;background:#302541;color:#F0E7FF}
+:root[data-theme="dark"] .google-profile-photo{border-color:#8B6BC1;box-shadow:0 0 0 3px #211B2D}
+:root[data-theme="dark"] .name-edit{border-color:#393047;background:#211B2D;color:#D7C2FF}
+:root[data-theme="dark"] .social-card{border-color:var(--line);box-shadow:0 3px 12px rgba(0,0,0,.2)}
+:root[data-theme="dark"] .social-person{border-color:var(--line)}
+:root[data-theme="dark"] .friend-row .social-avatar{border-color:#49405B}
+:root[data-theme="dark"] .social-card .go.alt:hover,:root[data-theme="dark"] .social-person .go.alt:hover{border-color:#8B6BC1;background:#302541}
+:root[data-theme="dark"] .social-input,:root[data-theme="dark"] .social-select{background:#100E16;color:var(--ink);border-color:var(--line)}
+:root[data-theme="dark"] .theme-setting{box-shadow:0 2px 12px rgba(0,0,0,.22)}
 </style>
 </head>
 <body>
@@ -905,6 +930,15 @@ function renderDashboard(){
   const cancel=document.createElement("button");cancel.type="button";cancel.textContent="إلغاء";cancel.style.cssText="padding:10px 16px;border:1px solid var(--line,#555);border-radius:10px;background:transparent;color:inherit;font:inherit;cursor:pointer;";cancel.addEventListener("click",()=>overlay.remove());
   actions.append(save,cancel);box.append(label,input,hint,actions);overlay.append(box);overlay.addEventListener("click",e=>{if(e.target===overlay)overlay.remove()});box.addEventListener("submit",async e=>{e.preventDefault();const name=input.value.trim();if(!name){hint.textContent="اكتب اسمك الأول.";input.focus();return}if(name.length>40){hint.textContent="الاسم لازم يكون 40 حرف أو أقل.";return}save.disabled=true;save.textContent="جاري الحفظ…";profile.displayName=name;persistProfile();overlay.remove();renderDashboard();if(fbUser&&db){try{await db.collection("publicProfiles").doc(fbUser.uid).set({displayName:name,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});const fs=await db.collection("users").doc(fbUser.uid).collection("friends").get();const batch=db.batch();fs.docs.forEach(d=>batch.set(d.ref,{displayName:name},{merge:true}));await batch.commit()}catch(err){console.error("Display name cloud update failed",err);alert("اسمك اتحفظ على الجهاز، لكن تعذر تحديثه عند أصحابك. راجع صلاحيات Firestore.")}}});view.append(overlay);input.focus();input.select();
  });welcome.append(avatar,greeting,editName);head.append(welcome,btn("عرض الدروس","back",()=>go()));view.append(head);
+ const themeBox=document.createElement("section");themeBox.className="theme-setting";themeBox.setAttribute("aria-label","إعدادات المظهر");
+ const themeCopy=document.createElement("div");themeCopy.className="theme-setting-copy";
+ const themeTitle=document.createElement("strong");themeTitle.textContent="🎨 مظهر الموقع";
+ const themeHint=document.createElement("span");themeHint.textContent="اختار الشكل اللي يريح عينك، واختيارك هيتحفظ.";
+ themeCopy.append(themeTitle,themeHint);
+ const themeBtn=document.createElement("button");themeBtn.type="button";themeBtn.className="theme-toggle";
+ function updateThemeButton(){const dark=document.documentElement.getAttribute("data-theme")==="dark";themeBtn.textContent=dark?"☀️ تفعيل الوضع الفاتح":"🌙 تفعيل الوضع الداكن";themeBtn.setAttribute("aria-pressed",dark?"true":"false");}
+ updateThemeButton();themeBtn.addEventListener("click",()=>{const next=document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark";document.documentElement.setAttribute("data-theme",next);try{localStorage.setItem("de-theme",next)}catch(e){}const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.setAttribute("content",next==="dark"?"#241F1D":"#B2A0D6");updateThemeButton();});
+ themeBox.append(themeCopy,themeBtn);view.append(themeBox);
  const rank=document.createElement("section");rank.className="rank-card";rank.innerHTML=`<p style="margin:0 0 4px;opacity:.8">رتبتك الحالية</p><p class="rank-name">${r.name}</p><div class="xp-line"><span>${xp} XP</span><span>${r.next===Infinity?"وصلت لأعلى رتبة!":"الرتبة التالية عند "+r.next+" XP"}</span></div><span class="bar" style="background:rgba(255,255,255,.25);height:10px"><i style="width:${progress}%;background:#FFCE00"></i></span><small>سلسلة المذاكرة: 🔥 ${streakCount()} يوم</small>`;view.append(rank);
  const stats=document.createElement("div");stats.className="grid dash-grid";
  [[learned,"كلمة متعلّمة"],[completed,"درس مكتمل"],[review.length,"كلمة للمراجعة"],[(profile.examResults||[]).length,"اختبار تم حله"]].forEach(([n,t])=>{const d=document.createElement("div");d.className="stat";d.innerHTML=`<strong>${n}</strong><span>${t}</span>`;stats.append(d)});view.append(stats);
