@@ -22,6 +22,10 @@ body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 Cairo,Tahoma,s
 header{display:flex;align-items:center;gap:14px;margin-bottom:8px;flex-wrap:wrap}
 h1{margin:0;font-size:clamp(26px,5vw,38px);font-weight:900;flex:1}
 .back{border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:6px 16px;font:700 15px Cairo,sans-serif;cursor:pointer}
+.icon-nav{width:42px;height:42px;min-width:42px;padding:0;display:inline-grid;place-items:center;border-radius:12px;flex:none}
+.icon-nav svg{width:23px;height:23px;display:block}
+.icon-nav:hover{border-color:var(--m);color:var(--m)}
+.icon-nav[hidden]{display:none}
 .crumb{color:var(--mute);margin:0 0 22px;font-size:15px}
 .grid{display:grid;gap:14px}
 .levels{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
@@ -148,7 +152,7 @@ h1{margin:0;font-size:clamp(26px,5vw,38px);font-weight:900;flex:1}
 </head>
 <body>
 <div class="wrap">
-<header id="hdr"><h1 id="title">تعلّم الألماني</h1><button class="back" id="back" hidden>رجوع</button><button class="back" id="dashboard">لوحتي</button><button class="back" id="social">الأصدقاء ⚔️</button><button class="back" id="auth" hidden></button></header>
+<header id="hdr"><h1 id="title">تعلّم الألماني</h1><button class="back" id="back" hidden>رجوع</button><button class="back icon-nav" id="dashboard" type="button" title="الصفحة الشخصية" aria-label="الصفحة الشخصية"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="8.5" cy="10" r="2"/><path d="M5.5 16c.7-2 5.3-2 6 0M14 9h4M14 13h4M14 16h2"/></svg></button><button class="back icon-nav" id="social" type="button" title="الأصدقاء" aria-label="الأصدقاء"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3.5 19v-1.2A4.8 4.8 0 0 1 8.3 13h1.4a4.8 4.8 0 0 1 4.8 4.8V19z"/><path d="M16 5.5a3 3 0 0 1 0 5.8M17 13.3a4.8 4.8 0 0 1 3.5 4.6V19h-3"/></svg></button><button class="back" id="auth" hidden></button></header>
 <p class="crumb" id="crumb">اختر مستواك</p>
 <div id="view"></div>
 </div>
@@ -676,9 +680,15 @@ function renderText(t){
   const s=btn(ICON,"spk sm",()=>speak(de));s.setAttribute("aria-label","اقرأ الفقرة");r.append(s);d.append(r);
   const p=document.createElement("p");p.className="par";p.textContent=ar;d.append(p);view.append(d)})}
 function renderSpeakLevels(){
- const h=document.createElement("h2");h.className="sec";h.textContent="مواضيع للتحدث";view.append(h);
+ const h=document.createElement("h2");h.className="sec";h.textContent="أهداف المستويات";view.append(h);
  const g=document.createElement("div");g.className="grid levels";
- Object.keys(LESSONS).forEach(k=>{const n=TOPICS.filter(t=>t.lv===k).length;g.append(btn(`<span class="lvl">${k}</span><small>${n?n+" مواضيع":"قريبًا"}</small>`,"box lv"+k,()=>go("S",k)))});
+ Object.keys(LESSONS).forEach(k=>g.append(btn(`<span class="lvl">${k}</span><small>${LEVEL_NAMES[k]}</small>`,"box lv"+k,()=>go("G",k))));
+ view.append(g)}
+function renderLevelGoals(lv){
+ title.textContent="أهداف المستوى "+lv;crumb.textContent="اختر القسم";
+ const g=document.createElement("div");g.className="grid cats";
+ g.append(btn('🗣️<span class="tt">مواضيع التحدث</span>',"box",()=>go("S",lv)));
+ g.append(btn('💬<span class="tt">المحادثات</span>',"box",()=>{title.textContent="المحادثات · "+lv;crumb.textContent="المحادثات";view.innerHTML='<div class="empty">المحادثات هتضاف قريبًا.</div>'}));
  view.append(g)}
 function renderSpeak(lv,ti,cat){
  if(ti===undefined){title.textContent="التحدث · "+lv;crumb.textContent="اختر الموضوع";
@@ -768,10 +778,11 @@ function speak(t,c){
  speechSynthesis.speak(u)}
 function btn(html,cls,fn){const b=document.createElement("button");b.className=cls;b.innerHTML=html;b.onclick=fn;return b}
 function render(){
- view.innerHTML="";if(WELCOME){renderWelcome();return}
+ view.innerHTML="";const homeView=st.length===0;document.getElementById("dashboard").hidden=!homeView;document.getElementById("social").hidden=!homeView;if(WELCOME){renderWelcome();return}
  const[l,i,c,d]=st;stopRead();
  back.hidden=!st.length;
  if(l==="S"){renderSpeak(i,c,d);return}
+ if(l==="G"){renderLevelGoals(i);return}
  if(l==="D"){renderDashboard();return}
  if(l==="SOCIAL"){renderSocial();return}
  if(l==="CHALLENGE"){if(activeChallengeRun)return;if(challengeFinal&&challengeFinal.id===i){renderChallengeFinal(challengeFinal);return}if(challengeWaiting&&challengeWaiting.id===i){renderChallengeWaiting(challengeWaiting);return}resumeChallengeRoute(i);return}
@@ -849,11 +860,11 @@ function socialEl(tag,cls,text){const e=document.createElement(tag);if(cls)e.cla
 function socialButton(label,fn,alt=false){return btn(label,"go"+(alt?" alt":""),fn)}
 function socialCard(parent,heading,description){const box=socialEl("section","social-card");if(heading)box.append(socialEl("h2","",heading));if(description)box.append(socialEl("p","social-muted",description));parent.append(box);return box}
 function updateSocialBadge(){
- if(!fbUser){socialBtn.textContent="الأصدقاء ⚔️";return}
+ if(!fbUser){return}
  Promise.all([
   db.collection("friendRequests").where("toUid","==",fbUser.uid).get().then(s=>s.docs.filter(d=>d.data().status==="pending").length).catch(()=>0),
   db.collection("challenges").where("opponentUid","==",fbUser.uid).get().then(s=>s.docs.filter(d=>d.data().status==="pending").length).catch(()=>0)
- ]).then(ns=>{if(fbUser)socialBtn.textContent="الأصدقاء ⚔️"+(ns[0]+ns[1]?` · ${ns[0]+ns[1]}`:"")});
+ ]).then(ns=>{/* الأيقونة تظل أيقونة فقط دون نص */});
 }
 function setupSocialBadges(){socialBadgeUnsubs.forEach(f=>{try{f()}catch(e){}});socialBadgeUnsubs=[];if(!fbUser||!db){updateSocialBadge();return}
  try{socialBadgeUnsubs.push(db.collection("friendRequests").where("toUid","==",fbUser.uid).onSnapshot(updateSocialBadge,()=>{}));socialBadgeUnsubs.push(db.collection("challenges").where("opponentUid","==",fbUser.uid).onSnapshot(updateSocialBadge,()=>{}));}catch(e){}updateSocialBadge();}
