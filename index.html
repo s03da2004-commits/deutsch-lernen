@@ -201,6 +201,12 @@ body{padding-bottom:82px}
 #app-bottom-nav button[aria-current=page]{background:#f1ecf9;color:#62458f}
 @media(min-width:800px){#app-bottom-nav{left:50%;right:auto;transform:translateX(-50%);width:min(540px,calc(100% - 32px));border:1px solid #e9e3f2;border-bottom:0;border-radius:16px 16px 0 0}}
 
+
+/* شريط البحث: الاسم 75% وزر البحث 25% على الشمال */
+.friend-search-bar{display:flex;direction:rtl;align-items:stretch;gap:8px;width:100%;margin:4px 0 8px}
+.friend-search-bar .social-input{flex:3 1 0;width:0;min-width:0;margin:0}
+.friend-search-bar .go{flex:1 1 0;min-width:0;margin:0;padding:10px 6px;white-space:nowrap}
+@media(max-width:380px){.friend-search-bar{gap:5px}.friend-search-bar .go{font-size:13px}}
 </style>
 </head>
 <body>
@@ -909,6 +915,7 @@ function renderActivityBars(root,days){const wrap=document.createElement("div");
 /* ===== الأصدقاء والتحديات: 20 سؤالًا، 15 ثانية لكل سؤال ===== */
 let challengeTarget=null, activeChallengeRun=null, challengeWaiting=null, challengeFinal=null, activeChallengeUnsub=null;
 let socialRenderToken=0, socialBadgeUnsubs=[];
+let socialActiveTab="friends";
 const socialBtn=document.getElementById("social");
 function socialEl(tag,cls,text){const e=document.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=text;return e}
 function socialButton(label,fn,alt=false){return btn(label,"go"+(alt?" alt":""),fn)}
@@ -930,7 +937,7 @@ function setSocialUsername(username){
  return db.runTransaction(async tx=>{const old=await tx.get(profileRef);if(old.exists&&old.data().username&&old.data().username!==username)throw new Error("USERNAME_ALREADY_SET");const snap=await tx.get(unameRef);if(snap.exists&&snap.data().uid!==fbUser.uid)throw new Error("USERNAME_TAKEN");const publicData={uid:fbUser.uid,username,displayName:profile.displayName||fbUser.displayName||"لاعب ألماني",photoURL:fbUser.photoURL||"",updatedAt:firebase.firestore.FieldValue.serverTimestamp()};tx.set(unameRef,{uid:fbUser.uid,username,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});tx.set(profileRef,publicData,{merge:true});return true}).then(()=>true).catch(e=>{console.error(e);if(e.message==="USERNAME_TAKEN")alert("اسم المستخدم ده مستخدم بالفعل، اختار اسمًا تانيًا.");else if(e.message==="USERNAME_ALREADY_SET")alert("اسم المستخدم لا يمكن تغييره حاليًا.");else alert("ماقدرتش أحفظ اسم المستخدم. تأكد من نشر قواعد Firestore واتصالك بالإنترنت.");return false});
 }
 async function renderSocial(){
- const token=++socialRenderToken;title.textContent="الأصدقاء والتحديات";crumb.textContent="ابحث عن أصحابك وتنافسوا في الألماني";view.innerHTML="";back.hidden=false;
+ const token=++socialRenderToken;title.textContent=socialActiveTab==="challenges"?"التحديات":"الأصدقاء";crumb.textContent=socialActiveTab==="challenges"?"التحديات الواردة والمرسلة":"ابحث عن أصحابك وأدر طلبات الصداقة";view.innerHTML="";back.hidden=false;
  if(!fbUser||!db){view.append(socialCard(view,"سجّل الدخول الأول","لازم تدخل بحساب جوجل علشان يبقى ليك اسم مستخدم وتقدر تضيف أصحابك."));view.append(socialButton("دخول بجوجل",()=>authBtn.click()));return}
  view.append(socialEl("div","empty","جارٍ تحميل الأصدقاء والتحديات…"));
  try{
@@ -945,7 +952,9 @@ async function renderSocial(){
   const intro=socialCard(view,"أهلاً يا "+(mine.displayName||profile.displayName||fbUser.displayName||mine.username),"اسمك في الموقع: @"+mine.username+" · ابحث عن أصحابك بالـ username.");
   const search=socialCard(view,"🔎 إضافة صديق","اكتب اسم المستخدم من غير علامة @.");
   const inp=socialEl("input","social-input");inp.placeholder="username";inp.autocomplete="off";inp.maxLength=20;inp.setAttribute("aria-label","البحث عن اسم مستخدم");
-  const result=socialEl("div","social-muted","");search.append(inp,result,socialButton("بحث وإرسال طلب صداقة",async()=>{
+  const result=socialEl("div","social-muted","");
+  const searchBar=socialEl("div","friend-search-bar");
+  const searchBtn=socialButton("بحث",async()=>{
    const un=inp.value.trim().replace(/^@/,"").toLowerCase();if(!/^[a-z0-9_.]{3,20}$/.test(un)){result.textContent="اكتب اسم مستخدم صحيحًا (3–20 حرفًا).";return}
    if(un===mine.username){result.textContent="مينفعش تضيف نفسك 😄";return}
    result.textContent="جارٍ البحث…";
@@ -964,7 +973,8 @@ async function renderSocial(){
     await db.collection("friendRequests").doc(fbUser.uid+"_"+targetUid).set({fromUid:fbUser.uid,toUid:targetUid,fromName:mine.displayName||profile.displayName||fbUser.displayName||mine.username,fromUsername:mine.username,status:"pending",createdAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
     result.textContent="اتبعث طلب الصداقة إلى @"+(pd.username||un)+" بنجاح!";updateSocialBadge();
    }catch(e){console.error("Friend request failed:",e);const code=e&&e.code?e.code:"unknown";const detail=e&&e.message?e.message:"خطأ غير معروف";result.textContent="فشل إرسال الطلب ("+code+"): "+detail+". راجع قواعد Firestore المنشورة."}
-  }));
+  });
+  searchBar.append(inp,searchBtn);search.append(searchBar,result);
   if(challengeTarget&&challengeTarget.uid){
    const setup=socialCard(view,"⚔️ تحدي @"+(challengeTarget.username||challengeTarget.displayName||"صديق"),"اختار المستوى والدرس؛ الموقع هيخلط تلقائيًا بين المعاني والأدوات والجمع وأنواع كلمات مختلفة.");
    const lv=socialEl("select","social-select");lv.setAttribute("aria-label","المستوى");Object.keys(LESSONS).forEach(k=>{const o=socialEl("option","",k+" · "+LEVEL_NAMES[k]);o.value=k;lv.append(o)});lv.value="B1";
@@ -988,6 +998,12 @@ async function renderSocial(){
   const incomingCh=socialCard(view,"🔔 التحديات الواردة","");const pendingChallenges=inChallenges.docs.filter(d=>d.data().status==="pending");if(!pendingChallenges.length)incomingCh.append(socialEl("p","social-muted","مفيش تحديات واردة حاليًا."));
   for(const doc of pendingChallenges){const ch=doc.data(),row=socialEl("div","social-person"),main=socialEl("div","social-person-main");let senderName=ch.challengerName||"لاعب",senderUsername=ch.challengerUsername||"";let senderPhoto="";try{const senderSnap=await db.collection("publicProfiles").doc(ch.challengerUid).get();if(senderSnap.exists){const sender=senderSnap.data();senderName=sender.displayName||senderName;senderUsername=sender.username||senderUsername;senderPhoto=sender.photoURL||""}}catch(e){console.warn("Could not load challenge sender profile",e)}if(senderPhoto){const img=socialEl("img","social-avatar");img.src=senderPhoto;img.alt="صورة مرسل التحدي";row.append(img)}else row.append(socialEl("div","social-avatar","👤"));main.append(socialEl("strong","","تحدي وارد من: "+senderName),socialEl("small","",(senderUsername?"@"+senderUsername+" · ":"")+(ch.level||"B1")+" · "+(ch.lessonName||"درس")+" · 20 سؤالًا · 15 ثانية لكل سؤال"));row.append(main,socialButton("قبول وابدأ",async()=>{try{await doc.ref.update({status:"accepted",acceptedAt:firebase.firestore.FieldValue.serverTimestamp()});startChallengeQuiz(doc.id,ch,true)}catch(e){console.error(e);alert("تعذر قبول التحدي: "+(e.code||"")+" "+(e.message||""))}},true),socialButton("رفض",async()=>{try{await doc.ref.update({status:"declined",declinedAt:firebase.firestore.FieldValue.serverTimestamp(),winnerUid:ch.challengerUid,winnerReason:"declined"});alert("تم رفض التحدي، واعتُبر صاحبه فائزًا بالانسحاب.");renderSocial();updateSocialBadge()}catch(e){console.error(e);alert("تعذر رفض التحدي: "+(e.code||"")+" "+(e.message||""))}},true));incomingCh.append(row)}
   const outgoingCh=socialCard(view,"⚔️ تحدياتي المرسلة","");if(!outChallenges.docs.length)outgoingCh.append(socialEl("p","social-muted","لسه ما بعتش تحديات."));outChallenges.docs.slice().reverse().forEach(doc=>{const ch=doc.data(),row=socialEl("div","social-person"),main=socialEl("div","social-person-main");let status=ch.status==="pending"?"في انتظار قبول التحدي":ch.status==="accepted"?"التحدي مقبول":ch.status==="declined"?"انسحب الخصم — فوز لك بالانسحاب":ch.status==="completed"?"انتهى التحدي":"حالة التحدي";main.append(socialEl("strong","",(ch.opponentName||"صديق")+" · "+(ch.lessonName||"درس")),socialEl("small","",status));row.append(main);if(ch.status==="completed"||ch.status==="declined")row.append(socialButton("عرض النتيجة",()=>{challengeFinal=null;challengeWaiting=null;activeChallengeRun=null;st=["CHALLENGE",doc.id];try{history.pushState({st,ex:EXAM},"")}catch(e){}resumeChallengeRoute(doc.id)},true));outgoingCh.append(row)});
+  intro.dataset.socialSection="friends";search.dataset.socialSection="friends";friends.dataset.socialSection="friends";incoming.dataset.socialSection="friends";outgoing.dataset.socialSection="friends";incomingCh.dataset.socialSection="challenges";outgoingCh.dataset.socialSection="challenges";
+  if(socialActiveTab==="challenges"){
+   [intro,search,friends,incoming,outgoing].forEach(el=>el.remove());
+  }else{
+   [incomingCh,outgoingCh].forEach(el=>el.remove());
+  }
   const refresh=socialButton("🔄 تحديث القائمة",()=>renderSocial(),true);view.append(refresh);
  }catch(e){console.error(e);if(token===socialRenderToken){view.innerHTML="";view.append(socialCard(view,"حصلت مشكلة في تحميل الأصدقاء","تأكد من اتصال الإنترنت ومن نشر قواعد Firestore الموجودة مع ملفات الموقع."),socialButton("إعادة المحاولة",()=>renderSocial()))}}
 }
@@ -1142,10 +1158,10 @@ render();
   nav.querySelectorAll('button').forEach(x=>{if(x===b)x.setAttribute('aria-current','page');else x.removeAttribute('aria-current')});
   if(typeof WELCOME!=='undefined')WELCOME=false;
   const h=document.getElementById('hdr'),c=document.getElementById('crumb');if(h)h.style.display='';if(c)c.style.display='';
-  if(tab==='home')st=[];else if(tab==='friends')st=['SOCIAL'];else if(tab==='profile')st=['D'];else st=['SOCIAL'];
+  if(tab==='home')st=[];else if(tab==='friends'){socialActiveTab='friends';st=['SOCIAL']}else if(tab==='profile')st=['D'];else{socialActiveTab='challenges';st=['SOCIAL']}
   try{history.pushState({st,ex:null},'')}catch(_){}
   if(typeof render==='function')render();
-  if(tab==='challenges')setTimeout(()=>{const t=[...document.querySelectorAll('h2,h3,.social-card,.box,.empty')].find(x=>/تحدي|التحديات/.test(x.textContent||''));if(t)t.scrollIntoView({behavior:'smooth',block:'start'})},120);else window.scrollTo({top:0,behavior:'smooth'});
+  window.scrollTo({top:0,behavior:'smooth'});
  });
  const sync=()=>{if(typeof WELCOME!=='undefined'&&WELCOME)nav.style.display='none';else nav.style.display='grid'};
  const oldRender=window.render;if(typeof oldRender==='function'){window.render=function(){const r=oldRender.apply(this,arguments);sync();return r}}
