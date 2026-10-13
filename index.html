@@ -602,11 +602,11 @@ const view=document.getElementById("view"),title=document.getElementById("title"
 let st=[];
 let LR=new Set();
 const PROFILE_KEY="de-profile-v2";
-let profile={xp:0,wordXP:[],completedLessons:[],perfectTests:[],studyDays:{},examResults:[],reviewWords:[],displayName:""};
+let profile={xp:0,wordXP:[],completedLessons:[],perfectTests:[],studyDays:{},dailyWords:{},examResults:[],reviewWords:[],displayName:""};
 try{LR=new Set(JSON.parse(localStorage.getItem("de-learned")||"[]"))}catch(e){}
 try{const old=JSON.parse(localStorage.getItem(PROFILE_KEY)||"{}");profile={...profile,...old}}catch(e){}
 function persistProfile(){
- const data={learned:[...LR],xp:profile.xp||0,wordXP:profile.wordXP||[],completedLessons:profile.completedLessons||[],perfectTests:profile.perfectTests||[],studyDays:profile.studyDays||{},examResults:profile.examResults||[],reviewWords:profile.reviewWords||[]};
+ const data={learned:[...LR],xp:profile.xp||0,wordXP:profile.wordXP||[],completedLessons:profile.completedLessons||[],perfectTests:profile.perfectTests||[],studyDays:profile.studyDays||{},dailyWords:profile.dailyWords||{},examResults:profile.examResults||[],reviewWords:profile.reviewWords||[]};
  try{localStorage.setItem("de-learned",JSON.stringify(data.learned));localStorage.setItem(PROFILE_KEY,JSON.stringify({...profile}))}catch(e){}
  if(fbUser&&db)db.collection("users").doc(fbUser.uid).set(data,{merge:true}).catch(e=>console.error("Cloud save failed",e));
 }
@@ -619,7 +619,7 @@ function studyActivity(){const k=todayKey();profile.studyDays=profile.studyDays|
 function streakCount(){const days=profile.studyDays||{};let n=0,d=new Date(),k=todayKey(d);if(!days[k]){d.setDate(d.getDate()-1);k=todayKey(d);if(!days[k])return 0}while(days[k]){n++;d.setDate(d.getDate()-1);k=todayKey(d)}return n}
 function awardXP(n){profile.xp=Math.max(0,(profile.xp||0)+n);}
 function markWordLearned(id,l,i){
- const isNew=!LR.has(id);if(isNew){LR.add(id);profile.wordXP=profile.wordXP||[];if(!profile.wordXP.includes(id)){profile.wordXP.push(id);awardXP(1)}}
+ const isNew=!LR.has(id);if(isNew){LR.add(id);profile.wordXP=profile.wordXP||[];if(!profile.wordXP.includes(id)){profile.wordXP.push(id);awardXP(1)}profile.dailyWords=profile.dailyWords||{};const day=todayKey();profile.dailyWords[day]=(profile.dailyWords[day]||0)+1}
  studyActivity();
  const lessonKey=l+"-"+i,lessonWords=levelWords(l).filter(w=>w.i===i);
  if(lessonWords.length&&lessonWords.every(w=>LR.has(w.id))){profile.completedLessons=profile.completedLessons||[];if(!profile.completedLessons.includes(lessonKey)){profile.completedLessons.push(lessonKey);awardXP(50);alert("عاش! خلصت الدرس وكسبت 50 XP 🎉")}}
@@ -861,17 +861,14 @@ function renderDashboard(){
  const rank=document.createElement("section");rank.className="rank-card";rank.innerHTML=`<p style="margin:0 0 4px;opacity:.8">رتبتك الحالية</p><p class="rank-name">${r.name}</p><div class="xp-line"><span>${xp} XP</span><span>${r.next===Infinity?"وصلت لأعلى رتبة!":"الرتبة التالية عند "+r.next+" XP"}</span></div><span class="bar" style="background:rgba(255,255,255,.25);height:10px"><i style="width:${progress}%;background:#FFCE00"></i></span><small>سلسلة المذاكرة: 🔥 ${streakCount()} يوم</small>`;view.append(rank);
  const stats=document.createElement("div");stats.className="grid dash-grid";
  [[learned,"كلمة متعلّمة"],[completed,"درس مكتمل"],[review.length,"كلمة للمراجعة"],[(profile.examResults||[]).length,"اختبار تم حله"]].forEach(([n,t])=>{const d=document.createElement("div");d.className="stat";d.innerHTML=`<strong>${n}</strong><span>${t}</span>`;stats.append(d)});view.append(stats);
- const allWords=[];for(const l of Object.keys(LESSONS))allWords.push(...levelWords(l));
- const byId=new Map(allWords.map(w=>[w.id,w]));const saved=[...LR].reverse().map(id=>byId.get(id)).filter(Boolean);
- const h1=document.createElement("h2");h1.className="sec";h1.textContent="الكلمات المحفوظة";view.append(h1);
- if(saved.length){const list=document.createElement("ul");list.className="dash-list";saved.slice(-12).reverse().forEach(w=>{const li=document.createElement("li");li.innerHTML=`<b dir="ltr">${w.de}</b> — ${w.ar} <small style="color:var(--mute)">(${w.l} · ${LESSONS[w.l][w.i]})</small>`;list.append(li)});view.append(list);if(saved.length>12){const small=document.createElement("p");small.className="crumb";small.textContent=`يعرض آخر 12 كلمة من إجمالي ${saved.length} كلمة.`;view.append(small)}}else{const e=document.createElement("div");e.className="empty";e.textContent="لسه ما حفظتش كلمات. ابدأ بأول درس!";view.append(e)}
+ const h1=document.createElement("h2");h1.className="sec";h1.textContent="تقدم حفظ الكلمات خلال الأسبوع";view.append(h1);renderWeeklyWords(view,7);
  const h2=document.createElement("h2");h2.className="sec";h2.textContent="الكلمات اللي محتاجة مراجعة";view.append(h2);
  if(review.length){const list=document.createElement("ul");list.className="dash-list";review.slice(0,20).forEach(w=>{const li=document.createElement("li");li.innerHTML=`<b dir="ltr">${w.de}</b> — ${w.ar} <small style="color:var(--mute)">(${w.l} · ${LESSONS[w.l][w.i]})</small>`;list.append(li)});view.append(list)}else{const e=document.createElement("div");e.className="empty";e.textContent="مفيش كلمات للمراجعة حاليًا. حل اختبارًا وهتظهر هنا الكلمات اللي تغلط فيها.";view.append(e)}
- const h3=document.createElement("h2");h3.className="sec";h3.textContent="تقدمك خلال الأسبوع";view.append(h3);renderActivityBars(view,7);
   const h5=document.createElement("h2");h5.className="sec";h5.textContent="نتائج الاختبارات";view.append(h5);
  const results=profile.examResults||[];if(results.length){const list=document.createElement("ul");list.className="dash-list";results.slice(0,10).forEach(x=>{const li=document.createElement("li"),date=new Date(x.date);const label=x.lesson==null?"تدريب "+x.level:"امتحان "+x.level+" · "+(LESSONS[x.level]?.[x.lesson]||"");li.textContent=`${date.toLocaleDateString("ar-EG")} — ${label} — ${x.score}/${x.total}${x.perfect?" · درجة كاملة 🏆":""}`;list.append(li)});view.append(list)}else{const e=document.createElement("div");e.className="empty";e.textContent="لسه مفيش نتائج اختبارات.";view.append(e)}
  window.scrollTo(0,0);
 }
+function renderWeeklyWords(root,days){const wrap=document.createElement("div");wrap.className="para";const data=profile.dailyWords||{};const vals=[];for(let i=days-1;i>=0;i--){const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-i);const key=todayKey(d);vals.push({key,n:data[key]||0,label:d.toLocaleDateString("ar-EG",{weekday:"short"})})}const max=Math.max(1,...vals.map(x=>x.n));vals.forEach(x=>{const row=document.createElement("div");row.className="progress-row";row.innerHTML=`<span>${x.label}</span><span class="bar"><i style="width:${Math.round(x.n/max*100)}%"></i></span><b>${x.n} كلمة</b>`;wrap.append(row)});const total=vals.reduce((a,x)=>a+x.n,0);const note=document.createElement("p");note.className="crumb";note.style.margin="8px 0 0";note.textContent=`إجمالي الكلمات الجديدة المحفوظة خلال الأسبوع: ${total} كلمة`;wrap.append(note);root.append(wrap)}
 function renderActivityBars(root,days){const wrap=document.createElement("div");wrap.className="para";const data=profile.studyDays||{};const vals=[];for(let i=days-1;i>=0;i--){const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-i);const key=todayKey(d);vals.push({key,n:data[key]||0,label:days===7?d.toLocaleDateString("ar-EG",{weekday:"short"}):d.getDate()+"/"+(d.getMonth()+1)})}const max=Math.max(1,...vals.map(x=>x.n));vals.forEach(x=>{const row=document.createElement("div");row.className="progress-row";row.innerHTML=`<span>${x.label}</span><span class="bar"><i style="width:${Math.round(x.n/max*100)}%"></i></span><b>${x.n}</b>`;wrap.append(row)});const total=vals.reduce((a,x)=>a+x.n,0);const note=document.createElement("p");note.className="crumb";note.style.margin="8px 0 0";note.textContent=`إجمالي أنشطة المذاكرة في الفترة: ${total}`;wrap.append(note);root.append(wrap)}
 /* ===== الأصدقاء والتحديات: 20 سؤالًا، 15 ثانية لكل سؤال ===== */
 let challengeTarget=null, activeChallengeRun=null, challengeWaiting=null, challengeFinal=null, activeChallengeUnsub=null;
@@ -1071,7 +1068,7 @@ function initCloud(){
   authBtn.onclick=()=>fbUser?auth.signOut():auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(e=>alert("تعذّر تسجيل الدخول: "+e.message));
   auth.onAuthStateChanged(async u=>{fbUser=u;authUI();setupSocialBadges();if(!u){renderDashboardIfVisible();return}
    try{const d=await db.collection("users").doc(u.uid).get();
-    if(d.exists){const cloud=d.data();LR=new Set(cloud.learned||[]);profile={...profile,xp:cloud.xp||0,wordXP:cloud.wordXP||[],completedLessons:cloud.completedLessons||[],perfectTests:cloud.perfectTests||[],studyDays:cloud.studyDays||{},examResults:cloud.examResults||[],reviewWords:cloud.reviewWords||[],displayName:cloud.displayName||profile.displayName||""};persistProfile()}
+    if(d.exists){const cloud=d.data();LR=new Set(cloud.learned||[]);profile={...profile,xp:cloud.xp||0,wordXP:cloud.wordXP||[],completedLessons:cloud.completedLessons||[],perfectTests:cloud.perfectTests||[],studyDays:cloud.studyDays||{},dailyWords:cloud.dailyWords||{},examResults:cloud.examResults||[],reviewWords:cloud.reviewWords||[],displayName:cloud.displayName||profile.displayName||""};persistProfile()}
     else persistProfile();
     render()}catch(e){console.error(e);alert("تم تسجيل الدخول، لكن تعذرت قراءة التقدم من Google. تأكد من إعدادات Firestore.")}})}catch(e){console.error(e)}}
 try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
