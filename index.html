@@ -871,7 +871,7 @@ function renderDashboard(){
 }
 function renderActivityBars(root,days){const wrap=document.createElement("div");wrap.className="para";const data=profile.studyDays||{};const vals=[];for(let i=days-1;i>=0;i--){const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-i);const key=todayKey(d);vals.push({key,n:data[key]||0,label:days===7?d.toLocaleDateString("ar-EG",{weekday:"short"}):d.getDate()+"/"+(d.getMonth()+1)})}const max=Math.max(1,...vals.map(x=>x.n));vals.forEach(x=>{const row=document.createElement("div");row.className="progress-row";row.innerHTML=`<span>${x.label}</span><span class="bar"><i style="width:${Math.round(x.n/max*100)}%"></i></span><b>${x.n}</b>`;wrap.append(row)});const total=vals.reduce((a,x)=>a+x.n,0);const note=document.createElement("p");note.className="crumb";note.style.margin="8px 0 0";note.textContent=`إجمالي أنشطة المذاكرة في الفترة: ${total}`;wrap.append(note);root.append(wrap)}
 /* ===== الأصدقاء والتحديات: 20 سؤالًا متنوعًا، 30 ثانية لكل سؤال ===== */
-let challengeTarget=null, activeChallengeRun=null, challengeWaiting=null, challengeFinal=null;
+let challengeTarget=null, activeChallengeRun=null, challengeWaiting=null, challengeFinal=null, activeChallengeUnsub=null;
 let socialRenderToken=0, socialBadgeUnsubs=[];
 const socialBtn=document.getElementById("social");
 function socialEl(tag,cls,text){const e=document.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=text;return e}
@@ -953,20 +953,37 @@ function seededRandom(seed){let a=(seed>>>0)||1;return()=>{a|=0;a=a+0x6D2B79F5|0
 function seededShuffle(arr,rng){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 function buildChallengeQuestions(level,lessonIndex,seed){
  const rng=seededRandom(seed),raw=(WORDS[level+"-"+(lessonIndex+1)]||{}),words=[];
- for(const c of ["m","f","n","v","a"])(raw[c]||[]).forEach(w=>words.push({c,de:w[0],ar:w[1],ex:w[2]||"",exAr:w[3]||""}));
- const types={meaning:[],reverse:[],article:[],plural:[],category:[],writeMeaning:[]};const categoryName={m:"اسم مذكر (der)",f:"اسم مؤنث (die)",n:"اسم محايد (das)",v:"فعل",a:"صفة"};
- const make=(type,w,prompt,correct,pool,promptDir)=>{const distractors=seededShuffle([...new Set(pool.filter(x=>x&&x!==correct))],rng).slice(0,3);const options=seededShuffle([...new Set([correct,...distractors])],rng);if(options.length<2)return;types[type].push({type,word:w.de,prompt,options,answer:options.indexOf(correct),promptDir:promptDir||"ltr"})};
- const allGerman=words.map(w=>w.de),allArabic=words.map(w=>w.ar).filter(Boolean),allPlurals=[];
- words.forEach(w=>{if("mfn".includes(w.c)){const noun=w.de.replace(/^(der|die|das)\s+/i,"");const pl=plOf(noun);if(pl!==null&&pl!==noun)allPlurals.push({word:w.de,plural:pl})}});
+ for(const c of ["m","f","n","v","a"])(raw[c]||[]).forEach(w=>words.push({c,de:w[0],ar:w[1]}));
+ const types={meaning:[],article:[]};
+ const makeMeaning=(w)=>{
+  const pool=seededShuffle([...new Set(words.map(x=>x.ar).filter(x=>x&&x!==w.ar))],rng);
+  const options=seededShuffle([w.ar,...pool.slice(0,2)],rng);
+  if(options.length===3)types.meaning.push({type:"meaning",word:w.de,prompt:w.de,options,answer:options.indexOf(w.ar),promptDir:"ltr"});
+ };
  words.forEach(w=>{
-  if(w.ar){make("meaning",w,"اختر معنى الكلمة: "+w.de,w.ar,allArabic,"ltr");make("reverse",w,"اختر الكلمة الألمانية التي تعني: "+w.ar,w.de,allGerman,"rtl");types.writeMeaning.push({type:"writeMeaning",word:w.de,prompt:w.de,answerText:w.ar,promptDir:"ltr"})}
-  make("category",w,"ما نوع الكلمة: "+w.de,categoryName[w.c],Object.values(categoryName),"ltr");
-  if("mfn".includes(w.c)){const noun=w.de.replace(/^(der|die|das)\s+/i,"");make("article",w,noun,{m:"der",f:"die",n:"das"}[w.c],["der","die","das"],"ltr");const pl=plOf(noun);if(pl!==null&&pl!==noun)types.plural.push({type:"plural",word:w.de,prompt:w.de,answerText:pl,promptDir:"ltr"})}
+  if(w.ar)makeMeaning(w);
+  if("mfn".includes(w.c)){
+   const noun=w.de.replace(/^(der|die|das)\s+/i,"");
+   const options=seededShuffle(["der","die","das"],rng);
+   types.article.push({type:"article",word:w.de,prompt:noun,options,answer:options.indexOf({m:"der",f:"die",n:"das"}[w.c]),promptDir:"ltr"});
+  }
  });
  Object.keys(types).forEach(k=>types[k]=seededShuffle(types[k],rng));
- const order=seededShuffle(["meaning","article","plural","category","reverse","writeMeaning"],rng),used=new Set(),qs=[];let loops=0;
- while(qs.length<20&&loops<100){let added=false;for(const t of order){if(qs.length>=20)break;const arr=types[t];let q=null;while(arr.length&&!q){const candidate=arr.shift();const sig=candidate.type+"|"+candidate.word+"|"+candidate.prompt;if(!used.has(sig))q=candidate}if(q){used.add(q.type+"|"+q.word+"|"+q.prompt);qs.push(q);added=true}}if(!added)break;loops++}
- if(qs.length<20){const backup=types.meaning.concat(types.reverse,types.category);while(qs.length<20&&backup.length){const q=backup.shift();qs.push(q)}}
+ const allQuestions=seededShuffle([...types.meaning,...types.article],rng);
+ const qs=[],used=new Set();
+ while(qs.length<20){
+  const available=["meaning","article"].filter(t=>types[t].length);
+  if(!available.length)break;
+  // Alternate question types while keeping the same seeded order on both players' devices.
+  const preferred=qs.length%2===0?"meaning":"article";
+  const type=types[preferred].length?preferred:available[0];
+  let q=null;
+  while(types[type].length&&!q){const candidate=types[type].shift();const sig=candidate.type+"|"+candidate.word;if(!used.has(sig)){used.add(sig);q=candidate}}
+  if(q)qs.push(q);
+ }
+ if(qs.length<20&&allQuestions.length){
+  let i=0;while(qs.length<20){qs.push(allQuestions[i%allQuestions.length]);i++}
+ }
  return qs.slice(0,20);
 }
 function startChallengeQuiz(id,data,isOpponent){
@@ -978,7 +995,7 @@ function showChallengeQuestion(){
  if(run.index>=20){submitChallengeResult(run);return}
  const q=run.questions[run.index],limit=30000;
  title.textContent="تحدي الألماني ⚔️";crumb.textContent=(run.data.level||"B1")+" · "+(run.data.lessonName||"درس")+(run.isOpponent?" · قبلت التحدي":" · تحديك المرسل");back.hidden=true;view.innerHTML="";
- const meta=socialEl("p","crumb","سؤال "+(run.index+1)+" من 20 · الوقت: "+(limit/1000)+" ثوانٍ");view.append(meta);
+ const meta=socialEl("p","crumb",""+(run.index+1)+" / 20");view.append(meta);
  const timer=socialEl("div","challenge-timer",(limit/1000)+" ثوانٍ");timer.id="challengeTimer";view.append(timer);
  const prompt=socialEl("div","qbox "+(q.promptDir==="rtl"?"":"de"),q.prompt);view.append(prompt);
  if(q.type==="plural"||q.type==="writeMeaning"){
@@ -988,7 +1005,6 @@ function showChallengeQuestion(){
  }else{
   const grid=socialEl("div","grid cats");q.options.forEach((option,idx)=>{const b=socialButton(option,()=>answerChallenge(idx,false),true);b.classList.add("challenge-choice");b.style.direction=q.type==="reverse"?"ltr":(q.type==="meaning"?"rtl":"ltr");grid.append(b)});view.append(grid);
  }
- const hint=socialEl("p","social-muted","نوع السؤال: "+({meaning:"اختيار المعنى",writeMeaning:"كتابة المعنى",reverse:"اختيار الكلمة",article:"اختيار أداة التعريف",plural:"كتابة الجمع",category:"نوع الكلمة"}[q.type]||"مفردات متنوعة"));view.append(hint);
  run.questionStart=Date.now();run.questionLimit=limit;run.timer=setInterval(()=>{if(!activeChallengeRun||activeChallengeRun!==run||run.locked)return;const left=Math.max(0,limit-(Date.now()-run.questionStart));timer.textContent=(left/1000).toFixed(1)+" ثانية";if(left<=0)answerChallenge(null,true)},50);
 }
 function normalizeChallengeText(value){return String(value||"").trim().toLocaleLowerCase("de").normalize("NFC").replace(/[.!؟?،,]/g,"").replace(/\s+/g," ")}
@@ -999,7 +1015,10 @@ function answerChallenge(choice,timedOut){
  if(correct){run.correct++;run.speedPoints+=Math.max(0,1-elapsed/limit)}
  const buttons=[...view.querySelectorAll(".challenge-choice")];buttons.forEach((b,i)=>{b.disabled=true;if(q.type!=="plural"&&q.type!=="writeMeaning"&&i===q.answer)b.classList.add("ok");else if(typeof choice==="number"&&i===choice&&!correct)b.classList.add("bad")});
  const input=view.querySelector("input");if(input)input.disabled=true;const submit=view.querySelector("form button");if(submit)submit.disabled=true;
- const msg=socialEl("div","fb "+(correct?"ok":"bad"),timedOut?"انتهى الوقت!":correct?"إجابة صحيحة!":"إجابة غير صحيحة");if(q.type==="plural"||q.type==="writeMeaning")msg.textContent+=(q.type==="plural"?" · الجمع الصحيح: ":" · المعنى الصحيح: ")+q.answerText;view.append(msg);setTimeout(()=>{if(activeChallengeRun===run){run.index++;showChallengeQuestion()}},500);
+ const correctText=q.options&&q.options[q.answer]!==undefined?q.options[q.answer]:"";
+ const msg=socialEl("div","fb "+(correct?"ok":"bad"),correct?("صح!"):(timedOut?"انتهى الوقت":"غلط · الصح: "+correctText));
+ if(!correct&&correctText){const answerNote=socialEl("div","social-muted",correctText);answerNote.style.fontSize="1.1em";answerNote.style.fontWeight="700";view.append(msg,answerNote)}else view.append(msg);
+ setTimeout(()=>{if(activeChallengeRun===run){run.index++;showChallengeQuestion()}},correct?500:3000);
 }
 async function submitChallengeResult(run){
  clearInterval(run.timer);if(!fbUser||!db){alert("اتقطع الاتصال بحسابك. سجّل الدخول مرة أخرى.");return}
