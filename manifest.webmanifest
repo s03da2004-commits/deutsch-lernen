@@ -1,12 +1,20 @@
 {
-  "name": "Deutsch mit Spaß",
+  "name": "Deutsch mit so3da",
   "short_name": "Deutsch",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#fbfaff",
-  "theme_color": "#62458f",
+  "background_color": "#F7F5FB",
+  "theme_color": "#B2A0D6",
   "icons": [
-    {"src": "./icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
-    {"src": "./icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"}
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
   ]
 }
