@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>تعلّم الألماني</title>
+<title>Deutsch mit so3da</title>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -20,7 +20,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 Cairo,Tahoma,s
 .wrap{max-width:860px;margin:0 auto;padding:20px}
 :focus-visible{outline:3px solid var(--m);outline-offset:3px}
 header{display:flex;align-items:center;gap:14px;margin-bottom:8px;flex-wrap:wrap}
-h1{margin:0;font-size:clamp(26px,5vw,38px);font-weight:900;flex:1}
+h1{margin:0;font-size:clamp(26px,5vw,38px);font-weight:900;flex:1}.brand-stack{flex:1;min-width:0}.brand-stack h1{direction:ltr;text-align:right}.brand-logo{display:inline-block;background:#050505;color:#fff;border-radius:7px;padding:3px 11px;font-size:clamp(17px,3.8vw,25px);line-height:1.45;letter-spacing:.2px;white-space:nowrap;box-shadow:0 2px 5px #0002}.brand-logo .logo-deutsch{color:#fff}.brand-logo .logo-mit{color:#dd2434}.brand-logo .logo-so3da{color:#ffce00}.brand-note{margin:5px 0 0;color:var(--mute);font-size:12px;line-height:1.5}.brand-note[hidden]{display:none}
 .back{border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:6px 16px;font:700 15px Cairo,sans-serif;cursor:pointer}
 .icon-nav{width:42px;height:42px;min-width:42px;padding:0;display:inline-grid;place-items:center;border-radius:12px;flex:none}
 .icon-nav svg{width:23px;height:23px;display:block}
@@ -152,7 +152,7 @@ h1{margin:0;font-size:clamp(26px,5vw,38px);font-weight:900;flex:1}
 </head>
 <body>
 <div class="wrap">
-<header id="hdr"><h1 id="title">تعلّم الألماني</h1><button class="back" id="back" hidden>رجوع</button><button class="back icon-nav" id="dashboard" type="button" title="الصفحة الشخصية" aria-label="الصفحة الشخصية"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="8.5" cy="10" r="2"/><path d="M5.5 16c.7-2 5.3-2 6 0M14 9h4M14 13h4M14 16h2"/></svg></button><button class="back icon-nav" id="social" type="button" title="الأصدقاء" aria-label="الأصدقاء"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3.5 19v-1.2A4.8 4.8 0 0 1 8.3 13h1.4a4.8 4.8 0 0 1 4.8 4.8V19z"/><path d="M16 5.5a3 3 0 0 1 0 5.8M17 13.3a4.8 4.8 0 0 1 3.5 4.6V19h-3"/></svg></button><button class="back" id="auth" hidden></button></header>
+<header id="hdr"><div class="brand-stack"><h1 id="title">Deutsch mit so3da</h1><p id="brand-note" class="brand-note" hidden>في حالة وجود مشكلة في الموقع، ادعُ للمبرمج بالهداية.</p></div><button class="back" id="back" hidden>رجوع</button><button class="back icon-nav" id="dashboard" type="button" title="الصفحة الشخصية" aria-label="الصفحة الشخصية"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="8.5" cy="10" r="2"/><path d="M5.5 16c.7-2 5.3-2 6 0M14 9h4M14 13h4M14 16h2"/></svg></button><button class="back icon-nav" id="social" type="button" title="الأصدقاء" aria-label="الأصدقاء"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3.5 19v-1.2A4.8 4.8 0 0 1 8.3 13h1.4a4.8 4.8 0 0 1 4.8 4.8V19z"/><path d="M16 5.5a3 3 0 0 1 0 5.8M17 13.3a4.8 4.8 0 0 1 3.5 4.6V19h-3"/></svg></button><button class="back" id="auth" hidden></button></header>
 <p class="crumb" id="crumb">اختر مستواك</p>
 <div id="view"></div>
 </div>
@@ -780,6 +780,7 @@ function btn(html,cls,fn){const b=document.createElement("button");b.className=c
 function render(){
  view.innerHTML="";const homeView=st.length===0;document.getElementById("dashboard").hidden=!homeView;document.getElementById("social").hidden=!homeView;if(WELCOME){renderWelcome();return}
  const[l,i,c,d]=st;stopRead();
+ document.getElementById("brand-note").hidden=st.length!==0;
  back.hidden=!st.length;
  if(l==="S"){renderSpeak(i,c,d);return}
  if(l==="G"){renderLevelGoals(i);return}
@@ -788,7 +789,7 @@ function render(){
  if(l==="CHALLENGE"){if(activeChallengeRun)return;if(challengeFinal&&challengeFinal.id===i){renderChallengeFinal(challengeFinal);return}if(challengeWaiting&&challengeWaiting.id===i){renderChallengeWaiting(challengeWaiting);return}resumeChallengeRoute(i);return}
  if(i==="quiz"){EXAM=null;QN=10;renderQuiz(l);return}
  if(i==="exam"){renderExam(l,EXAM);return}
- if(!l){title.textContent="تعلّم الألماني";crumb.textContent="اختر مستواك";
+ if(!l){title.innerHTML='<span class="brand-logo"><span class="logo-deutsch">Deutsch</span> <span class="logo-mit">mit</span> <span class="logo-so3da">so3da</span></span>';document.getElementById("brand-note").hidden=false;crumb.textContent="اختر مستواك";
   const g=document.createElement("div");g.className="grid levels";
   Object.keys(LESSONS).forEach(k=>g.append(btn(`<span class="lvl">${k}</span><small>${LEVEL_NAMES[k]}</small><span class="pct">${pct(k)}% محفوظ</span><span class="bar"><i style="width:${pct(k)}%"></i></span>`,"box lv"+k,()=>go(k))));view.append(g);renderSpeakLevels()}
  else if(i==null){title.textContent="المستوى "+l;crumb.textContent="اختر الدرس";
