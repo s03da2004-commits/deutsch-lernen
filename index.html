@@ -122,8 +122,6 @@ h1{margin:0;font-size:clamp(26px,5vw,38px);font-weight:900;flex:1}.brand-stack{f
 .chk{order:-1;width:38px;height:38px;border-radius:50%;border:2px solid var(--line);background:none;color:transparent;font-size:20px;line-height:1;cursor:pointer;flex:none}
 .chk[aria-pressed="true"]{background:var(--n);border-color:var(--n);color:#fff}
 .dash-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
-.name-edit{border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:50%;width:38px;height:38px;display:inline-grid;place-items:center;cursor:pointer;flex:none}
-.name-edit:hover{border-color:var(--n)}
 .rank-card{background:var(--ink);color:var(--bg);border-radius:14px;padding:20px;margin:12px 0 18px}
 .rank-name{font-size:28px;font-weight:900;margin:0}
 .xp-line{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-weight:700}
@@ -133,9 +131,14 @@ h1{margin:0;font-size:clamp(26px,5vw,38px);font-weight:900;flex:1}.brand-stack{f
 .stat span{color:var(--mute);font-size:14px}
 .dash-list{margin:0;padding:0;list-style:none;display:grid;gap:8px}
 .dash-list li{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 12px;overflow-wrap:anywhere}
-.progress-row{display:grid;grid-template-columns:85px 1fr 36px;gap:8px;align-items:center;margin:8px 0;font-size:14px}
+.progress-row{display:grid;grid-template-columns:85px 1fr 52px;gap:8px;align-items:center;margin:8px 0;font-size:14px}
 .progress-row .bar{margin:0}
 
+.challenge-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:10px 0 16px;padding:12px;background:var(--card);border:1px solid var(--line);border-radius:14px}
+.challenge-stat{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:0;text-align:center}
+.challenge-stat strong{font-size:25px;line-height:1.15;font-weight:900}
+.challenge-stat span{font-size:13px;color:var(--text);font-weight:700}
+@media(max-width:480px){.challenge-stats{gap:4px;padding:10px 5px}.challenge-stat strong{font-size:22px}.challenge-stat span{font-size:11px}}
 .social-card{background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:16px;margin:14px 0}
 .social-card h2,.social-card h3{margin:0 0 8px;font-size:20px}
 .social-muted{color:var(--mute);font-size:14px;margin:4px 0 10px}
@@ -185,9 +188,15 @@ h1{margin:0;font-size:clamp(26px,5vw,38px);font-weight:900;flex:1}.brand-stack{f
   .levels>.box small{font-size:12px;line-height:1.5}
   .levels>.box .pct{font-size:14px}
   .levels>.box .bar{height:6px}
-  #hdr{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:12px}
+  #hdr{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px;position:relative}
   #hdr .brand-stack{order:0;flex:0 0 100%;width:100%;text-align:center;min-width:0}
   #hdr .brand-stack h1{text-align:center;line-height:1.35}
+  /* داخل الصفحات: العنوان ناحية اليمين وزر الرجوع أقصى الشمال */
+  #hdr.page-view{justify-content:space-between;flex-wrap:nowrap}
+  #hdr.page-view .brand-stack{order:0;flex:1 1 auto;width:auto;text-align:right;min-width:0}
+  #hdr.page-view .brand-stack h1{text-align:right;font-size:clamp(21px,5.5vw,30px)}
+  #hdr.page-view #back{order:2;flex:0 0 auto;margin:0 0 0 auto;white-space:nowrap}
+  #hdr.page-view #auth:not([hidden]){order:1;flex:0 0 100%;width:100%}
   #hdr .brand-logo{max-width:100%;white-space:normal;overflow-wrap:anywhere;display:inline-block;padding:4px 10px}
   #hdr .brand-note{max-width:100%;width:100%;margin:7px auto 0;padding:0 5px;font-size:12px;line-height:1.8;white-space:normal;overflow-wrap:anywhere;word-break:normal;text-align:center}
   /* Put Google sign-in on its own full-width row, with the two icon buttons below it */
@@ -205,8 +214,6 @@ h1{margin:0;font-size:clamp(26px,5vw,38px);font-weight:900;flex:1}.brand-stack{f
 #hdr .icon-nav:active{transform:translateY(1px)}
 #hdr .icon-nav svg{stroke:currentColor}
 .google-profile-photo{border:3px solid #B2A0D6;box-shadow:0 0 0 3px #F0EAF9}
-.name-edit{border-color:#D8C9EE;background:#F7F2FD;color:#70569B}
-.name-edit:hover{border-color:#70569B;background:#EDE4F8;color:#5D438A}
 .social-card{border-color:#E3D9F1;box-shadow:0 3px 12px rgba(112,86,155,.045)}
 .social-card h2,.social-card h3{border-right:3px solid #B2A0D6;padding-right:9px}
 .social-person{border-color:#E7E0F0}
@@ -227,7 +234,7 @@ body{background:var(--bg)}
 /* These shortcuts are duplicated in the bottom navigation */
 #dashboard,#social{display:none!important}
 body{padding-bottom:82px}
-#app-bottom-nav{position:fixed;z-index:9999;bottom:0;left:0;right:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;padding:7px max(10px,env(safe-area-inset-right)) calc(7px + env(safe-area-inset-bottom,0px)) max(10px,env(safe-area-inset-left));background:rgba(255,255,255,.97);border-top:1px solid #e9e3f2;box-shadow:0 -4px 18px rgba(79,55,119,.06)}
+#app-bottom-nav{position:fixed;z-index:9999;bottom:0;left:0;right:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;padding:7px max(10px,env(safe-area-inset-right)) calc(7px + env(safe-area-inset-bottom,0px)) max(10px,env(safe-area-inset-left));background:rgba(255,255,255,.97);border-top:1px solid #e9e3f2;box-shadow:0 -4px 18px rgba(79,55,119,.06)}
 #app-bottom-nav button{border:0;background:transparent;color:#777080;border-radius:12px;min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;font:700 11px/1.4 Cairo,Tahoma,sans-serif;cursor:pointer;padding:4px 2px}
 #app-bottom-nav .nav-ico{font-size:20px;line-height:1.2;display:flex;align-items:center;justify-content:center}#app-bottom-nav .nav-ico svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 #app-bottom-nav button[aria-current=page]{background:#f1ecf9;color:#62458f}
@@ -239,6 +246,21 @@ body{padding-bottom:82px}
 .friend-search-bar .social-input{flex:3 1 0;width:0;min-width:0;margin:0}
 .friend-search-bar .go{flex:1 1 0;min-width:0;margin:0;padding:10px 6px;white-space:nowrap}
 @media(max-width:380px){.friend-search-bar{gap:5px}.friend-search-bar .go{font-size:13px}}
+/* صورة الحساب داخل مربع الرتبة وإعداد تغيير الاسم */
+.rank-card{position:relative}
+.rank-card-top{display:flex;direction:ltr;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:4px}
+.rank-card-top-copy{direction:rtl;flex:1;min-width:0}
+.rank-card-avatar{width:58px;height:58px;flex:0 0 58px;border-radius:50%;object-fit:cover;border:3px solid #B2A0D6;background:var(--card,#222);box-shadow:0 0 0 3px rgba(240,234,249,.25);display:grid;place-items:center;overflow:hidden;font-size:27px;line-height:1}.rank-card-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block}
+.settings-name-row{display:grid;gap:8px}
+.settings-name-row label{font-weight:700}
+.settings-name-row input{width:100%;box-sizing:border-box;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit}
+.settings-name-row button{border:0;border-radius:10px;padding:11px 14px;background:var(--primary-dark);color:#fff;font:700 14px Cairo,Tahoma,sans-serif;cursor:pointer}
+/* صفحة الإعدادات */
+.settings-card{background:var(--card);color:var(--ink);border:1.5px solid var(--line);border-radius:14px;padding:16px;margin:0 0 14px;display:grid;gap:12px}
+.settings-card h2{font-size:18px;margin:0}.settings-card p{font-size:14px;color:var(--mute);margin:0}
+#settings-auth-slot #auth{display:block;width:100%;margin:0;padding:12px;border:0;border-radius:11px;background:var(--primary-dark);color:#fff;font:700 15px Cairo,Tahoma,sans-serif;white-space:normal}
+#settings-auth-slot #auth[hidden]{display:none}
+.settings-nav-icon{font-size:21px;line-height:1}
 /* إعدادات المظهر داخل الملف الشخصي */
 .theme-setting{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:0 0 16px;padding:15px 16px;background:var(--card);color:var(--ink);border:1.5px solid var(--line);border-radius:14px;box-shadow:0 2px 9px rgba(79,55,119,.045)}
 .theme-setting-copy{display:grid;gap:2px}.theme-setting-copy strong{font-size:16px}.theme-setting-copy span{font-size:13px;color:var(--mute)}
@@ -254,7 +276,6 @@ body{padding-bottom:82px}
 :root[data-theme="dark"] #hdr .icon-nav{border-color:#393047;background:#211B2D;color:#D7C2FF}
 :root[data-theme="dark"] #hdr .icon-nav:hover,:root[data-theme="dark"] #hdr .icon-nav:focus-visible{border-color:#8B6BC1;background:#302541;color:#F0E7FF}
 :root[data-theme="dark"] .google-profile-photo{border-color:#8B6BC1;box-shadow:0 0 0 3px #211B2D}
-:root[data-theme="dark"] .name-edit{border-color:#393047;background:#211B2D;color:#D7C2FF}
 :root[data-theme="dark"] .social-card{border-color:var(--line);box-shadow:0 3px 12px rgba(0,0,0,.2)}
 :root[data-theme="dark"] .social-person{border-color:var(--line)}
 :root[data-theme="dark"] .friend-row .social-avatar{border-color:#49405B}
@@ -1039,7 +1060,7 @@ function speak(t,c){
  speechSynthesis.speak(u)}
 function btn(html,cls,fn){const b=document.createElement("button");b.className=cls;b.innerHTML=html;b.onclick=fn;return b}
 function render(){
- view.innerHTML="";const homeView=st.length===0;document.getElementById("dashboard").hidden=!homeView;document.getElementById("social").hidden=!homeView;if(WELCOME){renderWelcome();return}
+ view.innerHTML="";const homeView=st.length===0;document.getElementById("dashboard").hidden=!homeView;document.getElementById("social").hidden=!homeView;crumb.style.display="";document.getElementById("hdr").classList.toggle("page-view",!homeView&&!WELCOME);if(WELCOME){document.getElementById("hdr").classList.remove("page-view");renderWelcome();return}
  const[l,i,c,d]=st;stopRead();
  document.getElementById("brand-note").hidden=st.length!==0;
  back.hidden=!st.length;
@@ -1049,6 +1070,7 @@ function render(){
  if(l==="PQ"){renderProverbQuiz(i);return}
  if(l==="G"){renderLevelGoals(i);return}
  if(l==="D"){renderDashboard();return}
+ if(l==="SETTINGS"){renderSettings();return}
  if(l==="SOCIAL"){renderSocial();return}
  if(l==="CHALLENGE"){if(activeChallengeRun)return;if(challengeFinal&&challengeFinal.id===i){renderChallengeFinal(challengeFinal);return}if(challengeWaiting&&challengeWaiting.id===i){renderChallengeWaiting(challengeWaiting);return}resumeChallengeRoute(i);return}
  if(i==="quiz"){EXAM=null;QN=10;renderQuiz(l);return}
@@ -1059,7 +1081,7 @@ function render(){
   g.append(btn('<span class="lvl">B2</span><small>فوق المتوسط</small><span class="pct">قريبًا</span>',"box lvB2",()=>go("B2")));
   view.append(g);renderSpeakLevels()}
  else if(l==="B2"&&i==null){title.textContent="B2 · فوق المتوسط";crumb.textContent="المحتوى قيد التجهيز";view.innerHTML='<div class="empty">قسم B2 جاهز، وهنا هنضيف الكلمات والدروس لما تجهزهم.</div>'}
- else if(i==null){title.textContent="المستوى "+l;crumb.textContent="اختر الدرس";
+ else if(i==null){title.textContent="مستوى "+l;crumb.textContent="اختر الدرس";
   const g=document.createElement("div");g.className="grid lessons";
   view.append(btn("ابدأ التمرين · "+pct(l)+"% محفوظ","go",()=>go(l,"quiz")));LESSONS[l].forEach((n,j)=>{const t=document.createElement("div");t.className="tile";
   const a=btn(`<span class="num">درس ${j+1}</span><span>${n}</span>`,"t1",()=>go(l,j));
@@ -1087,47 +1109,59 @@ function render(){
  window.scrollTo(0,0)}
 function escapeHtml(value){return String(value).replace(/[&<>"\']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;", "\'":"&#39;"}[ch]));}
 function renderDashboard(){
- title.textContent="لوحة تحكمي";crumb.textContent=fbUser?"تقدمك محفوظ على حساب جوجل":"تقدمك محفوظ على هذا الجهاز · سجّل بجوجل لمزامنته";view.innerHTML="";
- const r=currentRank(),xp=profile.xp||0,progress=r.next===Infinity?100:Math.min(100,Math.round((xp-r.min)/(r.next-r.min)*100));
+ title.textContent="";crumb.textContent="";crumb.style.display="none";view.innerHTML="";
+ const r=currentRank(),xp=profile.xp||0,nextRank=RANKS[RANKS.indexOf(r)+1],progress=r.next===Infinity?100:Math.min(100,Math.round((xp-r.min)/(r.next-r.min)*100));
  const learned=LR.size,completed=(profile.completedLessons||[]).length,review=(profile.reviewWords||[]).filter(id=>levelWords(id.split("-")[0]).some(w=>w.id===id));
  const displayName=String(profile.displayName||"").trim();
  const head=document.createElement("div");head.className="dash-head";
  const welcome=document.createElement("div");welcome.style.display="flex";welcome.style.alignItems="center";welcome.style.gap="10px";
- const avatar=document.createElement("div");avatar.className="google-profile-photo";avatar.setAttribute("aria-label","صورتك الشخصية");avatar.textContent="👤";
- if(fbUser&&fbUser.photoURL){const photo=document.createElement("img");photo.src=fbUser.photoURL;photo.alt="صورتك الشخصية من Google";photo.referrerPolicy="no-referrer";photo.onerror=()=>{photo.remove();avatar.textContent="👤"};avatar.textContent="";avatar.append(photo)}
  const greeting=document.createElement("h2");greeting.className="sec";greeting.style.margin="0";greeting.textContent=`أهلاً ${displayName||"بيك يا بطل"} 👑`;
- const editName=document.createElement("button");editName.type="button";editName.className="name-edit";editName.textContent="✏️";editName.title="تغيير الاسم";editName.setAttribute("aria-label","تغيير الاسم");editName.addEventListener("click",()=>{
-  const old=document.getElementById("display-name-dialog");if(old)old.remove();
-  const overlay=document.createElement("div");overlay.id="display-name-dialog";overlay.style.cssText="position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.68);display:flex;align-items:center;justify-content:center;padding:16px;";
-  const box=document.createElement("form");box.style.cssText="width:min(420px,100%);background:var(--card,#20232b);color:var(--text,#fff);border:1px solid var(--line,#444);border-radius:16px;padding:20px;display:grid;gap:12px;box-shadow:0 12px 40px #0008;";
-  const label=document.createElement("label");label.htmlFor="display-name-input";label.textContent="اكتب اسمك اللي يظهر في الموقع";label.style.fontWeight="700";
-  const input=document.createElement("input");input.id="display-name-input";input.type="text";input.maxLength=40;input.value=profile.displayName||"";input.placeholder="اكتب اسمك هنا";input.autocomplete="nickname";input.style.cssText="width:100%;box-sizing:border-box;padding:12px;border-radius:10px;border:1px solid var(--line,#555);background:var(--bg,#15171c);color:inherit;font:inherit;";
-  const hint=document.createElement("small");hint.textContent=fbUser?"اسمك هيتحفظ على جهازك وحسابك.":"مش لازم تسجّل بجوجل لتغيير الاسم؛ هيتحفظ على الجهاز ده. سجّل بجوجل لو عايزه يتزامن مع أصحابك.";hint.style.color="var(--mute,#aaa)";
-  const actions=document.createElement("div");actions.style.cssText="display:flex;gap:8px;justify-content:flex-start;flex-wrap:wrap;";
-  const save=document.createElement("button");save.type="submit";save.textContent="حفظ الاسم";save.style.cssText="padding:10px 16px;border:0;border-radius:10px;background:var(--n,#eee);color:#111;font:inherit;font-weight:700;cursor:pointer;";
-  const cancel=document.createElement("button");cancel.type="button";cancel.textContent="إلغاء";cancel.style.cssText="padding:10px 16px;border:1px solid var(--line,#555);border-radius:10px;background:transparent;color:inherit;font:inherit;cursor:pointer;";cancel.addEventListener("click",()=>overlay.remove());
-  actions.append(save,cancel);box.append(label,input,hint,actions);overlay.append(box);overlay.addEventListener("click",e=>{if(e.target===overlay)overlay.remove()});box.addEventListener("submit",async e=>{e.preventDefault();const name=input.value.trim();if(!name){hint.textContent="اكتب اسمك الأول.";input.focus();return}if(name.length>40){hint.textContent="الاسم لازم يكون 40 حرف أو أقل.";return}save.disabled=true;save.textContent="جاري الحفظ…";profile.displayName=name;persistProfile();overlay.remove();renderDashboard();if(fbUser&&db){try{await db.collection("publicProfiles").doc(fbUser.uid).set({displayName:name,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});const fs=await db.collection("users").doc(fbUser.uid).collection("friends").get();const batch=db.batch();fs.docs.forEach(d=>batch.set(d.ref,{displayName:name},{merge:true}));await batch.commit()}catch(err){console.error("Display name cloud update failed",err);alert("اسمك اتحفظ على الجهاز، لكن تعذر تحديثه عند أصحابك. راجع صلاحيات Firestore.")}}});view.append(overlay);input.focus();input.select();
- });welcome.append(avatar,greeting,editName);head.append(welcome,btn("عرض الدروس","back",()=>go()));view.append(head);
- const themeBox=document.createElement("section");themeBox.className="theme-setting";themeBox.setAttribute("aria-label","إعدادات المظهر");
- const themeCopy=document.createElement("div");themeCopy.className="theme-setting-copy";
- const themeTitle=document.createElement("strong");themeTitle.textContent="🎨 مظهر الموقع";
- const themeHint=document.createElement("span");themeHint.textContent="اختار الشكل اللي يريح عينك، واختيارك هيتحفظ.";
- themeCopy.append(themeTitle,themeHint);
- const themeBtn=document.createElement("button");themeBtn.type="button";themeBtn.className="theme-toggle";
- function updateThemeButton(){const dark=document.documentElement.getAttribute("data-theme")==="dark";themeBtn.textContent=dark?"☀️ تفعيل الوضع الفاتح":"🌙 تفعيل الوضع الداكن";themeBtn.setAttribute("aria-pressed",dark?"true":"false");}
- updateThemeButton();themeBtn.addEventListener("click",()=>{const next=document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark";document.documentElement.setAttribute("data-theme",next);try{localStorage.setItem("de-theme",next)}catch(e){}const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.setAttribute("content",next==="dark"?"#241F1D":"#B2A0D6");updateThemeButton();});
- themeBox.append(themeCopy,themeBtn);view.append(themeBox);
- const rank=document.createElement("section");rank.className="rank-card";rank.innerHTML=`<p style="margin:0 0 4px;opacity:.8">رتبتك الحالية</p><p class="rank-name">${r.name}</p><div class="xp-line"><span>${xp} XP</span><span>${r.next===Infinity?"وصلت لأعلى رتبة!":"الرتبة التالية عند "+r.next+" XP"}</span></div><span class="bar" style="background:rgba(255,255,255,.25);height:10px"><i style="width:${progress}%;background:#FFCE00"></i></span><small>سلسلة المذاكرة: 🔥 ${streakCount()} يوم</small>`;view.append(rank);
+ welcome.append(greeting);head.append(welcome);view.append(head);
+ const rank=document.createElement("section");rank.className="rank-card";
+ const rankPhoto=document.createElement("div");rankPhoto.className="rank-card-avatar";rankPhoto.setAttribute("role","img");rankPhoto.setAttribute("aria-label","الصورة الشخصية");rankPhoto.textContent="👤";
+ if(fbUser&&fbUser.photoURL){const photo=document.createElement("img");photo.src=fbUser.photoURL;photo.alt="صورتك الشخصية";photo.referrerPolicy="no-referrer";photo.onerror=()=>{photo.remove();rankPhoto.textContent="👤"};rankPhoto.textContent="";rankPhoto.append(photo)}
+ rank.innerHTML=`<div class="rank-card-top"><div class="rank-card-top-copy"><p style="margin:0 0 4px;opacity:.8">رتبتك الحالية</p><p class="rank-name">${r.name}</p></div></div><div class="xp-line"><span>${xp} XP</span><span>${nextRank?"الرتبة الجاية: "+nextRank.name:"وصلت لأعلى رتبة!"}</span></div><span class="bar" style="background:rgba(255,255,255,.25);height:10px"><i style="width:${progress}%;background:#FFCE00"></i></span><small>سلسلة المذاكرة: 🔥 ${streakCount()} يوم</small>`;
+ rank.querySelector(".rank-card-top").prepend(rankPhoto);view.append(rank);
  const stats=document.createElement("div");stats.className="grid dash-grid";
  [[learned,"كلمة متعلّمة"],[completed,"درس مكتمل"],[review.length,"كلمة للمراجعة"],[(profile.examResults||[]).length,"اختبار تم حله"]].forEach(([n,t])=>{const d=document.createElement("div");d.className="stat";d.innerHTML=`<strong>${n}</strong><span>${t}</span>`;stats.append(d)});view.append(stats);
- const h1=document.createElement("h2");h1.className="sec";h1.textContent="تقدم حفظ الكلمات خلال الأسبوع";view.append(h1);renderWeeklyWords(view,7);
+ const h1=document.createElement("h2");h1.className="sec";h1.textContent="تقدم حفظ الكلمات خلال الأسبوع";view.append(h1);const dailyGoal=document.createElement("p");dailyGoal.textContent="الهدف اليومي: حفظ 20 كلمة";dailyGoal.style.cssText="margin:-8px 0 12px;color:var(--text);font-weight:700";view.append(dailyGoal);renderWeeklyWords(view,7);
  const h2=document.createElement("h2");h2.className="sec";h2.textContent="الكلمات اللي محتاجة مراجعة";view.append(h2);
  if(review.length){const list=document.createElement("ul");list.className="dash-list";review.slice(0,20).forEach(w=>{const li=document.createElement("li");li.innerHTML=`<b dir="ltr">${w.de}</b> — ${w.ar} <small style="color:var(--mute)">(${w.l} · ${LESSONS[w.l][w.i]})</small>`;list.append(li)});view.append(list)}else{const e=document.createElement("div");e.className="empty";e.textContent="مفيش كلمات للمراجعة حاليًا. حل اختبارًا وهتظهر هنا الكلمات اللي تغلط فيها.";view.append(e)}
   const h5=document.createElement("h2");h5.className="sec";h5.textContent="نتائج الاختبارات";view.append(h5);
  const results=profile.examResults||[];if(results.length){const list=document.createElement("ul");list.className="dash-list";results.slice(0,10).forEach(x=>{const li=document.createElement("li"),date=new Date(x.date);const label=x.lesson==null?"تدريب "+x.level:"امتحان "+x.level+" · "+(LESSONS[x.level]?.[x.lesson]||"");li.textContent=`${date.toLocaleDateString("ar-EG")} — ${label} — ${x.score}/${x.total}${x.perfect?" · درجة كاملة 🏆":""}`;list.append(li)});view.append(list)}else{const e=document.createElement("div");e.className="empty";e.textContent="لسه مفيش نتائج اختبارات.";view.append(e)}
  window.scrollTo(0,0);
 }
-function renderWeeklyWords(root,days){const wrap=document.createElement("div");wrap.className="para";const data=profile.dailyWords||{};const vals=[];for(let i=days-1;i>=0;i--){const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-i);const key=todayKey(d);vals.push({key,n:data[key]||0,label:d.toLocaleDateString("ar-EG",{weekday:"short"})})}const max=Math.max(1,...vals.map(x=>x.n));vals.forEach(x=>{const row=document.createElement("div");row.className="progress-row";row.innerHTML=`<span>${x.label}</span><span class="bar"><i style="width:${Math.round(x.n/max*100)}%"></i></span><b>${x.n} كلمة</b>`;wrap.append(row)});const total=vals.reduce((a,x)=>a+x.n,0);const note=document.createElement("p");note.className="crumb";note.style.margin="8px 0 0";note.textContent=`إجمالي الكلمات الجديدة المحفوظة خلال الأسبوع: ${total} كلمة`;wrap.append(note);root.append(wrap)}
+function renderSettings(){
+ title.textContent="الإعدادات";crumb.textContent="تحكم في مظهر الموقع وربط حسابك";view.innerHTML="";
+ const nameCard=document.createElement("section");nameCard.className="settings-card";nameCard.setAttribute("aria-label","تعديل الاسم");
+ const nameHeading=document.createElement("h2");nameHeading.textContent="✏️ تعديل الاسم";
+ const nameDesc=document.createElement("p");nameDesc.textContent="الاسم ده هيظهر فوق ملفك الشخصي ولأصحابك.";
+ const nameRow=document.createElement("div");nameRow.className="settings-name-row";
+ const nameLabel=document.createElement("label");nameLabel.htmlFor="settings-display-name";nameLabel.textContent="الاسم الظاهر";
+ const nameInput=document.createElement("input");nameInput.id="settings-display-name";nameInput.type="text";nameInput.maxLength=40;nameInput.value=profile.displayName|| (fbUser&&fbUser.displayName)||"";nameInput.placeholder="اكتب اسمك هنا";nameInput.autocomplete="nickname";
+ const nameSave=document.createElement("button");nameSave.type="button";nameSave.textContent="حفظ الاسم";
+ nameSave.addEventListener("click",async()=>{const name=nameInput.value.trim();if(!name){alert("اكتب الاسم الأول.");nameInput.focus();return}if(name.length>40){alert("الاسم لازم يكون 40 حرف أو أقل.");return}nameSave.disabled=true;nameSave.textContent="جاري الحفظ…";profile.displayName=name;persistProfile();if(fbUser&&db){try{await db.collection("publicProfiles").doc(fbUser.uid).set({displayName:name,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});const fs=await db.collection("users").doc(fbUser.uid).collection("friends").get();const batch=db.batch();fs.docs.forEach(d=>batch.set(d.ref,{displayName:name},{merge:true}));await batch.commit()}catch(err){console.error("Display name cloud update failed",err);alert("الاسم اتحفظ على الجهاز، لكن تعذر تحديثه عند أصحابك. راجع صلاحيات Firestore.")}}nameSave.disabled=false;nameSave.textContent="حفظ الاسم";alert("تم حفظ الاسم بنجاح!");});
+ nameRow.append(nameLabel,nameInput,nameSave);nameCard.append(nameHeading,nameDesc,nameRow);view.append(nameCard);
+ const appearance=document.createElement("section");appearance.className="settings-card";appearance.setAttribute("aria-label","إعدادات المظهر");
+ const h=document.createElement("h2");h.textContent="🎨 مظهر الموقع";
+ const desc=document.createElement("p");desc.textContent="اختار الوضع اللي يريح عينك، والاختيار هيتحفظ على جهازك.";
+ const themeBtn=document.createElement("button");themeBtn.type="button";themeBtn.className="theme-toggle";
+ function updateThemeButton(){const dark=document.documentElement.getAttribute("data-theme")==="dark";themeBtn.textContent=dark?"☀️ تفعيل الوضع الفاتح":"🌙 تفعيل الوضع الداكن";themeBtn.setAttribute("aria-pressed",dark?"true":"false");}
+ updateThemeButton();themeBtn.addEventListener("click",()=>{const next=document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark";document.documentElement.setAttribute("data-theme",next);try{localStorage.setItem("de-theme",next)}catch(e){}const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.setAttribute("content",next==="dark"?"#241F1D":"#B2A0D6");updateThemeButton();});
+ appearance.append(h,desc,themeBtn);view.append(appearance);
+ const account=document.createElement("section");account.className="settings-card";account.setAttribute("aria-label","ربط الموقع بجوجل");
+ const ah=document.createElement("h2");ah.textContent="🔗 ربط الموقع بجوجل";
+ const ad=document.createElement("p");ad.textContent=fbUser?"حسابك متصل بجوجل. تقدر تسجل الخروج من هنا.":"اربط الموقع بحساب جوجل لحفظ تقدمك ومزامنته.";
+ const slot=document.createElement("div");slot.id="settings-auth-slot";authBtn.hidden=false;slot.append(authBtn);
+ account.append(ah,ad,slot);view.append(account);
+}
+function renderWeeklyWords(root,days){
+ const wrap=document.createElement("div");wrap.className="para";const data=profile.dailyWords||{};const vals=[];
+ for(let i=days-1;i>=0;i--){const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-i);const key=todayKey(d);vals.push({key,n:Number(data[key]||0),label:d.toLocaleDateString("ar-EG",{weekday:"short"})})}
+ function wordColor(n){if(n<=10)return "#e53935";if(n<=15)return "#e0b400";if(n<20)return "#f28c28";if(n===20)return "#22a447";return "#9333ea"}
+ vals.forEach(x=>{const row=document.createElement("div");row.className="progress-row";const color=wordColor(x.n);const bar=document.createElement("span");bar.className="bar";const fill=document.createElement("i");fill.style.width=Math.min(100,Math.round(x.n/20*100))+"%";fill.style.background=color;bar.append(fill);const count=document.createElement("b");count.innerHTML=`<span style="color:${color}">${x.n}</span><span style="color:#000">/20</span>`;count.style.whiteSpace="nowrap";count.title=`${x.n} كلمة من هدف 20 كلمة اليوم`;row.append(Object.assign(document.createElement("span"),{textContent:x.label}),bar,count);wrap.append(row)});
+ root.append(wrap)
+}
 function renderActivityBars(root,days){const wrap=document.createElement("div");wrap.className="para";const data=profile.studyDays||{};const vals=[];for(let i=days-1;i>=0;i--){const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-i);const key=todayKey(d);vals.push({key,n:data[key]||0,label:days===7?d.toLocaleDateString("ar-EG",{weekday:"short"}):d.getDate()+"/"+(d.getMonth()+1)})}const max=Math.max(1,...vals.map(x=>x.n));vals.forEach(x=>{const row=document.createElement("div");row.className="progress-row";row.innerHTML=`<span>${x.label}</span><span class="bar"><i style="width:${Math.round(x.n/max*100)}%"></i></span><b>${x.n}</b>`;wrap.append(row)});const total=vals.reduce((a,x)=>a+x.n,0);const note=document.createElement("p");note.className="crumb";note.style.margin="8px 0 0";note.textContent=`إجمالي أنشطة المذاكرة في الفترة: ${total}`;wrap.append(note);root.append(wrap)}
 /* ===== الأصدقاء والتحديات: 20 سؤالًا، 15 ثانية لكل سؤال ===== */
 let challengeTarget=null, activeChallengeRun=null, challengeWaiting=null, challengeFinal=null, activeChallengeUnsub=null;
@@ -1154,7 +1188,7 @@ function setSocialUsername(username){
  return db.runTransaction(async tx=>{const old=await tx.get(profileRef);if(old.exists&&old.data().username&&old.data().username!==username)throw new Error("USERNAME_ALREADY_SET");const snap=await tx.get(unameRef);if(snap.exists&&snap.data().uid!==fbUser.uid)throw new Error("USERNAME_TAKEN");const publicData={uid:fbUser.uid,username,displayName:profile.displayName||fbUser.displayName||"لاعب ألماني",photoURL:fbUser.photoURL||"",...publicRankData(profile.xp),updatedAt:firebase.firestore.FieldValue.serverTimestamp()};tx.set(unameRef,{uid:fbUser.uid,username,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});tx.set(profileRef,publicData,{merge:true});return true}).then(()=>true).catch(e=>{console.error(e);if(e.message==="USERNAME_TAKEN")alert("اسم المستخدم ده مستخدم بالفعل، اختار اسمًا تانيًا.");else if(e.message==="USERNAME_ALREADY_SET")alert("اسم المستخدم لا يمكن تغييره حاليًا.");else alert("ماقدرتش أحفظ اسم المستخدم. تأكد من نشر قواعد Firestore واتصالك بالإنترنت.");return false});
 }
 async function renderSocial(){
- const token=++socialRenderToken;title.textContent=socialActiveTab==="challenges"?"التحديات":"الأصدقاء";crumb.textContent=socialActiveTab==="challenges"?"التحديات الواردة والمرسلة":"ابحث عن أصحابك وأدر طلبات الصداقة";view.innerHTML="";back.hidden=false;
+ const token=++socialRenderToken;title.textContent=socialActiveTab==="challenges"?"التحديات":"الأصدقاء";crumb.textContent="";crumb.style.display="none";view.innerHTML="";back.hidden=false;
  if(!fbUser||!db){view.append(socialCard(view,"سجّل الدخول الأول","لازم تدخل بحساب جوجل علشان يبقى ليك اسم مستخدم وتقدر تضيف أصحابك."));view.append(socialButton("دخول بجوجل",()=>authBtn.click()));return}
  view.append(socialEl("div","empty","جارٍ تحميل الأصدقاء والتحديات…"));
  try{
@@ -1207,6 +1241,40 @@ async function renderSocial(){
    db.collection("challenges").where("challengerUid","==",fbUser.uid).get()
   ]);
   if(token!==socialRenderToken||st[0]!=="SOCIAL")return;
+  if(socialActiveTab==="challenges"){
+   const allChallengeDocs=[...inChallenges.docs,...outChallenges.docs];
+   const uniqueChallenges=[...new Map(allChallengeDocs.map(d=>[d.id,d])).values()];
+   let won=0,lost=0,pending=0;
+   await Promise.all(uniqueChallenges.map(async doc=>{
+    const ch=doc.data();
+    if(ch.status==="pending"||ch.status==="accepted") { pending++; return; }
+    if(ch.status==="declined") { if(ch.winnerUid===fbUser.uid)won++;else lost++; return; }
+    if(ch.status!=="completed")return;
+    try{
+     const otherUid=ch.challengerUid===fbUser.uid?ch.opponentUid:ch.challengerUid;
+     const [mineResult,otherResult]=await Promise.all([
+      db.collection("challenges").doc(doc.id).collection("results").doc(fbUser.uid).get(),
+      db.collection("challenges").doc(doc.id).collection("results").doc(otherUid).get()
+     ]);
+     if(!mineResult.exists||!otherResult.exists)return;
+     const a=mineResult.data(),b=otherResult.data();
+     let mineWins=false,otherWins=false;
+     if(a.score!==b.score){mineWins=a.score>b.score;otherWins=b.score>a.score;}
+     else if(a.correct!==b.correct){mineWins=a.correct>b.correct;otherWins=b.correct>a.correct;}
+     else if(a.elapsedMs!==b.elapsedMs){mineWins=a.elapsedMs<b.elapsedMs;otherWins=b.elapsedMs<a.elapsedMs;}
+     if(mineWins)won++;else if(otherWins)lost++;
+    }catch(err){console.warn("Could not load challenge statistics",err)}
+   }));
+   const stats=socialEl("section","challenge-stats");
+   const statItems=[
+    [uniqueChallenges.length,"لعبتها","#111111"],
+    [won,"كسبتها","#22a447"],
+    [lost,"خسرتها","#e53935"],
+    [pending,"معلّقة","#f28c28"]
+   ];
+   statItems.forEach(([n,label,color])=>{const item=socialEl("div","challenge-stat");const num=socialEl("strong","",String(n));num.style.color=color;const caption=socialEl("span","",label);item.append(num,caption);stats.append(item)});
+   view.append(stats);
+  }
   const friends=socialCard(view,"👥 أصدقائي",friendsSnap.empty?"لسه مفيش أصدقاء. ابحث عن username علشان تضيف حد.":"");
   const challengeFriends=socialCard(view,"⚔️ تحدَّ مع أصدقائك","اختار صديقًا لإرسال تحدٍّ أو لعرض سجل التحديات بينكم.");
   const friendProfiles={};
@@ -1373,7 +1441,7 @@ const FIREBASE_CONFIG={
  measurementId: "G-D3ZFRMDTTJ"
 };
 var fbUser=null,db=null;const authBtn=document.getElementById("auth");
-function authUI(){if(!FIREBASE_CONFIG){authBtn.hidden=true;return}authBtn.hidden=false;authBtn.textContent=fbUser?"خروج · "+(fbUser.displayName||fbUser.email):"دخول بجوجل لحفظ التقدم"}
+function authUI(){if(!FIREBASE_CONFIG){authBtn.hidden=true;return}authBtn.hidden=!(typeof st!=="undefined"&&st[0]==="SETTINGS");authBtn.textContent=fbUser?"تسجيل الخروج · "+(fbUser.displayName||fbUser.email):"ربط حساب جوجل وحفظ التقدم"}
 function initCloud(){
  if(!FIREBASE_CONFIG||!window.firebase)return;
  try{firebase.initializeApp(FIREBASE_CONFIG);const auth=firebase.auth();db=firebase.firestore();
@@ -1420,6 +1488,7 @@ render();
  <button type="button" data-app-tab="friends"><span class="nav-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3.5 19v-1.2A4.8 4.8 0 0 1 8.3 13h1.4a4.8 4.8 0 0 1 4.8 4.8V19"/><path d="M16 5.4a3 3 0 0 1 0 5.8M17 13.3a4.8 4.8 0 0 1 3.5 4.6V19"/></svg></span><span>الأصدقاء</span></button>
  <button type="button" data-app-tab="challenges"><span class="nav-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7.2 8h9.6a4 4 0 0 1 3.8 3l1 4.1a2.5 2.5 0 0 1-4.1 2.4l-2.1-1.8H8.6l-2.1 1.8a2.5 2.5 0 0 1-4.1-2.4l1-4.1a4 4 0 0 1 3.8-3Z"/><path d="M7 10.5v4M5 12.5h4M16.5 11.5h.01M18.5 14h.01"/></svg></span><span>التحديات</span></button>
  <button type="button" data-app-tab="profile"><span class="nav-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="9" cy="11" r="2.2"/><path d="M5.8 16a3.3 3.3 0 0 1 6.4 0M14.5 10h4M14.5 13h4"/></svg></span><span>ملفي</span></button>
+ <button type="button" data-app-tab="settings" aria-label="الإعدادات" title="الإعدادات"><span class="nav-ico settings-nav-icon" aria-hidden="true">⚙</span><span>الإعدادات</span></button>
 </nav>
 
 <script>
@@ -1430,7 +1499,7 @@ render();
   nav.querySelectorAll('button').forEach(x=>{if(x===b)x.setAttribute('aria-current','page');else x.removeAttribute('aria-current')});
   if(typeof WELCOME!=='undefined')WELCOME=false;
   const h=document.getElementById('hdr'),c=document.getElementById('crumb');if(h)h.style.display='';if(c)c.style.display='';
-  if(tab==='home')st=[];else if(tab==='friends'){socialActiveTab='friends';st=['SOCIAL']}else if(tab==='profile')st=['D'];else{socialActiveTab='challenges';st=['SOCIAL']}
+  if(tab==='home')st=[];else if(tab==='friends'){socialActiveTab='friends';st=['SOCIAL']}else if(tab==='profile')st=['D'];else if(tab==='settings')st=['SETTINGS'];else{socialActiveTab='challenges';st=['SOCIAL']}
   try{history.pushState({st,ex:null},'')}catch(_){}
   if(typeof render==='function')render();
   window.scrollTo({top:0,behavior:'smooth'});
