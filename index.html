@@ -1385,9 +1385,18 @@ function initCloud(){
      db.collection("publicProfiles").doc(u.uid).get()
     ]);
     const cloud=d.exists?d.data():{};
-    const localXp=Number(profile.xp)||0,cloudXp=Number(cloud.xp)||0,publicXp=pubSnap.exists?(Number(pubSnap.data().xp)||0):0;
     if(d.exists)LR=new Set(cloud.learned||[]);
-    profile={...profile,xp:Math.max(localXp,cloudXp,publicXp),wordXP:cloud.wordXP||profile.wordXP||[],completedLessons:cloud.completedLessons||profile.completedLessons||[],perfectTests:cloud.perfectTests||profile.perfectTests||[],studyDays:cloud.studyDays||profile.studyDays||{},dailyWords:cloud.dailyWords||profile.dailyWords||{},examResults:cloud.examResults||profile.examResults||[],reviewWords:cloud.reviewWords||profile.reviewWords||[],displayName:cloud.displayName||profile.displayName||""};
+    const localXp=Number(profile.xp)||0,cloudXp=Number(cloud.xp)||0,publicXp=pubSnap.exists?(Number(pubSnap.data().xp)||0):0;
+    const savedWordXP=Array.isArray(cloud.wordXP)?cloud.wordXP:(Array.isArray(profile.wordXP)?profile.wordXP:[]);
+    const savedCompleted=Array.isArray(cloud.completedLessons)?cloud.completedLessons:(profile.completedLessons||[]);
+    const savedPerfect=Array.isArray(cloud.perfectTests)?cloud.perfectTests:(profile.perfectTests||[]);
+    // ترحيل التقدم القديم لنظام XP مرة واحدة: الكلمات المتعلمة + الدروس المكتملة + الامتحانات الكاملة.
+    // لا نستبدل أي رصيد موجود بالفعل برصيد محسوب أقل.
+    const migratedWordXP=savedWordXP.length?savedWordXP:[...LR];
+    const derivedXp=migratedWordXP.length + savedCompleted.length*50 + savedPerfect.length*100;
+    const legacyXp=(Math.max(localXp,cloudXp,publicXp)===0?derivedXp:0);
+    const baseXp=Math.max(localXp,cloudXp,publicXp,legacyXp);
+    profile={...profile,xp:baseXp,wordXP:migratedWordXP,completedLessons:savedCompleted,perfectTests:savedPerfect,studyDays:cloud.studyDays||profile.studyDays||{},dailyWords:cloud.dailyWords||profile.dailyWords||{},examResults:cloud.examResults||profile.examResults||[],reviewWords:cloud.reviewWords||profile.reviewWords||[],displayName:cloud.displayName||profile.displayName||""};
     persistProfile();
     await syncPublicProfile();
     render()
