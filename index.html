@@ -1625,7 +1625,7 @@ render();
 (function(){
  if(typeof render!=="function"||typeof LESSONS==="undefined"||typeof WORDS==="undefined")return;
  var LV="A1",IDX=-1,LABEL="درس 0",NAME="Zahlen, Grüße und Pronomen";
- var SECS=[["zahl","🔢 الأرقام من 0 إلى 12"],["teen","🔟 الأرقام من 13 إلى 19"],["zig","💯 العشرات والأرقام المركبة"],["gruss","🌅 التحيات"],["abschied","👋 الوداعيات"],["pron","🙋 الضمائر الشخصية"]];
+ var SECS=[["zahl","🔢 الأرقام من 0 إلى 12"],["teen","🔟 الأرقام من 13 إلى 19"],["zig","💯 العشرات والأرقام المركبة"],["gruss","🌅 التحيات"],["abschied","👋 الوداعيات"],["pron","🙋 الضمائر الشخصية"],["colors","🎨 الألوان"]];
  var LESSON0={
  "zahl": [
   [
@@ -2040,6 +2040,18 @@ render();
    "Woher kommen Sie?",
    "من أين حضرتك؟"
   ]
+ ],
+ "colors": [
+  ["Rot", "أحمر 🔴", "Das Sofa ist rot.", "الكنبة حمراء."],
+  ["Blau", "أزرق 🔵", "Der Stuhl ist blau.", "الكرسي أزرق."],
+  ["Gelb", "أصفر 🟡", "Der Tisch ist gelb.", "الترابيزة صفراء."],
+  ["Grün", "أخضر 🟢", "Der Sessel ist grün.", "الكرسي ذو الذراعين أخضر."],
+  ["Schwarz", "أسود ⚫", "Das Bett ist schwarz.", "السرير أسود."],
+  ["Weiß", "أبيض ⚪", "Der Schrank ist weiß.", "الدولاب أبيض."],
+  ["Orange", "برتقالي 🟠", "Die Lampe ist orange.", "المصباح برتقالي."],
+  ["Lila", "بنفسجي 🟣", "Der Teppich ist lila.", "السجادة بنفسجية."],
+  ["Rosa", "وردي 🩷", "Das Kissen ist rosa.", "الوسادة وردية."],
+  ["Braun", "بني 🟤", "Der Schreibtisch ist braun.", "مكتب الكتابة بني."]
  ]
 };
  LESSONS[LV][IDX]=NAME;           /* خاصية مش بتدخل في عدّ الدروس ولا ترقيمها */
