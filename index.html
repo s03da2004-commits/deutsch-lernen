@@ -752,11 +752,20 @@ function publicRankData(xpValue){
  const progress=r.next===Infinity?100:Math.min(100,Math.max(0,Math.round((xp-r.min)/(r.next-r.min)*100)));
  return {xp,rankName:r.name,rankMin:r.min,rankNext:Number.isFinite(r.next)?r.next:null,rankProgress:progress};
 }
-function syncPublicProfile(){
- if(!fbUser||!db)return Promise.resolve(false);
- const publicData={uid:fbUser.uid,...publicRankData(profile.xp),displayName:profile.displayName||fbUser.displayName||"لاعب ألماني",photoURL:fbUser.photoURL||"",updatedAt:firebase.firestore.FieldValue.serverTimestamp()};
- return db.collection("publicProfiles").doc(fbUser.uid).set(publicData,{merge:true})
-  .then(()=>true).catch(e=>{console.error("Public profile sync failed",e);return false});
+async function syncPublicProfile(){
+ if(!fbUser||!db)return false;
+ try{
+  const ref=db.collection("publicProfiles").doc(fbUser.uid);
+  // لا تستبدل نقاطًا موجودة في الملف العام بصفر من نسخة محلية قديمة.
+  const snap=await ref.get();
+  const publicXp=snap.exists?Number(snap.data().xp)||0:0;
+  const safeXp=Math.max(Number(profile.xp)||0,publicXp);
+  profile.xp=safeXp;
+  try{localStorage.setItem(PROFILE_KEY,JSON.stringify({...profile}))}catch(e){}
+  const publicData={uid:fbUser.uid,...publicRankData(safeXp),displayName:profile.displayName||fbUser.displayName||"لاعب ألماني",photoURL:fbUser.photoURL||"",updatedAt:firebase.firestore.FieldValue.serverTimestamp()};
+  await ref.set(publicData,{merge:true});
+  return true;
+ }catch(e){console.error("Public profile sync failed",e);return false}
 }
 function persistProfile(){
  const data={learned:[...LR],xp:profile.xp||0,wordXP:profile.wordXP||[],completedLessons:profile.completedLessons||[],perfectTests:profile.perfectTests||[],studyDays:profile.studyDays||{},dailyWords:profile.dailyWords||{},examResults:profile.examResults||[],reviewWords:profile.reviewWords||[]};
@@ -1210,10 +1219,17 @@ async function renderSocial(){
    if((pub.photoURL||f.photoURL)){const img=socialEl("img","social-avatar");img.src=pub.photoURL||f.photoURL;img.alt="صورة الصديق";img.referrerPolicy="no-referrer";img.onerror=()=>{img.replaceWith(socialEl("div","social-avatar","👤"))};row.append(img)}else row.append(socialEl("div","social-avatar","👤"));
    const main=socialEl("div","social-person-main");
    main.append(socialEl("strong","","@"+(pub.username||f.username||"unknown")));
-   const xp=Number(pub.xp)||0,rankName=pub.rankName||publicRankData(xp).rankName,progress=Number(pub.rankProgress)||0,next=pub.rankNext;
-   main.append(socialEl("small","friend-rank-line","🏆 "+rankName+" · "+xp+" XP"));
-   const progressWrap=socialEl("div","friend-rank-progress");const progressBar=socialEl("span","friend-rank-bar");const progressFill=socialEl("i","","");progressFill.style.width=progress+"%";progressBar.append(progressFill);progressWrap.append(progressBar);
-   progressWrap.append(socialEl("small","friend-rank-next",next==null?"أعلى رتبة":"التالي: "+next+" XP"));main.append(progressWrap);row.append(main);friends.append(row);
+   const hasPublicXp=pub.xp!==undefined&&pub.xp!==null&&Number.isFinite(Number(pub.xp));
+   const xp=hasPublicXp?Math.max(0,Number(pub.xp)):0;
+   const rankData=publicRankData(xp),rankName=pub.rankName||rankData.rankName;
+   const progress=pub.rankProgress!==undefined?Math.min(100,Math.max(0,Number(pub.rankProgress)||0)):rankData.rankProgress;
+   const next=pub.rankNext!==undefined?pub.rankNext:rankData.rankNext;
+   main.append(socialEl("small","friend-rank-line",hasPublicXp?"🏆 "+rankName+" · "+xp+" XP":"🏆 الرتبة والنقاط هتظهر بعد مزامنة حسابه"));
+   if(hasPublicXp){
+    const progressWrap=socialEl("div","friend-rank-progress");const progressBar=socialEl("span","friend-rank-bar");const progressFill=socialEl("i","","");progressFill.style.width=progress+"%";progressBar.append(progressFill);progressWrap.append(progressBar);
+    progressWrap.append(socialEl("small","friend-rank-next",next==null?"أعلى رتبة":"التالي: "+next+" XP"));main.append(progressWrap);
+   }
+   row.append(main);friends.append(row);
 
    // تبويب التحديات: تظهر فيه أزرار التحدي وسجل التحديات.
    const challengeRow=socialEl("div","social-person friend-row");
@@ -1363,11 +1379,19 @@ function initCloud(){
  try{firebase.initializeApp(FIREBASE_CONFIG);const auth=firebase.auth();db=firebase.firestore();
   authBtn.onclick=()=>fbUser?auth.signOut():auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(e=>alert("تعذّر تسجيل الدخول: "+e.message));
   auth.onAuthStateChanged(async u=>{fbUser=u;authUI();setupSocialBadges();if(!u){renderDashboardIfVisible();return}
-   try{const d=await db.collection("users").doc(u.uid).get();
-    if(d.exists){const cloud=d.data();LR=new Set(cloud.learned||[]);const localXp=Number(profile.xp)||0,cloudXp=Number(cloud.xp)||0;profile={...profile,xp:Math.max(localXp,cloudXp),wordXP:cloud.wordXP||profile.wordXP||[],completedLessons:cloud.completedLessons||profile.completedLessons||[],perfectTests:cloud.perfectTests||profile.perfectTests||[],studyDays:cloud.studyDays||profile.studyDays||{},dailyWords:cloud.dailyWords||profile.dailyWords||{},examResults:cloud.examResults||profile.examResults||[],reviewWords:cloud.reviewWords||profile.reviewWords||[],displayName:cloud.displayName||profile.displayName||""};persistProfile()}
-    else persistProfile();
+   try{
+    const [d,pubSnap]=await Promise.all([
+     db.collection("users").doc(u.uid).get(),
+     db.collection("publicProfiles").doc(u.uid).get()
+    ]);
+    const cloud=d.exists?d.data():{};
+    const localXp=Number(profile.xp)||0,cloudXp=Number(cloud.xp)||0,publicXp=pubSnap.exists?(Number(pubSnap.data().xp)||0):0;
+    if(d.exists)LR=new Set(cloud.learned||[]);
+    profile={...profile,xp:Math.max(localXp,cloudXp,publicXp),wordXP:cloud.wordXP||profile.wordXP||[],completedLessons:cloud.completedLessons||profile.completedLessons||[],perfectTests:cloud.perfectTests||profile.perfectTests||[],studyDays:cloud.studyDays||profile.studyDays||{},dailyWords:cloud.dailyWords||profile.dailyWords||{},examResults:cloud.examResults||profile.examResults||[],reviewWords:cloud.reviewWords||profile.reviewWords||[],displayName:cloud.displayName||profile.displayName||""};
+    persistProfile();
     await syncPublicProfile();
-    render()}catch(e){console.error(e);alert("تم تسجيل الدخول، لكن تعذرت قراءة التقدم من Google. تأكد من إعدادات Firestore.")}})}catch(e){console.error(e)}}
+    render()
+   }catch(e){console.error(e);alert("تم تسجيل الدخول، لكن تعذرت قراءة التقدم من Google. تأكد من إعدادات Firestore.")}})}catch(e){console.error(e)}}
 try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
 try{history.replaceState({st:[],ex:null},"")}catch(e){HIST=false}
 window.addEventListener("popstate",e=>{const s=e.state;st=(s&&s.st)||[];if(s&&"ex" in s)EXAM=s.ex;render()});
