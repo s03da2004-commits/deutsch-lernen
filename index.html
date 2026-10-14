@@ -1298,5 +1298,465 @@ render();
  };
 })();
 </script>
+<!-- ===== إضافة: الدرس 0 في A1 (الأرقام والتحيات والوداعيات والضمائر الشخصية) — قبل الدرس الأول =====
+     بلوك مستقل: بيضيف الدرس من برّه (لفّ لدالة render) من غير تعديل الكود الأصلي أو ترقيم الدروس الموجودة.
+     للتعديل: غيّر LABEL لو عايز رقم تاني، أو عدّل الكلمات في LESSON0 تحت.
+     ألوان الأمثلة: n-k أسود، n-r أحمر، n-b أزرق، n-g أخضر، n-z بنفسجي -->
+<style>
+.zahl{color:var(--m)}.teen{color:#b8860b}.zig{color:#0e9aa7}.gruss{color:var(--n)}.abschied{color:var(--a)}.pron{color:var(--f)}
+.w.zahl .de,.w.teen .de,.w.zig .de{color:var(--ink)}
+.n-k{color:var(--ink)}.n-r{color:var(--f)}.n-b{color:var(--m)}.n-g{color:var(--n)}.n-z{color:var(--a)}
+</style>
+<script>
+(function(){
+ if(typeof render!=="function"||typeof LESSONS==="undefined"||typeof WORDS==="undefined")return;
+ var LV="A1",IDX=-1,LABEL="درس 0",NAME="Zahlen, Grüße und Pronomen";
+ var SECS=[["zahl","🔢 الأرقام من 0 إلى 12"],["teen","🔟 الأرقام من 13 إلى 19"],["zig","💯 العشرات والأرقام المركبة"],["gruss","🌅 التحيات"],["abschied","👋 الوداعيات"],["pron","🙋 الضمائر الشخصية"]];
+ var LESSON0={
+ "zahl": [
+  [
+   "null",
+   "صفر (0)",
+   "Es sind null Grad.",
+   "الحرارة صفر درجة."
+  ],
+  [
+   "eins",
+   "واحد (1)",
+   "Eins, zwei, drei!",
+   "واحد، اثنان، ثلاثة!"
+  ],
+  [
+   "zwei",
+   "اثنان (2)",
+   "Ich habe zwei Brüder.",
+   "عندي أخوان."
+  ],
+  [
+   "drei",
+   "ثلاثة (3)",
+   "Wir sind drei Personen.",
+   "نحن ثلاثة أشخاص."
+  ],
+  [
+   "vier",
+   "أربعة (4)",
+   "Das Auto hat vier Türen.",
+   "السيارة لها أربعة أبواب."
+  ],
+  [
+   "fünf",
+   "خمسة (5)",
+   "Ich bleibe fünf Tage.",
+   "سأبقى خمسة أيام."
+  ],
+  [
+   "sechs",
+   "ستة (6)",
+   "Es ist sechs Uhr.",
+   "الساعة السادسة."
+  ],
+  [
+   "sieben",
+   "سبعة (7)",
+   "Eine Woche hat sieben Tage.",
+   "الأسبوع فيه سبعة أيام."
+  ],
+  [
+   "acht",
+   "ثمانية (8)",
+   "Ich arbeite acht Stunden.",
+   "أعمل ثماني ساعات."
+  ],
+  [
+   "neun",
+   "تسعة (9)",
+   "Das Kind ist neun Jahre alt.",
+   "الطفل عمره تسع سنوات."
+  ],
+  [
+   "zehn",
+   "عشرة (10)",
+   "Ich habe zehn Euro.",
+   "معي عشرة يورو."
+  ],
+  [
+   "elf",
+   "أحد عشر (11)",
+   "Ein Fußballteam hat elf Spieler.",
+   "فريق كرة القدم فيه أحد عشر لاعبًا."
+  ],
+  [
+   "zwölf",
+   "اثنا عشر (12)",
+   "Ein Jahr hat zwölf Monate.",
+   "السنة فيها اثنا عشر شهرًا."
+  ]
+ ],
+ "teen": [
+  [
+   "dreizehn",
+   "ثلاثة عشر (13)",
+   "<span class=\"n-k\">drei</span><span class=\"n-r\">zehn</span>",
+   "drei (3) + zehn (10)"
+  ],
+  [
+   "vierzehn",
+   "أربعة عشر (14)",
+   "<span class=\"n-k\">vier</span><span class=\"n-r\">zehn</span>",
+   "vier (4) + zehn (10)"
+  ],
+  [
+   "fünfzehn",
+   "خمسة عشر (15)",
+   "<span class=\"n-k\">fünf</span><span class=\"n-r\">zehn</span>",
+   "fünf (5) + zehn (10)"
+  ],
+  [
+   "sechzehn",
+   "ستة عشر (16)",
+   "<span class=\"n-r\">sechzehn</span>",
+   "شاذ ⚠️ sechs بتفقد حرف الـ s → sech + zehn"
+  ],
+  [
+   "siebzehn",
+   "سبعة عشر (17)",
+   "<span class=\"n-r\">siebzehn</span>",
+   "شاذ ⚠️ sieben بتفقد en → sieb + zehn"
+  ],
+  [
+   "achtzehn",
+   "ثمانية عشر (18)",
+   "<span class=\"n-k\">acht</span><span class=\"n-r\">zehn</span>",
+   "acht (8) + zehn (10)"
+  ],
+  [
+   "neunzehn",
+   "تسعة عشر (19)",
+   "<span class=\"n-k\">neun</span><span class=\"n-r\">zehn</span>",
+   "neun (9) + zehn (10)"
+  ]
+ ],
+ "zig": [
+  [
+   "zwanzig",
+   "عشرون (20)",
+   "<span class=\"n-b\">zwan</span><span class=\"n-z\">zig</span>",
+   "zwei → zwan (شاذ) + zig"
+  ],
+  [
+   "dreißig",
+   "ثلاثون (30)",
+   "<span class=\"n-b\">drei</span><span class=\"n-z\">ßig</span>",
+   "drei + ßig (شاذ: بتتكتب ß)"
+  ],
+  [
+   "vierzig",
+   "أربعون (40)",
+   "<span class=\"n-b\">vier</span><span class=\"n-z\">zig</span>",
+   "vier (4) + zig"
+  ],
+  [
+   "fünfzig",
+   "خمسون (50)",
+   "<span class=\"n-b\">fünf</span><span class=\"n-z\">zig</span>",
+   "fünf (5) + zig"
+  ],
+  [
+   "sechzig",
+   "ستون (60)",
+   "<span class=\"n-b\">sech</span><span class=\"n-z\">zig</span>",
+   "sechs → sech (بتفقد s) + zig"
+  ],
+  [
+   "siebzig",
+   "سبعون (70)",
+   "<span class=\"n-b\">sieb</span><span class=\"n-z\">zig</span>",
+   "sieben → sieb (بتفقد en) + zig"
+  ],
+  [
+   "achtzig",
+   "ثمانون (80)",
+   "<span class=\"n-b\">acht</span><span class=\"n-z\">zig</span>",
+   "acht (8) + zig"
+  ],
+  [
+   "neunzig",
+   "تسعون (90)",
+   "<span class=\"n-b\">neun</span><span class=\"n-z\">zig</span>",
+   "neun (9) + zig"
+  ],
+  [
+   "hundert",
+   "مئة (100)",
+   "<span class=\"n-b\">hundert</span>",
+   "hundert = 100 (مفيش zig هنا)"
+  ],
+  [
+   "tausend",
+   "ألف (1000)",
+   "<span class=\"n-b\">tausend</span>",
+   "tausend = 1000"
+  ],
+  [
+   "einundzwanzig",
+   "واحد وعشرون (21)",
+   "<span class=\"n-r\">ein</span><span class=\"n-b\">und</span><span class=\"n-g\">zwanzig</span>",
+   "ein (1) + und (و) + zwanzig (20) — بنقرأ الآحاد الأول"
+  ],
+  [
+   "fünfundzwanzig",
+   "خمسة وعشرون (25)",
+   "<span class=\"n-r\">fünf</span><span class=\"n-b\">und</span><span class=\"n-g\">zwanzig</span>",
+   "fünf (5) + und (و) + zwanzig (20) — بنقرأ الآحاد الأول"
+  ],
+  [
+   "vierunddreißig",
+   "أربعة وثلاثون (34)",
+   "<span class=\"n-r\">vier</span><span class=\"n-b\">und</span><span class=\"n-g\">dreißig</span>",
+   "vier (4) + und (و) + dreißig (30) — بنقرأ الآحاد الأول"
+  ],
+  [
+   "achtundvierzig",
+   "ثمانية وأربعون (48)",
+   "<span class=\"n-r\">acht</span><span class=\"n-b\">und</span><span class=\"n-g\">vierzig</span>",
+   "acht (8) + und (و) + vierzig (40) — بنقرأ الآحاد الأول"
+  ],
+  [
+   "sechsundfünfzig",
+   "ستة وخمسون (56)",
+   "<span class=\"n-r\">sechs</span><span class=\"n-b\">und</span><span class=\"n-g\">fünfzig</span>",
+   "sechs (6) + und (و) + fünfzig (50) — بنقرأ الآحاد الأول"
+  ],
+  [
+   "siebenundsechzig",
+   "سبعة وستون (67)",
+   "<span class=\"n-r\">sieben</span><span class=\"n-b\">und</span><span class=\"n-g\">sechzig</span>",
+   "sieben (7) + und (و) + sechzig (60) — بنقرأ الآحاد الأول"
+  ],
+  [
+   "dreiundsiebzig",
+   "ثلاثة وسبعون (73)",
+   "<span class=\"n-r\">drei</span><span class=\"n-b\">und</span><span class=\"n-g\">siebzig</span>",
+   "drei (3) + und (و) + siebzig (70) — بنقرأ الآحاد الأول"
+  ],
+  [
+   "neunundachtzig",
+   "تسعة وثمانون (89)",
+   "<span class=\"n-r\">neun</span><span class=\"n-b\">und</span><span class=\"n-g\">achtzig</span>",
+   "neun (9) + und (و) + achtzig (80) — بنقرأ الآحاد الأول"
+  ],
+  [
+   "neunundneunzig",
+   "تسعة وتسعون (99)",
+   "<span class=\"n-r\">neun</span><span class=\"n-b\">und</span><span class=\"n-g\">neunzig</span>",
+   "neun (9) + und (و) + neunzig (90) — بنقرأ الآحاد الأول"
+  ]
+ ],
+ "gruss": [
+  [
+   "Hallo",
+   "مرحبًا",
+   "Hallo, ich heiße Ali.",
+   "مرحبًا، اسمي علي."
+  ],
+  [
+   "Guten Morgen",
+   "صباح الخير",
+   "Von morgens bis mittags.",
+   "من الصبح لحد الضهر"
+  ],
+  [
+   "Guten Tag",
+   "نهارك سعيد",
+   "Von mittags bis zum Sonnenuntergang.",
+   "من الضهر لحد الغروب"
+  ],
+  [
+   "Guten Abend",
+   "مساء الخير",
+   "In der Nacht.",
+   "في الليل"
+  ],
+  [
+   "Gute Nacht",
+   "تصبح على خير",
+   "Direkt vor dem Schlafen.",
+   "قبل النوم مباشرة"
+  ],
+  [
+   "Danke",
+   "شكرًا",
+   "Danke für deine Hilfe.",
+   "شكرًا على مساعدتك."
+  ],
+  [
+   "Bitte",
+   "من فضلك / عفوًا",
+   "Einen Kaffee, bitte.",
+   "قهوة من فضلك."
+  ],
+  [
+   "Entschuldigung",
+   "المعذرة / آسف",
+   "Entschuldigung, wo ist der Bahnhof?",
+   "المعذرة، أين محطة القطار؟"
+  ],
+  [
+   "Willkommen",
+   "أهلًا وسهلًا",
+   "Willkommen in Deutschland!",
+   "أهلًا بك في ألمانيا!"
+  ],
+  [
+   "Freut mich",
+   "تشرفنا",
+   "Ich heiße Sara. Freut mich!",
+   "اسمي سارة. تشرفنا!"
+  ]
+ ],
+ "abschied": [
+  [
+   "Auf Wiedersehen",
+   "إلى اللقاء (رسمي)",
+   "Auf Wiedersehen, Herr Schmidt!",
+   "إلى اللقاء يا سيد شميدت!"
+  ],
+  [
+   "Tschüss",
+   "وداعًا (غير رسمي)",
+   "Tschüss, bis bald!",
+   "وداعًا، أراك قريبًا!"
+  ],
+  [
+   "Ciao",
+   "مع السلامة (غير رسمي)",
+   "Ciao, Anna!",
+   "مع السلامة يا آنا!"
+  ],
+  [
+   "Bis bald",
+   "أراك قريبًا",
+   "Bis bald, Anna!",
+   "أراك قريبًا يا آنا!"
+  ],
+  [
+   "Bis morgen",
+   "أراك غدًا",
+   "Bis morgen in der Schule!",
+   "أراك غدًا في المدرسة!"
+  ],
+  [
+   "Bis später",
+   "أراك لاحقًا",
+   "Ich muss gehen. Bis später!",
+   "يجب أن أذهب. أراك لاحقًا!"
+  ],
+  [
+   "Bis dann",
+   "إلى ذلك الحين",
+   "Wir sehen uns am Freitag. Bis dann!",
+   "نلتقي يوم الجمعة. إلى حينها!"
+  ],
+  [
+   "Mach's gut",
+   "اعتنِ بنفسك / مع السلامة",
+   "Mach's gut, Tom!",
+   "اعتنِ بنفسك يا توم!"
+  ],
+  [
+   "Schönen Tag noch",
+   "يومًا سعيدًا",
+   "Danke, schönen Tag noch!",
+   "شكرًا، يومًا سعيدًا لك!"
+  ],
+  [
+   "Schönes Wochenende",
+   "عطلة أسبوع سعيدة",
+   "Schönes Wochenende, Frau Weber!",
+   "عطلة سعيدة يا سيدة فيبر!"
+  ]
+ ],
+ "pron": [
+  [
+   "ich",
+   "أنا",
+   "Ich bin Student.",
+   "أنا طالب."
+  ],
+  [
+   "du",
+   "أنت (غير رسمي)",
+   "Du bist nett.",
+   "أنت لطيف."
+  ],
+  [
+   "er",
+   "هو",
+   "Er kommt aus Ägypten.",
+   "هو من مصر."
+  ],
+  [
+   "sie",
+   "هي / هم",
+   "Sie ist müde. Sie sind müde.",
+   "هي متعبة. هم متعبون."
+  ],
+  [
+   "es",
+   "هو / هي (لغير العاقل)",
+   "Es ist kalt.",
+   "الجو بارد."
+  ],
+  [
+   "wir",
+   "نحن",
+   "Wir lernen Deutsch.",
+   "نحن نتعلم الألمانية."
+  ],
+  [
+   "ihr",
+   "أنتم (غير رسمي)",
+   "Ihr seid pünktlich.",
+   "أنتم في الموعد."
+  ],
+  [
+   "Sie",
+   "حضرتك / حضراتكم (رسمي)",
+   "Woher kommen Sie?",
+   "من أين حضرتك؟"
+  ]
+ ]
+};
+ LESSONS[LV][IDX]=NAME;           /* خاصية مش بتدخل في عدّ الدروس ولا ترقيمها */
+ WORDS[LV+"-0"]=LESSON0;          /* المفتاح A1-0 → رقم الدرس الداخلي -1 */
+ /* الأمثلة الملونة فيها HTML، فالنطق لازم يقرأ النص من غير الوسوم */
+ var origSpeak=speak;
+ speak=function(t,c){return origSpeak(String(t).replace(/<[^>]*>/g,""),c)};
+ var orig=render;
+ render=function(){
+  var isL0=!WELCOME&&st[0]===LV&&st[1]===IDX,c=st[2],pushed=false;
+  if(isL0&&c){var s=SECS.find(function(x){return x[0]===c});if(s){CATS.push([s[0],s[1]]);pushed=true}}
+  var r;
+  try{r=orig.apply(this,arguments)}finally{if(pushed)CATS.pop()}
+  try{
+   if(isL0&&!c){
+    var g=view.querySelector(".grid.cats");
+    if(g){g.innerHTML="";SECS.forEach(function(x){g.append(btn(x[1]+cp(LV,IDX,x[0]),"box cat "+x[0],function(){go(LV,IDX,x[0])}))})}
+   }else if(!WELCOME&&st[0]===LV&&st.length===1){
+    var gl=view.querySelector(".grid.lessons");
+    if(gl&&!gl.querySelector(".tile-l0")){
+     var t=document.createElement("div");t.className="tile tile-l0";
+     var a=btn('<span class="num">'+LABEL+'</span>'+NAME,"t1",function(){go(LV,IDX)});
+     var p=document.createElement("div");p.className="t2";p.innerHTML=lp(LV,IDX)||'<span class="num">—</span>';
+     var e=btn("امتحان ✎","t3",function(){EXAM=IDX;go(LV,"exam")});
+     t.append(a,p,e);gl.prepend(t);
+    }
+   }
+  }catch(err){console.error(err)}
+  return r;
+ };
+})();
+</script>
 </body>
 </html>
