@@ -20,8 +20,8 @@
 :root{--bg:#F7F5FB;--card:#FFFFFF;--ink:#302B3D;--mute:#706A7D;--line:#E7E0F0;--primary:#B2A0D6;--primary-dark:#70569B;
 --m:#1d5fd1;--f:#d62839;--n:#1f9d55;--v:#111;--a:#7b3fc4;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0B0A10;--card:#15131D;--ink:#F4F0FA;--mute:#B5AEC4;--line:#302B3D;--m:#78A9FF;--f:#FF7887;--n:#53D69A;--v:#F4F0FA;--a:#C3A0FF}}
-:root[data-theme="dark"]{color-scheme:dark;--bg:#0B0A10;--card:#15131D;--ink:#F4F0FA;--mute:#B5AEC4;--line:#302B3D;--m:#78A9FF;--f:#FF7887;--n:#53D69A;--v:#F4F0FA;--a:#C3A0FF}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#191720;--card:#24212D;--ink:#F4F0FA;--mute:#B5AEC4;--line:#3A3545;--m:#78A9FF;--f:#FF7887;--n:#53D69A;--v:#F4F0FA;--a:#C3A0FF}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#191720;--card:#24212D;--ink:#F4F0FA;--mute:#B5AEC4;--line:#3A3545;--m:#78A9FF;--f:#FF7887;--n:#53D69A;--v:#F4F0FA;--a:#C3A0FF}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 Cairo,Tahoma,sans-serif}
@@ -137,7 +137,7 @@ h1{margin:0;font-size:clamp(26px,5vw,38px);font-weight:900;flex:1}.brand-stack{f
 .challenge-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:10px 0 16px;padding:12px;background:var(--card);border:1px solid var(--line);border-radius:14px}
 .challenge-stat{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:0;text-align:center}
 .challenge-stat strong{font-size:25px;line-height:1.15;font-weight:900}
-.challenge-stat span{font-size:13px;color:var(--text);font-weight:700}
+.challenge-stat span{font-size:13px;color:var(--mute);font-weight:700}
 @media(max-width:480px){.challenge-stats{gap:4px;padding:10px 5px}.challenge-stat strong{font-size:22px}.challenge-stat span{font-size:11px}}
 .social-card{background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:16px;margin:14px 0}
 .social-card h2,.social-card h3{margin:0 0 8px;font-size:20px}
@@ -1251,6 +1251,33 @@ async function renderSocial(){
    db.collection("challenges").where("challengerUid","==",fbUser.uid).get()
   ]);
   if(token!==socialRenderToken||st[0]!=="SOCIAL")return;
+  if(socialActiveTab==="challenges"){
+   const allChallengeDocs=[...new Map([...inChallenges.docs,...outChallenges.docs].map(d=>[d.id,d])).values()];
+   let totalPlayed=allChallengeDocs.length,totalWon=0,totalLost=0,totalPending=0;
+   for(const d of allChallengeDocs){
+    const c=d.data();
+    if(c.status==="pending"||c.status==="accepted"){totalPending++;continue;}
+    if(c.status==="declined"){
+     if(c.winnerUid===fbUser.uid)totalWon++;else if(c.winnerUid)totalLost++;
+     continue;
+    }
+    if(c.status==="completed"){
+     try{
+      const otherUid=c.challengerUid===fbUser.uid?c.opponentUid:c.challengerUid;
+      const [myResultSnap,otherResultSnap]=await Promise.all([d.ref.collection("results").doc(fbUser.uid).get(),d.ref.collection("results").doc(otherUid).get()]);
+      if(!myResultSnap.exists||!otherResultSnap.exists)continue;
+      const mineResult=myResultSnap.data(),otherResult=otherResultSnap.data();
+      if(mineResult.score!==otherResult.score){if(mineResult.score>otherResult.score)totalWon++;else totalLost++;}
+      else if(mineResult.correct!==otherResult.correct){if(mineResult.correct>otherResult.correct)totalWon++;else totalLost++;}
+      else if(mineResult.elapsedMs!==otherResult.elapsedMs){if(mineResult.elapsedMs<otherResult.elapsedMs)totalWon++;else totalLost++;}
+     }catch(err){console.warn("Could not calculate overall challenge stats",err)}
+    }
+   }
+   if(token!==socialRenderToken||st[0]!=="SOCIAL")return;
+   const statsBox=socialEl("div","challenge-stats");
+   [[totalPlayed,"لعبتها","#8b5cf6"],[totalLost,"خسرتها","#e53935"],[totalPending,"معلّقة","#f28c28"],[totalWon,"كسبتها","#22a447"]].forEach(([n,label,color])=>{const stat=socialEl("div","challenge-stat"),num=socialEl("strong","",String(n)),caption=socialEl("span","",label);num.style.color=color;stat.append(num,caption);statsBox.append(stat)});
+   view.append(statsBox);
+  }
   const friends=socialCard(view,"👥 أصدقائي",friendsSnap.empty?"لسه مفيش أصدقاء. ابحث عن username علشان تضيف حد.":"");
   const challengeFriends=socialCard(view,"⚔️ تحدَّ مع أصدقائك","اختار صديقًا لإرسال تحدٍّ أو لعرض سجل التحديات بينكم.");
   const friendProfiles={};
