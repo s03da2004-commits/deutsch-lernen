@@ -15,7 +15,6 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;900&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#F7F5FB;--card:#FFFFFF;--ink:#302B3D;--mute:#706A7D;--line:#E7E0F0;--primary:#B2A0D6;--primary-dark:#70569B;
@@ -310,7 +309,7 @@ body{padding-bottom:82px}
 </head>
 <body>
 <div class="wrap">
-<header id="hdr"><div class="brand-stack"><h1 id="title">Deutsch mit so3da</h1><p id="brand-note" class="brand-note" hidden>في حالة وجود مشكلة في الموقع، ادعُ للمبرمج بالهداية.</p></div><button class="back" id="back" hidden>رجوع</button><button class="back icon-nav" id="dashboard" type="button" title="الصفحة الشخصية" aria-label="الصفحة الشخصية"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="8.5" cy="10" r="2"/><path d="M5.5 16c.7-2 5.3-2 6 0M14 9h4M14 13h4M14 16h2"/></svg></button><button class="back icon-nav" id="social" type="button" title="الأصدقاء" aria-label="الأصدقاء"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3.5 19v-1.2A4.8 4.8 0 0 1 8.3 13h1.4a4.8 4.8 0 0 1 4.8 4.8V19z"/><path d="M16 5.5a3 3 0 0 1 0 5.8M17 13.3a4.8 4.8 0 0 1 3.5 4.6V19h-3"/></svg></button><button class="back" id="enable-notifications" type="button">🔔 تفعيل الإشعارات</button><button class="back" id="auth" hidden></button></header>
+<header id="hdr"><div class="brand-stack"><h1 id="title">Deutsch mit so3da</h1><p id="brand-note" class="brand-note" hidden>في حالة وجود مشكلة في الموقع، ادعُ للمبرمج بالهداية.</p></div><button class="back" id="back" hidden>رجوع</button><button class="back icon-nav" id="dashboard" type="button" title="الصفحة الشخصية" aria-label="الصفحة الشخصية"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="8.5" cy="10" r="2"/><path d="M5.5 16c.7-2 5.3-2 6 0M14 9h4M14 13h4M14 16h2"/></svg></button><button class="back icon-nav" id="social" type="button" title="الأصدقاء" aria-label="الأصدقاء"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3.5 19v-1.2A4.8 4.8 0 0 1 8.3 13h1.4a4.8 4.8 0 0 1 4.8 4.8V19z"/><path d="M16 5.5a3 3 0 0 1 0 5.8M17 13.3a4.8 4.8 0 0 1 3.5 4.6V19h-3"/></svg></button><button class="back" id="auth" hidden></button></header>
 <p class="crumb" id="crumb">اختر مستواك</p>
 <div id="view"></div>
 </div>
@@ -1375,54 +1374,6 @@ const FIREBASE_CONFIG={
 };
 var fbUser=null,db=null;const authBtn=document.getElementById("auth");
 function authUI(){if(!FIREBASE_CONFIG){authBtn.hidden=true;return}authBtn.hidden=false;authBtn.textContent=fbUser?"خروج · "+(fbUser.displayName||fbUser.email):"دخول بجوجل لحفظ التقدم"}
-
-// إشعارات المتصفح عبر Firebase Cloud Messaging.
-// ضع مفتاح Web Push (VAPID public key) من Firebase Console في السطر أدناه.
-const FCM_VAPID_PUBLIC_KEY = "BD8Tr1lp0cljQetez-jKcod0iHMmsUHP9hjChDf-fmuprlily-uSakDiCt4xKWo3uNI8W7yu6rBCaQ_Hn5hyp7A";
-const notificationBtn = document.getElementById("enable-notifications");
-
-async function enableSiteNotifications() {
-  if (!("Notification" in window) || !("serviceWorker" in navigator)) {
-    alert("المتصفح ده لا يدعم إشعارات الويب.");
-    return;
-  }
-  if (!fbUser || !db) {
-    alert("سجّل الدخول بجوجل الأول، وبعدها فعّل الإشعارات.");
-    return;
-  }
-  if (!FCM_VAPID_PUBLIC_KEY || FCM_VAPID_PUBLIC_KEY.includes("PASTE_")) {
-    alert("باقي خطوة واحدة: انسخ مفتاح Web Push (VAPID) من Firebase Console وضعه في كود الموقع بدل BD8Tr1lp0cljQetez-jKcod0iHMmsUHP9hjChDf-fmuprlily-uSakDiCt4xKWo3uNI8W7yu6rBCaQ_Hn5hyp7A.");
-    return;
-  }
-  try {
-    const permission = await Notification.requestPermission();
-    if (permission !== "granted") {
-      alert("لم يتم السماح بالإشعارات. يمكنك تغيير الإذن من إعدادات المتصفح.");
-      return;
-    }
-    const swReg = await navigator.serviceWorker.register("./firebase-messaging-sw.js");
-    const messaging = firebase.messaging();
-    const token = await messaging.getToken({
-      vapidKey: FCM_VAPID_PUBLIC_KEY,
-      serviceWorkerRegistration: swReg
-    });
-    if (!token) throw new Error("لم يصدر Firebase رمز إشعارات لهذا الجهاز.");
-    // نخزّن رمز الجهاز تحت حساب صاحبه فقط؛ لا نضعه في publicProfiles.
-    await db.collection("users").doc(fbUser.uid)
-      .collection("notificationTokens").doc(token).set({
-        token,
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-        userAgent: navigator.userAgent.slice(0, 180)
-      }, { merge: true });
-    alert("تم تفعيل الإشعارات لهذا الجهاز ✅");
-    notificationBtn.textContent = "🔔 الإشعارات مفعّلة";
-  } catch (err) {
-    console.error("Notification setup failed:", err);
-    alert("تعذّر تفعيل الإشعارات: " + (err.message || err.code || err));
-  }
-}
-if (notificationBtn) notificationBtn.addEventListener("click", enableSiteNotifications);
-
 function initCloud(){
  if(!FIREBASE_CONFIG||!window.firebase)return;
  try{firebase.initializeApp(FIREBASE_CONFIG);const auth=firebase.auth();db=firebase.firestore();
