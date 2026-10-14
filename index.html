@@ -77,14 +77,14 @@ h1{margin:0;font-size:clamp(26px,5vw,38px);font-weight:900;flex:1}.brand-stack{f
 .fb:empty{display:none}
 .fb.ok{background:var(--n);color:#fff}
 .fb.bad{background:var(--f);color:#fff}
-.tile{display:flex;flex-direction:column;background:var(--card);border:1.5px solid var(--line);border-radius:12px;overflow:hidden}
+.tile{display:flex;flex-direction:column;height:154px;min-height:154px;background:var(--card);border:1.5px solid var(--line);border-radius:12px;overflow:hidden}
 .t1{background:none;border:0;padding:16px 12px;color:var(--ink);font:700 18px Cairo,sans-serif;cursor:pointer;text-align:center}
 .t1:hover{background:var(--bg)}
 .t2{padding:8px 12px;border-top:1px solid var(--line);text-align:center}
 .t3{border:0;border-top:1px solid var(--line);padding:10px;background:var(--primary-dark);color:#FFFFFF;font:700 15px Cairo,sans-serif;cursor:pointer}
 /* بطاقات الدروس: عنوان علوي وشريطان سفليان */
-.tile .t1{min-height:86px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;width:100%}
-.tile .tile-bottom{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line);min-height:48px}
+.tile .t1{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;width:100%;overflow-wrap:anywhere;line-height:1.35}
+.tile .tile-bottom{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line);height:48px;min-height:48px;flex:0 0 48px}
 .tile .t2{display:flex;align-items:center;justify-content:center;gap:5px;border:0;padding:8px 5px;font-size:13px;min-width:0}
 .tile .t3{border:0;border-right:1px solid var(--line);padding:8px 5px;font-size:14px;background:transparent;color:var(--ink);min-width:0}
 .tile .t2{background:#F59E0B;color:#241500;border-radius:0}
@@ -93,7 +93,7 @@ h1{margin:0;font-size:clamp(26px,5vw,38px);font-weight:900;flex:1}.brand-stack{f
 .tile .t2 b{color:#241500}
 
 .tile-bottom>*{min-width:0}
-@media(max-width:520px){.lessons{grid-template-columns:repeat(2,minmax(0,1fr))}.tile .t1{font-size:15px;padding:12px 7px;min-height:78px}.tile .t3{font-size:12px}.tile .t2{font-size:11px}}
+@media(max-width:520px){.lessons{grid-template-columns:repeat(2,minmax(0,1fr))}.tile{height:154px;min-height:154px}.tile .t1{font-size:15px;padding:8px 7px;min-height:0}.tile .t3{font-size:12px}.tile .t2{font-size:11px}}
 .sec{margin:34px 0 12px;font-size:22px;font-weight:900}
 .topic{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:6px;text-align:start}
 .topic .tt{direction:ltr;font-size:19px;font-weight:700}
@@ -293,7 +293,7 @@ body{padding-bottom:82px}
 .proverb-line{display:flex;align-items:flex-start;gap:8px}
 .proverb-line .proverb-de,.proverb-line .proverb-situation{flex:1;min-width:0}
 .proverb-audio,.proverb-saved{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:9px;padding:7px 10px;cursor:pointer;flex-shrink:0;font-size:17px}
-.proverb-saved{font-size:14px;font-weight:800;display:inline-flex;align-items:center;gap:5px}
+.proverb-saved{width:30px;height:30px;padding:0;font-size:16px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;gap:0;line-height:1}
 .proverb-saved.is-saved{background:#d9f7df;border-color:#32a852;color:#17692b}
 :root[data-theme="dark"] .proverb-saved.is-saved{background:#163b25;color:#9df0b2;border-color:#32a852}
 :root[data-theme="dark"] .proverb-card{background:#211B2D;border-color:#49405B;color:#F4F0FA}
@@ -908,7 +908,8 @@ function renderProverbs(groupIndex){
  group.items.forEach(item=>{
   const card=document.createElement("article");card.className="proverb-item";
   const savedKey="saved-german-proverb-"+item.n;
-  const saved=btn((localStorage.getItem(savedKey)==="1"?"☑️ محفوظ":"☐ حفظت المثل"),"proverb-saved",()=>{const yes=localStorage.getItem(savedKey)==="1";if(yes){localStorage.removeItem(savedKey);saved.classList.remove("is-saved");saved.textContent="☐ حفظت المثل"}else{localStorage.setItem(savedKey,"1");saved.classList.add("is-saved");saved.textContent="☑️ محفوظ"}});
+  const saved=btn(localStorage.getItem(savedKey)==="1"?"✓":"+","proverb-saved",()=>{const yes=localStorage.getItem(savedKey)==="1";if(yes){localStorage.removeItem(savedKey);saved.classList.remove("is-saved");saved.textContent="+";saved.title="حفظ المثل";saved.setAttribute("aria-label","حفظ المثل");saved.setAttribute("aria-pressed","false")}else{localStorage.setItem(savedKey,"1");saved.classList.add("is-saved");saved.textContent="✓";saved.title="المثل محفوظ";saved.setAttribute("aria-label","المثل محفوظ؛ اضغط لإلغاء الحفظ");saved.setAttribute("aria-pressed","true")}});
+  saved.title=localStorage.getItem(savedKey)==="1"?"المثل محفوظ":"حفظ المثل";saved.setAttribute("aria-label",localStorage.getItem(savedKey)==="1"?"المثل محفوظ؛ اضغط لإلغاء الحفظ":"حفظ المثل");saved.setAttribute("aria-pressed",localStorage.getItem(savedKey)==="1"?"true":"false");
   if(localStorage.getItem(savedKey)==="1")saved.classList.add("is-saved");
   const top=document.createElement("div");top.className="proverb-line";
   const de=document.createElement("h3");de.className="proverb-de";de.textContent=item.n+". "+item.de;
