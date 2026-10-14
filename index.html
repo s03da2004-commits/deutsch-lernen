@@ -753,9 +753,10 @@ function publicRankData(xpValue){
  return {xp,rankName:r.name,rankMin:r.min,rankNext:Number.isFinite(r.next)?r.next:null,rankProgress:progress};
 }
 function syncPublicProfile(){
- if(!fbUser||!db)return;
- const publicData={...publicRankData(profile.xp),displayName:profile.displayName||fbUser.displayName||"لاعب ألماني",photoURL:fbUser.photoURL||"",updatedAt:firebase.firestore.FieldValue.serverTimestamp()};
- db.collection("publicProfiles").doc(fbUser.uid).set(publicData,{merge:true}).catch(e=>console.error("Public profile sync failed",e));
+ if(!fbUser||!db)return Promise.resolve(false);
+ const publicData={uid:fbUser.uid,...publicRankData(profile.xp),displayName:profile.displayName||fbUser.displayName||"لاعب ألماني",photoURL:fbUser.photoURL||"",updatedAt:firebase.firestore.FieldValue.serverTimestamp()};
+ return db.collection("publicProfiles").doc(fbUser.uid).set(publicData,{merge:true})
+  .then(()=>true).catch(e=>{console.error("Public profile sync failed",e);return false});
 }
 function persistProfile(){
  const data={learned:[...LR],xp:profile.xp||0,wordXP:profile.wordXP||[],completedLessons:profile.completedLessons||[],perfectTests:profile.perfectTests||[],studyDays:profile.studyDays||{},dailyWords:profile.dailyWords||{},examResults:profile.examResults||[],reviewWords:profile.reviewWords||[]};
@@ -1363,8 +1364,9 @@ function initCloud(){
   authBtn.onclick=()=>fbUser?auth.signOut():auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(e=>alert("تعذّر تسجيل الدخول: "+e.message));
   auth.onAuthStateChanged(async u=>{fbUser=u;authUI();setupSocialBadges();if(!u){renderDashboardIfVisible();return}
    try{const d=await db.collection("users").doc(u.uid).get();
-    if(d.exists){const cloud=d.data();LR=new Set(cloud.learned||[]);profile={...profile,xp:cloud.xp||0,wordXP:cloud.wordXP||[],completedLessons:cloud.completedLessons||[],perfectTests:cloud.perfectTests||[],studyDays:cloud.studyDays||{},dailyWords:cloud.dailyWords||{},examResults:cloud.examResults||[],reviewWords:cloud.reviewWords||[],displayName:cloud.displayName||profile.displayName||""};persistProfile()}
+    if(d.exists){const cloud=d.data();LR=new Set(cloud.learned||[]);const localXp=Number(profile.xp)||0,cloudXp=Number(cloud.xp)||0;profile={...profile,xp:Math.max(localXp,cloudXp),wordXP:cloud.wordXP||profile.wordXP||[],completedLessons:cloud.completedLessons||profile.completedLessons||[],perfectTests:cloud.perfectTests||profile.perfectTests||[],studyDays:cloud.studyDays||profile.studyDays||{},dailyWords:cloud.dailyWords||profile.dailyWords||{},examResults:cloud.examResults||profile.examResults||[],reviewWords:cloud.reviewWords||profile.reviewWords||[],displayName:cloud.displayName||profile.displayName||""};persistProfile()}
     else persistProfile();
+    await syncPublicProfile();
     render()}catch(e){console.error(e);alert("تم تسجيل الدخول، لكن تعذرت قراءة التقدم من Google. تأكد من إعدادات Firestore.")}})}catch(e){console.error(e)}}
 try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
 try{history.replaceState({st:[],ex:null},"")}catch(e){HIST=false}
