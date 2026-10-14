@@ -850,6 +850,21 @@ function renderExam(l,j){
  const g=document.createElement("div");g.className="grid";
  [["ma","الكلمة ← اختر المعنى"],["art","الكلمة ← اختر der / die / das"],["am","المعنى ← اختر الكلمة"],["pl","الاسم ← اكتب شكل الجمع"]].forEach(([k,n])=>g.append(btn(n,"box",()=>runQuiz(l,k,words,pool))));
  view.append(g)}
+/* موضوع جديد في أهداف A1 > مواضيع التحدث: الماضي */
+TOPICS.push({
+ de:"Über die Vergangenheit sprechen",
+ lv:"A1",
+ ar:"التحدث عن أحداث اليوم السابق باستخدام الماضي Perfekt",
+ words:{},
+ text:[
+  ["Gestern bin ich früh aufgestanden. Zuerst habe ich gefrühstückt und einen Kaffee getrunken.","امبارح صحيت بدري. في الأول فطرت وشربت قهوة."],
+  ["Danach habe ich mein Zimmer aufgeräumt und meine Hausaufgaben gemacht. Am Mittag habe ich mit meiner Familie gegessen.","بعد كده رتبت أوضتي وعملت واجباتي. وقت الظهر أكلت مع عيلتي."],
+  ["Am Nachmittag habe ich einen Freund getroffen und wir haben zusammen Fußball gespielt.","بعد الضهر قابلت واحد صاحبي ولعبنا كورة مع بعض."],
+  ["Danach bin ich nach Hause gegangen und habe ein bisschen Deutsch gelernt.","بعد كده رجعت البيت وذاكرت ألماني شوية."],
+  ["Am Abend habe ich einen Film gesehen und Musik gehört. Später habe ich geduscht und bin um elf Uhr ins Bett gegangen.","بالليل اتفرجت على فيلم وسمعت موسيقى. وبعد كده استحميت ونمت الساعة 11."]
+ ],
+ specialPast:true
+});
 function renderTopicList(){
  const h=document.createElement("h2");h.className="sec";h.textContent="مواضيع للتحدث";view.append(h);
  const g=document.createElement("div");g.className="grid";
