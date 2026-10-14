@@ -1254,6 +1254,7 @@ async function renderSocial(){
   if(socialActiveTab==="challenges"){
    const allChallengeDocs=[...new Map([...inChallenges.docs,...outChallenges.docs].map(d=>[d.id,d])).values()];
    let totalPlayed=allChallengeDocs.length,totalWon=0,totalLost=0,totalPending=0;
+   const completedChallenges=[];
    for(const d of allChallengeDocs){
     const c=d.data();
     if(c.status==="pending"||c.status==="accepted"){totalPending++;continue;}
@@ -1261,18 +1262,20 @@ async function renderSocial(){
      if(c.winnerUid===fbUser.uid)totalWon++;else if(c.winnerUid)totalLost++;
      continue;
     }
-    if(c.status==="completed"){
-     try{
-      const otherUid=c.challengerUid===fbUser.uid?c.opponentUid:c.challengerUid;
-      const [myResultSnap,otherResultSnap]=await Promise.all([d.ref.collection("results").doc(fbUser.uid).get(),d.ref.collection("results").doc(otherUid).get()]);
-      if(!myResultSnap.exists||!otherResultSnap.exists)continue;
-      const mineResult=myResultSnap.data(),otherResult=otherResultSnap.data();
-      if(mineResult.score!==otherResult.score){if(mineResult.score>otherResult.score)totalWon++;else totalLost++;}
-      else if(mineResult.correct!==otherResult.correct){if(mineResult.correct>otherResult.correct)totalWon++;else totalLost++;}
-      else if(mineResult.elapsedMs!==otherResult.elapsedMs){if(mineResult.elapsedMs<otherResult.elapsedMs)totalWon++;else totalLost++;}
-     }catch(err){console.warn("Could not calculate overall challenge stats",err)}
-    }
+    if(c.status==="completed")completedChallenges.push(d);
    }
+   // اقرأ نتائج التحديات المكتملة بالتوازي بدل انتظار كل تحدٍّ لوحده.
+   await Promise.all(completedChallenges.map(async d=>{
+    try{
+     const c=d.data(),otherUid=c.challengerUid===fbUser.uid?c.opponentUid:c.challengerUid;
+     const [myResultSnap,otherResultSnap]=await Promise.all([d.ref.collection("results").doc(fbUser.uid).get(),d.ref.collection("results").doc(otherUid).get()]);
+     if(!myResultSnap.exists||!otherResultSnap.exists)return;
+     const mineResult=myResultSnap.data(),otherResult=otherResultSnap.data();
+     if(mineResult.score!==otherResult.score){if(mineResult.score>otherResult.score)totalWon++;else totalLost++;}
+     else if(mineResult.correct!==otherResult.correct){if(mineResult.correct>otherResult.correct)totalWon++;else totalLost++;}
+     else if(mineResult.elapsedMs!==otherResult.elapsedMs){if(mineResult.elapsedMs<otherResult.elapsedMs)totalWon++;else totalLost++;}
+    }catch(err){console.warn("Could not calculate overall challenge stats",err)}
+   }));
    if(token!==socialRenderToken||st[0]!=="SOCIAL")return;
    const statsBox=socialEl("div","challenge-stats");
    [[totalPlayed,"لعبتها","#8b5cf6"],[totalLost,"خسرتها","#e53935"],[totalPending,"معلّقة","#f28c28"],[totalWon,"كسبتها","#22a447"]].forEach(([n,label,color])=>{const stat=socialEl("div","challenge-stat"),num=socialEl("strong","",String(n)),caption=socialEl("span","",label);num.style.color=color;stat.append(num,caption);statsBox.append(stat)});
@@ -1343,7 +1346,10 @@ async function renderSocial(){
    const recordsForFriend=[...inChallenges.docs,...outChallenges.docs].filter(d=>{const c=d.data();return c.challengerUid===f.uid||c.opponentUid===f.uid});
    let wonBetween=0,pendingBetween=0;
    recordsForFriend.forEach(d=>{const c=d.data();if(c.status==="pending"||c.status==="accepted")pendingBetween++;else if(c.status==="declined"&&c.winnerUid===fbUser.uid)wonBetween++});
-   await Promise.all(recordsForFriend.filter(d=>d.data().status==="completed").map(async d=>{try{const c=d.data(),otherUid=c.challengerUid===fbUser.uid?c.opponentUid:c.challengerUid;const [aSnap,bSnap]=await Promise.all([d.ref.collection("results").doc(fbUser.uid).get(),d.ref.collection("results").doc(otherUid).get()]);if(!aSnap.exists||!bSnap.exists)return;const a=aSnap.data(),b=bSnap.data();let mineWins=false,otherWins=false;if(a.score!==b.score){mineWins=a.score>b.score;otherWins=b.score>a.score}else if(a.correct!==b.correct){mineWins=a.correct>b.correct;otherWins=b.correct>a.correct}else if(a.elapsedMs!==b.elapsedMs){mineWins=a.elapsedMs<b.elapsedMs;otherWins=b.elapsedMs<a.elapsedMs}if(mineWins)wonBetween++}catch(err){console.warn("Could not calculate friend challenge stats",err)}}));
+   // إحصائيات التحديات بين كل صديق لا تُحسب في تبويب الأصدقاء؛ تظهر فقط في تبويب التحديات.
+   if(socialActiveTab==="challenges"){
+    await Promise.all(recordsForFriend.filter(d=>d.data().status==="completed").map(async d=>{try{const c=d.data(),otherUid=c.challengerUid===fbUser.uid?c.opponentUid:c.challengerUid;const [aSnap,bSnap]=await Promise.all([d.ref.collection("results").doc(fbUser.uid).get(),d.ref.collection("results").doc(otherUid).get()]);if(!aSnap.exists||!bSnap.exists)return;const a=aSnap.data(),b=bSnap.data();let mineWins=false,otherWins=false;if(a.score!==b.score){mineWins=a.score>b.score;otherWins=b.score>a.score}else if(a.correct!==b.correct){mineWins=a.correct>b.correct;otherWins=b.correct>a.correct}else if(a.elapsedMs!==b.elapsedMs){mineWins=a.elapsedMs<b.elapsedMs;otherWins=b.elapsedMs<a.elapsedMs}if(mineWins)wonBetween++}catch(err){console.warn("Could not calculate friend challenge stats",err)}}));
+   }
    const stats=socialEl("div","friend-challenge-stats");
    [[recordsForFriend.length,"التحديات بينكم","#8b5cf6"],[wonBetween,"مرات كسبتها","#22a447"],[pendingBetween,"التحديات المعلّقة","#f28c28"]].forEach(([n,label,color])=>{const stat=socialEl("div","friend-challenge-stat"),num=socialEl("strong","",String(n)),caption=socialEl("span","",label);num.style.color=color;stat.append(num,caption);stats.append(stat)});
    challengeRow.append(stats);challengeFriends.append(challengeRow);
