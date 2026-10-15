@@ -472,6 +472,24 @@ n:"Flugzeug|Fahrrad|Auto=السيارة=s|Taxi=التاكسي=s|Hotel|Gepäck|Ze
 v:"reisen|fahren=يسير أو يسافر|fliegen|abfahren|ankommen|einsteigen|aussteigen|umsteigen|landen=يهبط|buchen=يحجز|reservieren|packen|einpacken|besuchen|zeigen|finden|suchen=يبحث عن|gehen|kommen|bleiben=يبقى|übernachten|wandern|losfahren|zurückfahren|spazierengehen|kosten|fragen|benutzen|nehmen|abholen|wünschen",
 a:"lang|breit|hoch|schnell|langsam=ببطء|weit|nah=قريب|direkt|richtig|falsch|interessant|schön|wunderschön|kalt|warm|heiß|windig|sonnig|bewölkt|billig|teuer|bequem|sauber|klein=صغير|groß=كبير|offen|geschlossen|frei=حر أو خالٍ"}}
 ];
+
+/* أهداف مستوى B1 داخل مواضيع التحدث */
+TOPICS.push(
+ {de:"Reisen und Verkehr",lv:"B1",ar:"التغلب على معظم المواقف في السفر",w:{m:"",f:"",n:"",v:"",a:""}},
+ {de:"Erfahrungen, Ereignisse, Träume und Ziele",lv:"B1",ar:"التحدث عن الخبرات والأحداث والأحلام والأهداف",w:{m:"",f:"",n:"",v:"",a:""}},
+ {de:"Pläne und Zukunftsvisionen",lv:"B1",ar:"التحدث عن الخطط والرؤى المستقبلية",w:{m:"",f:"",n:"",v:"",a:""}},
+ {de:"Gründe nennen und etwas erklären",lv:"B1",ar:"إعطاء أسباب أو توضيح",w:{m:"",f:"",n:"",v:"",a:""}},
+ {de:"Haustiere",lv:"B1",ar:"الحيوانات الأليفة",w:{m:"",f:"",n:"",v:"",a:""}},
+ {de:"Arbeit und Beruf",lv:"B1",ar:"العمل والمهنة",w:{m:"",f:"",n:"",v:"",a:""}},
+ {de:"Umwelt",lv:"B1",ar:"البيئة",w:{m:"",f:"",n:"",v:"",a:""}},
+ {de:"Gesundheit und Ernährung",lv:"B1",ar:"الصحة والتغذية",w:{m:"",f:"",n:"",v:"",a:""}},
+ {de:"Medien und Technik",lv:"B1",ar:"الإعلام والتقنية",w:{m:"",f:"",n:"",v:"",a:""}},
+ {de:"Einkaufen",lv:"B1",ar:"التسوق",w:{m:"",f:"",n:"",v:"",a:""}},
+ {de:"Kunst",lv:"B1",ar:"الفن",w:{m:"",f:"",n:"",v:"",a:""}},
+ {de:"Beziehungen",lv:"B1",ar:"العلاقات",w:{m:"",f:"",n:"",v:"",a:""}},
+ {de:"Geld",lv:"B1",ar:"المال",w:{m:"",f:"",n:"",v:"",a:""}}
+);
+
 const A1IDX={...A1OLDIDX};
 for(const k in WORDS){if(!k.startsWith("A1-"))continue;for(const c in WORDS[k])WORDS[k][c].forEach(([de,ar])=>{A1IDX[c+de.replace(/^(der|die|das) /,"")]=[de,ar]})}
 const TOPIC_MISSING=[];
@@ -877,7 +895,7 @@ function renderTopic(i,c){
   CATS.forEach(([k,n])=>g.append(btn(n,"box cat "+k,()=>go("T",i,k))));view.append(g);return}
  const name=CATS.find(x=>x[0]===c)[1];title.textContent=name;crumb.textContent=t.de+" · "+t.lv;
  const list=t.words[c]||[];
- if(!list.length){view.innerHTML='<div class="empty">لسه مفيش كلمات هنا.</div>';return}
+ if(!list.length){view.innerHTML=`<div class="empty"><strong>${t.de}</strong><br>${t.ar}<br><br>هدف التحدث في مستوى B1</div>`;return}
  const ul=document.createElement("ul");ul.className="words";
  list.forEach(([de,ar])=>{const li=document.createElement("li");li.className="w "+c;
   const row=btn(`<span class="de">${de}</span><span class="ar">${ar}</span>${plHtml(c,de)}`,"row",()=>{const o=li.classList.toggle("open");row.setAttribute("aria-expanded",o)});
