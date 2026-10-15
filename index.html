@@ -1254,7 +1254,7 @@ async function renderSocial(){
    const input=socialEl("input","social-input");input.placeholder="مثال: saeed99";input.autocomplete="off";input.maxLength=20;input.setAttribute("aria-label","اسم المستخدم");
    box.append(input,socialButton("حفظ اسم المستخدم",async()=>{const ok=await setSocialUsername(input.value);if(ok)renderSocial()}));return;
   }
-  const intro=socialCard(view,"أهلاً يا "+(mine.displayName||profile.displayName||fbUser.displayName||mine.username),"اسمك في الموقع: @"+mine.username+" · ابحث عن أصحابك بالـ username.");
+  const intro=socialCard(view,"اسمك في الموقع","@"+mine.username+" · ابحث عن أصحابك بالـ username.");
   const search=socialCard(view,"🔎 إضافة صديق","اكتب اسم المستخدم من غير علامة @.");
   const inp=socialEl("input","social-input");inp.placeholder="username";inp.autocomplete="off";inp.maxLength=20;inp.setAttribute("aria-label","البحث عن اسم مستخدم");
   const result=socialEl("div","social-muted","");
@@ -1336,8 +1336,8 @@ async function renderSocial(){
    [[totalPlayed,"لعبتها","#8b5cf6"],[totalLost,"خسرتها","#e53935"],[totalPending,"معلّقة","#f28c28"],[totalWon,"كسبتها","#22a447"]].forEach(([n,label,color])=>{const stat=socialEl("div","challenge-stat"),num=socialEl("strong","",String(n)),caption=socialEl("span","",label);num.style.color=color;stat.append(num,caption);statsBox.append(stat)});
    view.append(statsBox);
   }
-  const friends=socialCard(view,"👥 أصدقائي",friendsSnap.empty?"لسه مفيش أصدقاء. ابحث عن username علشان تضيف حد.":"");
-  const challengeFriends=socialCard(view,"⚔️ تحدَّ مع أصدقائك","اختار صديقًا لإرسال تحدٍّ.");
+  const friends=socialCard(view,"👥 أصدقائي ("+friendsSnap.size+")",friendsSnap.empty?"لسه مفيش أصدقاء. ابحث عن username علشان تضيف حد.":"");
+  const challengeFriends=socialCard(view,"⚔️ تحدَّ مع أصدقائك","");
   const friendProfiles={};
   await Promise.all(friendsSnap.docs.map(async doc=>{try{const ps=await db.collection("publicProfiles").doc(doc.id).get();friendProfiles[doc.id]=ps.exists?ps.data():{}}catch(e){friendProfiles[doc.id]={}}}));
   if(token!==socialRenderToken||st[0]!=="SOCIAL")return;
