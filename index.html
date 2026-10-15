@@ -1548,12 +1548,12 @@ const FIREBASE_CONFIG={
  appId: "1:363816409439:web:249806f814832b29923eea",
  measurementId: "G-D3ZFRMDTTJ"
 };
-var fbUser=null,db=null;const authBtn=document.getElementById("auth");
-function authUI(){if(!FIREBASE_CONFIG){authBtn.hidden=true;return}authBtn.hidden=!(typeof st!=="undefined"&&st[0]==="SETTINGS");authBtn.textContent=fbUser?"تسجيل الخروج · "+(fbUser.displayName||fbUser.email):"ربط حساب جوجل وحفظ التقدم"}
+var fbUser=null,db=null;const authBtn=document.getElementById("auth");let authBusy=false;
+function authUI(){if(!FIREBASE_CONFIG){authBtn.hidden=true;return}authBtn.hidden=!(typeof st!=="undefined"&&st[0]==="SETTINGS");authBtn.textContent=authBusy?"جارٍ فتح تسجيل الدخول…":fbUser?"تسجيل الخروج · "+(fbUser.displayName||fbUser.email):"ربط حساب جوجل وحفظ التقدم";authBtn.disabled=authBusy}
 function initCloud(){
  if(!FIREBASE_CONFIG||!window.firebase)return;
  try{firebase.initializeApp(FIREBASE_CONFIG);const auth=firebase.auth();db=firebase.firestore();
-  authBtn.onclick=()=>fbUser?auth.signOut():auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(e=>alert("تعذّر تسجيل الدخول: "+e.message));
+  authBtn.onclick=async()=>{if(authBusy)return;if(fbUser){try{await auth.signOut()}catch(e){alert("تعذّر تسجيل الخروج: "+e.message)}return}authBusy=true;authUI();try{await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())}catch(e){if(e&&e.code==="auth/cancelled-popup-request"){console.info("تم تجاهل طلب تسجيل دخول مكرر؛ نافذة تسجيل الدخول الأخرى ما زالت قيد الفتح.")}else if(e&&e.code==="auth/popup-closed-by-user"){/* المستخدم أغلق نافذة تسجيل الدخول */}else{console.error("Google sign-in failed:",e);alert("تعذّر تسجيل الدخول: "+(e&&e.message?e.message:"حاول مرة أخرى."))}}finally{authBusy=false;authUI()}};
   auth.onAuthStateChanged(async u=>{fbUser=u;authUI();setupSocialBadges();if(!u){renderDashboardIfVisible();return}
    try{
     const [d,pubSnap]=await Promise.all([
