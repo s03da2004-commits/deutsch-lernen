@@ -36,3 +36,36 @@ self.addEventListener('notificationclick', event => {
     return self.clients.openWindow ? self.clients.openWindow(target) : undefined;
   }));
 });
+
+// Offline shell cache, preserving the existing Firebase Messaging handlers.
+const DE_OFFLINE_CACHE = "deutsch-app-shell-v1";
+self.addEventListener("install", (event) => {
+  event.waitUntil((async () => {
+    const cache = await caches.open(DE_OFFLINE_CACHE);
+    await cache.add(new Request("./", { cache: "reload" })).catch(() => {});
+    await self.skipWaiting();
+  })());
+});
+self.addEventListener("activate", (event) => {
+  event.waitUntil((async () => {
+    const keys = await caches.keys();
+    await Promise.all(keys.filter((key) => key.startsWith("deutsch-app-shell-") && key !== DE_OFFLINE_CACHE).map((key) => caches.delete(key)));
+    await self.clients.claim();
+  })());
+});
+self.addEventListener("fetch", (event) => {
+  const request = event.request;
+  if (request.method !== "GET" || new URL(request.url).origin !== self.location.origin) return;
+  if (request.mode === "navigate") {
+    event.respondWith((async () => {
+      const cache = await caches.open(DE_OFFLINE_CACHE);
+      try {
+        const fresh = await fetch(request);
+        if (fresh && fresh.ok) await cache.put("./", fresh.clone());
+        return fresh;
+      } catch (_) {
+        return (await cache.match(request)) || (await cache.match("./")) || Response.error();
+      }
+    })());
+  }
+});

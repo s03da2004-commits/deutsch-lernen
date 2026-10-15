@@ -244,7 +244,7 @@ body{background:var(--bg)}
 /* These shortcuts are duplicated in the bottom navigation */
 #dashboard,#social{display:none!important}
 body{padding-bottom:82px}
-#app-bottom-nav{position:fixed;z-index:9999;bottom:0;left:0;right:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;padding:7px max(10px,env(safe-area-inset-right)) calc(7px + env(safe-area-inset-bottom,0px)) max(10px,env(safe-area-inset-left));background:rgba(255,255,255,.97);border-top:1px solid #e9e3f2;box-shadow:0 -4px 18px rgba(79,55,119,.06)}
+#app-bottom-nav{position:fixed;z-index:9999;bottom:0;left:0;right:0;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;padding:7px max(10px,env(safe-area-inset-right)) calc(7px + env(safe-area-inset-bottom,0px)) max(10px,env(safe-area-inset-left));background:rgba(255,255,255,.97);border-top:1px solid #e9e3f2;box-shadow:0 -4px 18px rgba(79,55,119,.06)}
 #app-bottom-nav button{border:0;background:transparent;color:#777080;border-radius:12px;min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;font:700 11px/1.4 Cairo,Tahoma,sans-serif;cursor:pointer;padding:4px 2px}
 #app-bottom-nav .nav-ico{font-size:20px;line-height:1.2;display:flex;align-items:center;justify-content:center}#app-bottom-nav .nav-ico svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 #app-bottom-nav button[aria-current=page]{background:#f1ecf9;color:#62458f}
@@ -344,6 +344,45 @@ body{padding-bottom:82px}
 #hdr.home-view #notificationsBtn #notificationsCount{right:-5px;left:auto}
 @media(max-width:600px){#hdr.home-view #notificationsBtn{left:0;top:0}#hdr.home-view .brand-stack{padding-left:48px;padding-right:48px;box-sizing:border-box}}
 .back#back{background:#6d28d9!important;color:#fff!important;border-color:#6d28d9!important}
+
+/* أدوات التعلم الجديدة: بطاقات مرنة للموبايل */
+.learning-tools{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0 0 18px}
+.learning-tool{display:flex;align-items:center;gap:10px;min-width:0;padding:13px 12px;border:1.5px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink);font:700 15px Cairo,sans-serif;text-align:start;cursor:pointer;box-shadow:0 2px 8px #00000008}
+.learning-tool:focus-visible{outline:3px solid var(--n);outline-offset:2px}
+.learning-tool .tool-icon{width:38px;height:38px;display:grid;place-items:center;flex:none;border-radius:11px;background:var(--bg);font-size:21px}
+.learning-tool small{display:block;font-size:12px;font-weight:500;color:var(--mute);line-height:1.45;margin-top:2px}
+.feature-card{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:16px;margin:12px 0}
+.feature-card h2,.feature-card h3{margin:0 0 8px}
+.feature-note{color:var(--mute);font-size:14px;line-height:1.7}
+.badge-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
+.achievement-badge{border:1.5px solid var(--line);border-radius:12px;padding:12px;text-align:center;background:var(--bg);min-width:0}
+.achievement-badge.earned{border-color:#D6A800;background:linear-gradient(135deg,#fff6cc,#fffdf3)}
+.achievement-badge .badge-emoji{font-size:28px;display:block;margin-bottom:4px}
+.achievement-badge strong{display:block;font-size:14px}
+.achievement-badge small{display:block;color:var(--mute);font-size:12px;margin-top:4px}
+.dialogue-line{border-bottom:1px solid var(--line);padding:12px 0;line-height:1.7}
+.dialogue-line:last-child{border-bottom:0}
+.dialogue-de{direction:ltr;text-align:left;font-weight:700;font-size:18px}
+.dialogue-ar{color:var(--mute);font-size:14px}
+.feature-option{display:block;width:100%;text-align:start;margin:8px 0;padding:12px;border:1.5px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font:600 15px Cairo,sans-serif;cursor:pointer}
+.feature-option:disabled{opacity:.75;cursor:default}
+.feature-option.correct{border-color:#249653;background:#e9f8ee}
+.feature-option.wrong{border-color:#c44;background:#fff0f0}
+.feature-progress{height:8px;background:var(--line);border-radius:99px;overflow:hidden;margin:10px 0 16px}
+.feature-progress i{display:block;height:100%;background:var(--n)}
+.offline-status{padding:12px;border-radius:10px;background:var(--bg);border:1px solid var(--line);line-height:1.7}
+@media(max-width:420px){.learning-tools{gap:8px}.learning-tool{padding:10px 9px;gap:8px;font-size:13px}.learning-tool .tool-icon{width:32px;height:32px;font-size:18px}.learning-tool small{font-size:11px}.badge-grid{gap:8px}}
+:root[data-theme="dark"] .achievement-badge.earned{background:#302b19;border-color:#8f7420}
+:root[data-theme="dark"] .feature-option.correct{background:#183322}
+:root[data-theme="dark"] .feature-option.wrong{background:#3a2020}
+
+
+/* متجر المظهر */
+.shop-balance{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;border-radius:14px;background:linear-gradient(120deg,#3b2862,#7854aa);color:#fff;margin:10px 0 16px}
+.shop-balance strong{font-size:24px}.shop-tabs{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0}.shop-tab{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:9px;padding:8px 12px;font:700 13px Cairo,sans-serif}.shop-tab.active{background:#70569B;color:#fff;border-color:#70569B}
+.shop-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.shop-item{border:1px solid var(--line);border-radius:14px;padding:12px;background:var(--card);min-width:0;overflow:hidden}.shop-preview{height:78px;border-radius:10px;display:grid;place-items:center;font-size:34px;margin-bottom:9px;border:2px solid var(--line);background:var(--bg)}.shop-item h3{margin:4px 0;font-size:16px}.shop-item p{font-size:12px;color:var(--mute);margin:3px 0 10px;min-height:36px}.shop-price{font-weight:900;color:#a46b00;margin-bottom:8px}.shop-item button{width:100%;border:0;border-radius:8px;padding:9px;background:#70569B;color:#fff;font:700 13px Cairo,sans-serif}.shop-item button:disabled{opacity:.6}.shop-frame-gold{border:3px solid #e8b923!important;box-shadow:0 0 0 2px #fff2,0 0 12px #e8b92388}.shop-frame-neon{border:3px solid #22d3ee!important;box-shadow:0 0 12px #22d3ee99}.shop-frame-royal{border:3px solid #9b5de5!important;box-shadow:0 0 0 2px #f7d9ff,0 0 12px #9b5de599}.shop-title{display:inline-block;margin-top:3px;padding:1px 7px;border-radius:7px;background:#f3e8ff;color:#7044a5;font-size:10px;font-weight:900}.shop-exclusive-badge{display:inline-block;margin:3px 2px 0;padding:2px 6px;border-radius:7px;background:#fff1c2;color:#805600;border:1px solid #e5bd45;font-size:10px;font-weight:900}.shop-profile-bg-midnight{background:linear-gradient(135deg,#27203b,#5b4385)!important;color:#fff!important}.shop-profile-bg-forest{background:linear-gradient(135deg,#163d35,#38836a)!important;color:#fff!important}.shop-profile-bg-sunset{background:linear-gradient(135deg,#6b294d,#e18a65)!important;color:#fff!important}
+@media(max-width:520px){.shop-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.shop-item{padding:9px}.shop-preview{height:64px}.shop-item h3{font-size:14px}.shop-item p{font-size:11px;min-height:42px}.shop-balance strong{font-size:20px}}
+
 </style>
 </head>
 <body>
@@ -800,7 +839,7 @@ const view=document.getElementById("view"),title=document.getElementById("title"
 let st=[];
 let LR=new Set();
 const PROFILE_KEY="de-profile-v2";
-let profile={xp:0,wordXP:[],completedLessons:[],perfectTests:[],studyDays:{},dailyWords:{},examResults:[],reviewWords:[],displayName:""};
+let profile={xp:0,wordXP:[],completedLessons:[],perfectTests:[],studyDays:{},dailyWords:{},examResults:[],reviewWords:[],displayName:"",placementResults:[],earnedBadges:[],dialoguesCompleted:[],shopCoins:0,shopOwned:[],shopEquipped:{}};
 try{LR=new Set(JSON.parse(localStorage.getItem("de-learned")||"[]"))}catch(e){}
 try{const old=JSON.parse(localStorage.getItem(PROFILE_KEY)||"{}");profile={...profile,...old}}catch(e){}
 function publicRankData(xpValue){
@@ -825,8 +864,62 @@ async function syncPublicProfile(){
   return true;
  }catch(e){console.error("Public profile sync failed",e);return false}
 }
+const SHOP_ITEMS=[
+ {id:"frame-gold",type:"frame",name:"الإطار الذهبي",desc:"إطار لامع يميّز صورتك في الملف الشخصي والأصدقاء.",price:70,emoji:"👑",style:"shop-frame-gold"},
+ {id:"frame-neon",type:"frame",name:"إطار النيون",desc:"إطار سماوي مضيء بطابع عصري.",price:95,emoji:"💠",style:"shop-frame-neon"},
+ {id:"frame-royal",type:"frame",name:"الإطار الملكي",desc:"إطار بنفسجي ملكي للشكل المميز.",price:130,emoji:"💜",style:"shop-frame-royal"},
+ {id:"title-vocab",type:"title",name:"ملك المفردات",desc:"لقب يظهر بجوار اسمك في حسابك وعند أصدقائك.",price:80,emoji:"📚"},
+ {id:"title-grammar",type:"title",name:"عبقري القواعد",desc:"لقب حصري لعشاق قواعد اللغة الألمانية.",price:100,emoji:"🧠"},
+ {id:"title-legend",type:"title",name:"أسطورة الألماني",desc:"لقب مميز يلفت الانتباه في التحديات.",price:160,emoji:"🏆"},
+ {id:"badge-streak",type:"badge",name:"شارة المثابر",desc:"شارة حصرية تظهر بجوار اسمك في الملف والأصدقاء والتحديات.",price:65,emoji:"🔥"},
+ {id:"badge-brain",type:"badge",name:"شارة العبقري",desc:"شارة مميزة لهواة المفردات والقواعد.",price:95,emoji:"🧠"},
+ {id:"badge-crown",type:"badge",name:"شارة النخبة",desc:"شارة ذهبية لتخصيص مظهرك بين أصدقائك.",price:140,emoji:"👑"},
+ {id:"bg-midnight",type:"background",name:"ليالي بنفسجية",desc:"خلفية داكنة أنيقة لبطاقة ملفك الشخصي.",price:110,emoji:"🌌",style:"shop-profile-bg-midnight"},
+ {id:"bg-forest",type:"background",name:"الغابة الهادئة",desc:"ألوان خضراء هادئة لملفك الشخصي.",price:110,emoji:"🌿",style:"shop-profile-bg-forest"},
+ {id:"bg-sunset",type:"background",name:"غروب مميز",desc:"خلفية دافئة تظهر في ملفك وقائمة الأصدقاء.",price:125,emoji:"🌇",style:"shop-profile-bg-sunset"}
+];
+function shopCoins(){return Math.max(0,Number(profile.shopCoins)||0)}
+async function grantShopCoinsOnce(category,key,amount){
+ amount=Math.max(0,Number(amount)||0);if(!amount||!fbUser||!db)return false;
+ const rewardKey=String(category)+":"+String(key),userRef=db.collection("users").doc(fbUser.uid);let finalCoins=null,granted=false;
+ try{await db.runTransaction(async tx=>{const snap=await tx.get(userRef),data=snap.exists?snap.data():{},ledger={...(data.shopRewardLedger||{})};const coins=Math.max(0,Number(data.shopCoins??profile.shopCoins)||0);if(ledger[rewardKey]){finalCoins=coins;return;}ledger[rewardKey]=true;finalCoins=coins+amount;granted=true;tx.set(userRef,{shopCoins:finalCoins,shopRewardLedger:ledger,shopUpdatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});});
+  if(finalCoins!==null)profile.shopCoins=finalCoins;profile.shopRewardLedger=profile.shopRewardLedger||{};profile.shopRewardLedger[rewardKey]=true;try{localStorage.setItem(PROFILE_KEY,JSON.stringify({...profile}))}catch(e){};
+  if(granted&&st[0]==="STORE")renderStore();return granted;
+ }catch(e){console.error("Shop coin reward failed",category,key,e);return false}
+}
+function shopItem(id){return SHOP_ITEMS.find(x=>x.id===id)}
+function shopEquippedClass(type,publicData){const eq=(publicData&&publicData.shopEquipped)||profile.shopEquipped||{};const it=shopItem(eq[type]);return it&&it.style?it.style:""}
+function shopTitle(publicData){const eq=(publicData&&publicData.shopEquipped)||profile.shopEquipped||{};const it=shopItem(eq.title);return it&&it.type==="title"?it.name:""}
+function shopBadge(publicData){const eq=(publicData&&publicData.shopEquipped)||profile.shopEquipped||{};const it=shopItem(eq.badge);return it&&it.type==="badge"?it:""}
+function shopApplyAvatar(el,publicData){const cl=shopEquippedClass("frame",publicData);if(cl)el.classList.add(cl)}
+function renderStore(){
+ title.textContent="🛍️ متجر المظهر";crumb.textContent="اجمع عملات المتجر من التعلّم وخصّص حسابك";view.innerHTML="";
+ if(!fbUser){const msg=document.createElement("section");msg.className="social-card";msg.append(socialEl("h2","","اربط حسابك أولًا"),socialEl("p","social-muted","سجّل الدخول بحساب Google عشان نحفظ رصيد المتجر ومشترياتك على Firebase وتفضل معاك على أي جهاز."));view.append(msg,btn("فتح الإعدادات وتسجيل الدخول","go",()=>go("SETTINGS")));return}
+ const balance=document.createElement("div");balance.className="shop-balance";balance.innerHTML=`<div><small>رصيدك الحالي</small><br><strong>${shopCoins()} 🪙</strong></div><div style="text-align:left;font-size:12px">عملة متجر منفصلة<br>عن نقاط XP</div>`;view.append(balance);
+ const note=document.createElement("p");note.className="social-muted";note.textContent="اكسب عملات المتجر من الاختبارات والتحديات والإنجازات: إكمال اختبار = 5 عملات، والدرجة الكاملة تمنح 10 عملات إضافية، وإكمال التحدي = 8 عملات مع 12 عملة إضافية للفائز، والإنجازات تمنح 10–40 عملة. المشتريات دائمة ويمكنك تبديل العنصر المفعّل في أي وقت.";view.append(note);
+ const tabs=document.createElement("div");tabs.className="shop-tabs";const grid=document.createElement("div");grid.className="shop-grid";let active="all";
+ const renderItems=()=>{grid.innerHTML="";SHOP_ITEMS.filter(it=>active==="all"||it.type===active||(active==="title"&&it.type==="badge")).forEach(it=>{const owned=(profile.shopOwned||[]).includes(it.id),equipped=(profile.shopEquipped||{})[it.type]===it.id;const card=document.createElement("article");card.className="shop-item";const preview=document.createElement("div");preview.className="shop-preview";preview.textContent=it.emoji;if(it.style)preview.classList.add(it.style);if(it.type==="title")preview.innerHTML=`<span class="shop-title">${it.name}</span>`;if(it.type==="badge")preview.innerHTML=`<span class="shop-exclusive-badge">${it.emoji} ${it.name}</span>`;if(it.type==="background")preview.style.background=it.id==="bg-midnight"?"linear-gradient(135deg,#27203b,#5b4385)":it.id==="bg-forest"?"linear-gradient(135deg,#163d35,#38836a)":"linear-gradient(135deg,#6b294d,#e18a65)";const h=document.createElement("h3");h.textContent=it.name;const d=document.createElement("p");d.textContent=it.desc;const price=document.createElement("div");price.className="shop-price";price.textContent=it.price+" 🪙";const b=document.createElement("button");b.textContent=equipped?"مفعّل ✓":owned?"تفعيل العنصر":shopCoins()<it.price?"عملات غير كافية · ينقصك "+(it.price-shopCoins()):"شراء · "+it.price+" عملة";b.disabled=equipped||(!owned&&shopCoins()<it.price);b.onclick=()=>buyOrEquipShopItem(it.id,b);card.append(preview,h,d,price,b);grid.append(card)});};
+ [["all","الكل"],["frame","إطارات الصور"],["title","الألقاب والشارات"],["background","الخلفيات"]].forEach(([key,label])=>{const b=document.createElement("button");b.className="shop-tab"+(key===active?" active":"");b.textContent=label;b.onclick=()=>{active=key;[...tabs.children].forEach(x=>x.classList.toggle("active",x===b));renderItems()};tabs.append(b)});view.append(tabs,grid);renderItems();
+}
+async function buyOrEquipShopItem(id,button){
+ if(!fbUser||!db){alert("سجّل الدخول الأول عشان تشتري وتحفظ مشترياتك.");return}const item=shopItem(id);if(!item)return;
+ const owned=(profile.shopOwned||[]).includes(id);button.disabled=true;const oldText=button.textContent;button.textContent="جاري الحفظ…";let committedShopState=null;
+ try{
+  const userRef=db.collection("users").doc(fbUser.uid),pubRef=db.collection("publicProfiles").doc(fbUser.uid);
+  await db.runTransaction(async tx=>{
+   const us=await tx.get(userRef),ps=await tx.get(pubRef);const ud=us.exists?us.data():{},pd=ps.exists?ps.data():{};
+   let coins=Math.max(0,Number(ud.shopCoins??profile.shopCoins)||0),ownedItems=Array.isArray(ud.shopOwned)?ud.shopOwned.slice():(profile.shopOwned||[]).slice(),equipped={...(ud.shopEquipped||profile.shopEquipped||{})};
+   if(!ownedItems.includes(id)){if(coins<item.price)throw new Error("NOT_ENOUGH_COINS");coins-=item.price;ownedItems.push(id)}
+   equipped[item.type]=id;
+   tx.set(userRef,{shopCoins:coins,shopOwned:ownedItems,shopEquipped:equipped,shopUpdatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
+   tx.set(pubRef,{shopEquipped:equipped,shopTitle:(shopItem(equipped.title)||{}).name||"",shopUpdatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
+   committedShopState={coins,ownedItems,equipped};
+  });
+  if(!committedShopState)throw new Error("SHOP_COMMIT_MISSING");profile.shopCoins=committedShopState.coins;profile.shopOwned=committedShopState.ownedItems;profile.shopEquipped=committedShopState.equipped;try{localStorage.setItem(PROFILE_KEY,JSON.stringify({...profile}))}catch(e){}renderStore();
+ }catch(e){console.error("Shop transaction failed",e);button.disabled=false;button.textContent=oldText;if(e.message==="NOT_ENOUGH_COINS")alert("رصيد عملات المتجر غير كافٍ.");else alert("الشراء لم يكتمل، ولم يتم خصم العملات. تأكد من اتصال الإنترنت وقواعد Firestore ثم حاول مرة أخرى.")}
+}
 function persistProfile(){
- const data={learned:[...LR],xp:profile.xp||0,wordXP:profile.wordXP||[],completedLessons:profile.completedLessons||[],perfectTests:profile.perfectTests||[],studyDays:profile.studyDays||{},dailyWords:profile.dailyWords||{},examResults:profile.examResults||[],reviewWords:profile.reviewWords||[]};
+ const data={learned:[...LR],xp:profile.xp||0,wordXP:profile.wordXP||[],completedLessons:profile.completedLessons||[],perfectTests:profile.perfectTests||[],studyDays:profile.studyDays||{},dailyWords:profile.dailyWords||{},examResults:profile.examResults||[],reviewWords:profile.reviewWords||[],placementResults:profile.placementResults||[],earnedBadges:profile.earnedBadges||[],dialoguesCompleted:profile.dialoguesCompleted||[]};
  try{localStorage.setItem("de-learned",JSON.stringify(data.learned));localStorage.setItem(PROFILE_KEY,JSON.stringify({...profile}))}catch(e){}
  if(fbUser&&db){db.collection("users").doc(fbUser.uid).set(data,{merge:true}).catch(e=>console.error("Cloud save failed",e));syncPublicProfile();}
 }
@@ -843,15 +936,18 @@ function markWordLearned(id,l,i){
  studyActivity();
  const lessonKey=l+"-"+i,lessonWords=levelWords(l).filter(w=>w.i===i);
  if(lessonWords.length&&lessonWords.every(w=>LR.has(w.id))){profile.completedLessons=profile.completedLessons||[];if(!profile.completedLessons.includes(lessonKey)){profile.completedLessons.push(lessonKey);awardXP(50);alert("عاش! خلصت الدرس وكسبت 50 XP 🎉")}}
- persistProfile();renderDashboardIfVisible();
+ persistProfile();syncAchievements();renderDashboardIfVisible();
 }
 function finishQuiz(l,mode,score,total,lessonIndex){
  const now=new Date(),perfect=total>0&&score===total;
  profile.examResults=profile.examResults||[];
  profile.examResults.unshift({date:now.toISOString(),level:l,lesson:lessonIndex==null?null:lessonIndex,mode,score,total,perfect});profile.examResults=profile.examResults.slice(0,100);
  studyActivity();
- if(perfect){const key=(lessonIndex==null?l+"-practice-"+mode:l+"-lesson-"+lessonIndex+"-"+mode)+"-"+now.getTime();profile.perfectTests=profile.perfectTests||[];profile.perfectTests.push(key);profile.perfectTests=profile.perfectTests.slice(-500);awardXP(100);alert("درجة كاملة! كسبت 100 XP 💯")}
- persistProfile();
+ const quizKey=(lessonIndex==null?l+"-practice-"+mode:l+"-lesson-"+lessonIndex+"-"+mode)+"-"+now.getTime();
+ grantShopCoinsOnce("quiz",quizKey,perfect?15:5);
+ if(perfect){profile.perfectTests=profile.perfectTests||[];profile.perfectTests.push(quizKey);profile.perfectTests=profile.perfectTests.slice(-500);awardXP(100);alert("درجة كاملة! كسبت 100 XP و15 عملة متجر 💯")}
+ else alert("تم حفظ نتيجتك! كسبت 5 عملات متجر 🪙");
+ persistProfile();syncAchievements();
 }
 function addReviewWord(w,wrong){profile.reviewWords=profile.reviewWords||[];if(wrong){if(!profile.reviewWords.includes(w.id))profile.reviewWords.push(w.id)}else profile.reviewWords=profile.reviewWords.filter(id=>id!==w.id);persistProfile()}
 function renderDashboardIfVisible(){if(st[0]==="D")renderDashboard() }
@@ -1111,6 +1207,27 @@ function speak(t,c){
  u.pitch=P[0];u.rate=P[1];const v=P[2]||de[0];if(v)u.voice=v;
  speechSynthesis.speak(u)}
 function btn(html,cls,fn){const b=document.createElement("button");b.className=cls;b.innerHTML=html;b.onclick=fn;return b}
+const ACHIEVEMENT_DEFS=[
+ {id:"first-word",emoji:"🌱",name:"أول خطوة",desc:"احفظ أول كلمة",test:()=>LR.size>=1},
+ {id:"words-25",emoji:"📚",name:"جامع الكلمات",desc:"احفظ 25 كلمة",test:()=>LR.size>=25},
+ {id:"words-100",emoji:"🧠",name:"100 كلمة",desc:"احفظ 100 كلمة",test:()=>LR.size>=100},
+ {id:"lesson-1",emoji:"✅",name:"أول درس",desc:"أكمل درسًا بالكامل",test:()=>((profile.completedLessons||[]).length)>=1},
+ {id:"lessons-10",emoji:"🏅",name:"عشرة دروس",desc:"أكمل 10 دروس",test:()=>((profile.completedLessons||[]).length)>=10},
+ {id:"perfect",emoji:"💯",name:"درجة كاملة",desc:"احصل على الدرجة النهائية في اختبار",test:()=>((profile.perfectTests||[]).length)>=1},
+ {id:"streak-7",emoji:"🔥",name:"أسبوع من الالتزام",desc:"ذاكر 7 أيام متتالية",test:()=>streakCount()>=7},
+ {id:"xp-1000",emoji:"👑",name:"نجم المنصة",desc:"اجمع 1000 نقطة خبرة",test:()=>(profile.xp||0)>=1000}
+];
+function syncAchievements(){profile.earnedBadges=profile.earnedBadges||[];const newly=[];ACHIEVEMENT_DEFS.forEach(b=>{if(b.test()&&!profile.earnedBadges.includes(b.id)){profile.earnedBadges.push(b.id);newly.push(b)}});if(newly.length){persistProfile();newly.forEach((b)=>{const reward=b.id==="xp-1000"?40:(b.id==="words-100"||b.id==="lessons-10"?25:(b.id==="perfect"||b.id==="streak-7"?20:10));grantShopCoinsOnce("achievement",b.id,reward)});if(fbUser&&newly.length)alert("إنجاز جديد! حصلت على "+newly.reduce((n,b)=>n+(b.id==="xp-1000"?40:(b.id==="words-100"||b.id==="lessons-10"?25:(b.id==="perfect"||b.id==="streak-7"?20:10))),0)+" عملة متجر 🏆")}return newly}
+function renderAchievements(){
+ syncAchievements();title.textContent="الإنجازات والشارات";crumb.textContent="كل خطوة في تعلمك تستحق التقدير";view.innerHTML="";
+ const earned=profile.earnedBadges||[],card=document.createElement("section");card.className="feature-card";
+ const h=document.createElement("h2");h.textContent=`🏆 حصلت على ${earned.length} من ${ACHIEVEMENT_DEFS.length} شارات`;
+ const p=document.createElement("p");p.className="feature-note";p.textContent="الشارات مرتبطة بتقدمك الفعلي، ولا تُمنح النقاط مرة أخرى عند إعادة فتح الصفحة.";card.append(h,p);
+ const grid=document.createElement("div");grid.className="badge-grid";
+ ACHIEVEMENT_DEFS.forEach(b=>{const ok=earned.includes(b.id);const el=document.createElement("div");el.className="achievement-badge"+(ok?" earned":"");el.innerHTML=`<span class="badge-emoji">${ok?b.emoji:"🔒"}</span><strong>${b.name}</strong><small>${ok?"تم الإنجاز":b.desc}</small>`;grid.append(el)});
+ card.append(grid);view.append(card,btn("العودة للرئيسية","go alt",()=>go()));
+}
+
 function render(){
  /* ألغِ أي تحميل اجتماعي معلّق عند مغادرة صفحة الأصدقاء، حتى لا تعود بطاقات الأصدقاء/التحديات للظهور فوق الصفحة الرئيسية. */
  if(st[0]!=="SOCIAL")socialRenderToken++;
@@ -1124,6 +1241,7 @@ function render(){
  if(l==="PQ"){renderProverbQuiz(i);return}
  if(l==="G"){renderLevelGoals(i);return}
  if(l==="D"){renderDashboard();return}
+ if(l==="STORE"){renderStore();return}
  if(l==="SETTINGS"){renderSettings();return}
  if(l==="SOCIAL"){renderSocial();return}
  if(l==="CHALLENGE"){if(activeChallengeRun)return;if(challengeFinal&&challengeFinal.id===i){renderChallengeFinal(challengeFinal);return}if(challengeWaiting&&challengeWaiting.id===i){renderChallengeWaiting(challengeWaiting);return}resumeChallengeRoute(i);return}
@@ -1131,7 +1249,7 @@ function render(){
  if(i==="exam"){renderExam(l,EXAM);return}
  if(!l){title.innerHTML='<span class="brand-logo"><span class="logo-deutsch">Deutsch</span> <span class="logo-mit">mit</span> <span class="logo-so3da">so3da</span></span>';document.getElementById("brand-note").hidden=false;crumb.textContent="اختر مستواك";
   const g=document.createElement("div");g.className="grid levels";
-  Object.keys(LESSONS).forEach(k=>g.append(btn(`<span class="lvl">${k}</span><small>${LEVEL_NAMES[k]}</small>`,"box lv"+k,()=>go("G",k))));
+  Object.keys(LESSONS).forEach(k=>g.append(btn(`<span class="lvl">${k}</span><small>${LEVEL_NAMES[k]}</small>` ,"box lv"+k,()=>go("G",k))));
   view.append(g)}
  else if(l==="B2"&&i==null){title.textContent="B2 · فوق المتوسط";crumb.textContent="المحتوى قيد التجهيز";view.innerHTML='<div class="empty">قسم B2 جاهز، وهنا هنضيف الكلمات والدروس لما تجهزهم.</div>'}
  else if(i==null){title.textContent="مستوى "+l;crumb.textContent="اختر الدرس";
@@ -1168,20 +1286,23 @@ function renderDashboard(){
  const displayName=String(profile.displayName||"").trim();
  const head=document.createElement("div");head.className="dash-head";
  const welcome=document.createElement("div");welcome.style.display="flex";welcome.style.alignItems="center";welcome.style.gap="10px";
- const greeting=document.createElement("h2");greeting.className="sec";greeting.style.margin="0";greeting.textContent=`أهلاً ${displayName||"بيك يا بطل"} 👑`;
- welcome.append(greeting);head.append(welcome);view.append(head);
+ const greeting=document.createElement("h2");greeting.className="sec";greeting.style.margin="0";greeting.textContent=`أهلاً ${displayName||"بيك يا بطل"} 👑`;const myShopTitle=shopTitle();if(myShopTitle){const badge=document.createElement("span");badge.className="shop-title";badge.textContent=myShopTitle;welcome.append(greeting,badge)}else welcome.append(greeting);const myExclusiveBadge=shopBadge();if(myExclusiveBadge){const badgeEl=document.createElement("span");badgeEl.className="shop-exclusive-badge";badgeEl.textContent=myExclusiveBadge.emoji+" "+myExclusiveBadge.name;welcome.append(badgeEl)}head.append(welcome);view.append(head);
  const rank=document.createElement("section");rank.className="rank-card";
- const rankPhoto=document.createElement("div");rankPhoto.className="rank-card-avatar";rankPhoto.setAttribute("role","img");rankPhoto.setAttribute("aria-label","الصورة الشخصية");rankPhoto.textContent="👤";
+ const rankPhoto=document.createElement("div");rankPhoto.className="rank-card-avatar";shopApplyAvatar(rankPhoto);const myBgClass=shopEquippedClass("background");if(myBgClass)rank.classList.add(myBgClass);rankPhoto.setAttribute("role","img");rankPhoto.setAttribute("aria-label","الصورة الشخصية");rankPhoto.textContent="👤";
  if(fbUser&&fbUser.photoURL){const photo=document.createElement("img");photo.src=fbUser.photoURL;photo.alt="صورتك الشخصية";photo.referrerPolicy="no-referrer";photo.onerror=()=>{photo.remove();rankPhoto.textContent="👤"};rankPhoto.textContent="";rankPhoto.append(photo)}
  rank.innerHTML=`<div class="rank-card-top"><div class="rank-card-top-copy"><p style="margin:0 0 4px;opacity:.8">رتبتك الحالية</p><p class="rank-name">${r.name}</p></div></div><div class="xp-line"><span>${xp} XP</span><span>${nextRank?"الرتبة الجاية: "+nextRank.name:"وصلت لأعلى رتبة!"}</span></div><span class="bar" style="background:rgba(255,255,255,.25);height:10px"><i style="width:${progress}%;background:#FFCE00"></i></span><small>سلسلة المذاكرة: 🔥 ${streakCount()} يوم</small>`;
- rank.querySelector(".rank-card-top").prepend(rankPhoto);view.append(rank);
+ rank.querySelector(".rank-card-top").prepend(rankPhoto);view.append(rank);view.append(btn("🛍️ افتح متجر المظهر · "+shopCoins()+" عملة","go alt",()=>go("STORE")));
  const stats=document.createElement("div");stats.className="grid dash-grid";
- [[learned,"كلمة متعلّمة"],[completed,"درس مكتمل"],[review.length,"كلمة للمراجعة"],[(profile.examResults||[]).length,"اختبار تم حله"]].forEach(([n,t])=>{const d=document.createElement("div");d.className="stat";d.innerHTML=`<strong>${n}</strong><span>${t}</span>`;stats.append(d)});view.append(stats);
+ [[learned,"كلمة متعلّمة"],[completed,"درس مكتمل"]].forEach(([n,t])=>{const d=document.createElement("div");d.className="stat";d.innerHTML=`<strong>${n}</strong><span>${t}</span>`;stats.append(d)});view.append(stats);
  const h1=document.createElement("h2");h1.className="sec";h1.textContent="تقدم حفظ الكلمات خلال الأسبوع";view.append(h1);const dailyGoal=document.createElement("p");dailyGoal.textContent="الهدف اليومي: حفظ 20 كلمة";dailyGoal.style.cssText="margin:-8px 0 12px;color:var(--text);font-weight:700";view.append(dailyGoal);renderWeeklyWords(view,7);
- const h2=document.createElement("h2");h2.className="sec";h2.textContent="الكلمات اللي محتاجة مراجعة";view.append(h2);
- if(review.length){const list=document.createElement("ul");list.className="dash-list";review.slice(0,20).forEach(w=>{const li=document.createElement("li");li.innerHTML=`<b dir="ltr">${w.de}</b> — ${w.ar} <small style="color:var(--mute)">(${w.l} · ${LESSONS[w.l][w.i]})</small>`;list.append(li)});view.append(list)}else{const e=document.createElement("div");e.className="empty";e.textContent="مفيش كلمات للمراجعة حاليًا. حل اختبارًا وهتظهر هنا الكلمات اللي تغلط فيها.";view.append(e)}
-  const h5=document.createElement("h2");h5.className="sec";h5.textContent="نتائج الاختبارات";view.append(h5);
- const results=profile.examResults||[];if(results.length){const list=document.createElement("ul");list.className="dash-list";results.slice(0,10).forEach(x=>{const li=document.createElement("li"),date=new Date(x.date);const label=x.lesson==null?"تدريب "+x.level:"امتحان "+x.level+" · "+(LESSONS[x.level]?.[x.lesson]||"");li.textContent=`${date.toLocaleDateString("ar-EG")} — ${label} — ${x.score}/${x.total}${x.perfect?" · درجة كاملة 🏆":""}`;list.append(li)});view.append(list)}else{const e=document.createElement("div");e.className="empty";e.textContent="لسه مفيش نتائج اختبارات.";view.append(e)}
+ // الإنجازات والشارات جزء من الملف الشخصي بدل صفحة مستقلة.
+ syncAchievements();
+ const badgeHeading=document.createElement("h2");badgeHeading.className="sec";badgeHeading.textContent="🏆 الإنجازات والشارات";view.append(badgeHeading);
+ const earned=profile.earnedBadges||[];
+ const badgeSummary=document.createElement("p");badgeSummary.className="feature-note";badgeSummary.textContent=`أنجزت ${earned.length} من ${ACHIEVEMENT_DEFS.length} شارات`;view.append(badgeSummary);
+ const badgeGrid=document.createElement("div");badgeGrid.className="badge-grid";
+ ACHIEVEMENT_DEFS.forEach(b=>{const ok=earned.includes(b.id);const el=document.createElement("div");el.className="achievement-badge"+(ok?" earned":"");const emoji=document.createElement("span");emoji.className="badge-emoji";emoji.textContent=ok?b.emoji:"🔒";const name=document.createElement("strong");name.textContent=b.name;const desc=document.createElement("small");desc.textContent=ok?"تم الإنجاز":b.desc;el.append(emoji,name,desc);badgeGrid.append(el)});
+ view.append(badgeGrid);
  window.scrollTo(0,0);
 }
 function renderSettings(){
@@ -1364,10 +1485,10 @@ async function renderSocial(){
   friendsSnap.docs.forEach(async doc=>{
    const f={uid:doc.id,...doc.data()},pub=friendProfiles[doc.id]||{};
    // تبويب الأصدقاء: يعرض الرتبة وXP والتقدم العام من الملف الشخصي العام.
-   const row=socialEl("div","social-person friend-row");
-   if((pub.photoURL||f.photoURL)){const img=socialEl("img","social-avatar");img.src=pub.photoURL||f.photoURL;img.alt="صورة الصديق";img.referrerPolicy="no-referrer";img.onerror=()=>{img.replaceWith(socialEl("div","social-avatar","👤"))};row.append(img)}else row.append(socialEl("div","social-avatar","👤"));
+   const row=socialEl("div","social-person friend-row");const friendBg=shopEquippedClass("background",pub);if(friendBg)row.classList.add(friendBg);
+   if((pub.photoURL||f.photoURL)){const img=socialEl("img","social-avatar");img.src=pub.photoURL||f.photoURL;img.alt="صورة الصديق";img.referrerPolicy="no-referrer";shopApplyAvatar(img,pub);img.onerror=()=>{img.replaceWith(socialEl("div","social-avatar","👤"))};row.append(img)}else {const av=socialEl("div","social-avatar","👤");shopApplyAvatar(av,pub);row.append(av)}
    const main=socialEl("div","social-person-main");
-   main.append(socialEl("strong","","@"+(pub.username||f.username||"unknown")));
+   main.append(socialEl("strong","","@"+(pub.username||f.username||"unknown")));const friendTitle=shopTitle(pub);if(friendTitle)main.append(socialEl("small","shop-title",friendTitle));const friendBadge=shopBadge(pub);if(friendBadge)main.append(socialEl("small","shop-exclusive-badge",friendBadge.emoji+" "+friendBadge.name));
    const hasPublicXp=pub.xp!==undefined&&pub.xp!==null&&Number.isFinite(Number(pub.xp));
    const xp=hasPublicXp?Math.max(0,Number(pub.xp)):0;
    const rankData=publicRankData(xp),rankName=pub.rankName||rankData.rankName;
@@ -1399,10 +1520,10 @@ async function renderSocial(){
     row.append(delFriendBtn);friends.append(row);
 
    // تبويب التحديات: معلومات الصديق وأزرار التحدي والسجل مع إحصائيات بينكما.
-   const challengeRow=socialEl("div","social-person friend-row challenge-friend-row");
+   const challengeRow=socialEl("div","social-person friend-row challenge-friend-row");const challengeBg=shopEquippedClass("background",pub);if(challengeBg)challengeRow.classList.add(challengeBg);
    const friendPhoto=pub.photoURL||f.photoURL||"";
-   if(friendPhoto){const img=socialEl("img","social-avatar");img.src=friendPhoto;img.alt="صورة الصديق";img.referrerPolicy="no-referrer";img.onerror=()=>{img.replaceWith(socialEl("div","social-avatar","👤"))};challengeRow.append(img)}else challengeRow.append(socialEl("div","social-avatar","👤"));
-   const challengeMain=socialEl("div","social-person-main");challengeMain.append(socialEl("strong","","@"+(pub.username||f.username||"unknown")));
+   if(friendPhoto){const img=socialEl("img","social-avatar");img.src=friendPhoto;img.alt="صورة الصديق";img.referrerPolicy="no-referrer";shopApplyAvatar(img,pub);img.onerror=()=>{img.replaceWith(socialEl("div","social-avatar","👤"))};challengeRow.append(img)}else {const av=socialEl("div","social-avatar","👤");shopApplyAvatar(av,pub);challengeRow.append(av)}
+   const challengeMain=socialEl("div","social-person-main");challengeMain.append(socialEl("strong","","@"+(pub.username||f.username||"unknown")));const challengeTitle=shopTitle(pub);if(challengeTitle)challengeMain.append(socialEl("small","shop-title",challengeTitle));const challengeBadge=shopBadge(pub);if(challengeBadge)challengeMain.append(socialEl("small","shop-exclusive-badge",challengeBadge.emoji+" "+challengeBadge.name));
    const challengeBtn=socialButton("⚔️ تحدَّ",()=>{challengeTarget={...f,username:pub.username||f.username,displayName:pub.displayName||f.displayName};renderSocial()},true);
    const historyBtn=socialButton("📋 سجل التحديات",async()=>{
     let hist=challengeRow.querySelector(".friend-history");if(hist){hist.remove();return}
@@ -1543,6 +1664,7 @@ async function submitChallengeResult(run){
  const score=Math.max(0,Math.min(100,Math.round(run.correct/20*80+run.speedPoints)));const result={uid:fbUser.uid,correct:run.correct,total:20,score,elapsedMs:Math.round(run.elapsedMs),finishedAt:firebase.firestore.FieldValue.serverTimestamp()};
  try{
   await db.collection("challenges").doc(run.id).collection("results").doc(fbUser.uid).set(result);
+  await grantShopCoinsOnce("challenge-play",run.id,8);
   const ref=db.collection("challenges").doc(run.id);const snap=await ref.get();const data=snap.data()||run.data;
   // Do not read the opponent's private result until both players have finished.
   // Firestore rules intentionally hide each result until the challenge is completed.
@@ -1550,11 +1672,11 @@ async function submitChallengeResult(run){
   const nextFinished=[...new Set([...alreadyFinished,fbUser.uid])];
   const bothFinished=nextFinished.includes(data.challengerUid)&&nextFinished.includes(data.opponentUid);
   await ref.update({finishedUids:firebase.firestore.FieldValue.arrayUnion(fbUser.uid),...(bothFinished?{status:"completed"}:{})});
-  if(bothFinished){const fresh=await ref.get();const finalData={id:run.id,data:fresh.data(),a:(await ref.collection("results").doc(data.challengerUid).get()).data(),b:(await ref.collection("results").doc(data.opponentUid).get()).data()};activeChallengeRun=null;challengeWaiting=null;challengeFinal=finalData;renderChallengeFinal(finalData)}
+  if(bothFinished){const fresh=await ref.get();const finalData={id:run.id,data:fresh.data(),a:(await ref.collection("results").doc(data.challengerUid).get()).data(),b:(await ref.collection("results").doc(data.opponentUid).get()).data()};const aa=finalData.a,bb=finalData.b;let winnerUid=null;if(aa.score!==bb.score)winnerUid=aa.score>bb.score?data.challengerUid:data.opponentUid;else if(aa.correct!==bb.correct)winnerUid=aa.correct>bb.correct?data.challengerUid:data.opponentUid;else if(aa.elapsedMs!==bb.elapsedMs)winnerUid=aa.elapsedMs<bb.elapsedMs?data.challengerUid:data.opponentUid;if(winnerUid===fbUser.uid)await grantShopCoinsOnce("challenge-win",run.id,12);activeChallengeRun=null;challengeWaiting=null;challengeFinal=finalData;renderChallengeFinal(finalData)}
   else{activeChallengeRun=null;challengeWaiting={id:run.id,data,ownResult:result};renderChallengeWaiting(challengeWaiting);watchChallenge(run.id)}
  }catch(e){console.error("Challenge result save failed:",e);activeChallengeRun=null;view.innerHTML="";const code=e&&e.code?e.code:"unknown",detail=e&&e.message?e.message:"خطأ غير معروف";const box=socialCard(view,"تعذر إكمال حفظ نتيجة التحدي","رمز الخطأ: "+code+" · التفاصيل: "+detail+". قد تكون نتيجتك اتسجلت بالفعل قبل حدوث الخطأ؛ ما تعيدش التحدي دلوقتي. راجع قواعد Firestore المنشورة وسجلات Console قبل المحاولة مرة أخرى.");box.append(socialButton("العودة للأصدقاء",()=>go("SOCIAL")))}
 }
-function watchChallenge(id){if(activeChallengeUnsub){try{activeChallengeUnsub()}catch(e){}}if(!db)return;activeChallengeUnsub=db.collection("challenges").doc(id).onSnapshot(async snap=>{if(!snap.exists)return;const data=snap.data();if(data.status==="declined"){if(fbUser&&data.winnerUid===fbUser.uid){challengeWaiting=null;challengeFinal={id,data,forfeit:true};renderChallengeFinal(challengeFinal)}else if(challengeWaiting)renderChallengeWaiting(challengeWaiting);return}if(data.status==="completed"){try{const ref=db.collection("challenges").doc(id),[a,b]=await Promise.all([ref.collection("results").doc(data.challengerUid).get(),ref.collection("results").doc(data.opponentUid).get()]);if(a.exists&&b.exists){challengeWaiting=null;challengeFinal={id,data,a:a.data(),b:b.data()};renderChallengeFinal(challengeFinal)}}catch(e){console.error(e)}}},e=>console.error(e))}
+function watchChallenge(id){if(activeChallengeUnsub){try{activeChallengeUnsub()}catch(e){}}if(!db)return;activeChallengeUnsub=db.collection("challenges").doc(id).onSnapshot(async snap=>{if(!snap.exists)return;const data=snap.data();if(data.status==="declined"){if(fbUser&&data.winnerUid===fbUser.uid){challengeWaiting=null;challengeFinal={id,data,forfeit:true};renderChallengeFinal(challengeFinal)}else if(challengeWaiting)renderChallengeWaiting(challengeWaiting);return}if(data.status==="completed"){try{const ref=db.collection("challenges").doc(id),[a,b]=await Promise.all([ref.collection("results").doc(data.challengerUid).get(),ref.collection("results").doc(data.opponentUid).get()]);if(a.exists&&b.exists){const aa=a.data(),bb=b.data();let winnerUid=null;if(aa.score!==bb.score)winnerUid=aa.score>bb.score?data.challengerUid:data.opponentUid;else if(aa.correct!==bb.correct)winnerUid=aa.correct>bb.correct?data.challengerUid:data.opponentUid;else if(aa.elapsedMs!==bb.elapsedMs)winnerUid=aa.elapsedMs<bb.elapsedMs?data.challengerUid:data.opponentUid;if(winnerUid===fbUser?.uid)await grantShopCoinsOnce("challenge-win",id,12);challengeWaiting=null;challengeFinal={id,data,a:aa,b:bb};renderChallengeFinal(challengeFinal)}}catch(e){console.error(e)}}},e=>console.error(e))}
 function renderChallengeWaiting(info){title.textContent="نتيجة التحدي";crumb.textContent="تم تسجيل إجابتك";back.hidden=false;view.innerHTML="";const box=socialCard(view,"⏳ خلصت التحدي!","نتيجتك محفوظة ومخفية عن خصمك لحد ما يخلص هو كمان.");box.append(socialEl("p","challenge-result","إجابات صحيحة: "+info.ownResult.correct+" من 20"),socialEl("p","social-muted","النتيجة النهائية هتظهر هنا تلقائيًا لما صديقك يخلص أو يرفض التحدي."),socialButton("العودة للأصدقاء",()=>go("SOCIAL")),socialButton("تحديث النتيجة",()=>resumeChallengeRoute(info.id),true));}
 function renderChallengeFinal(info){title.textContent="نتيجة التحدي";crumb.textContent="المنافسة انتهت";back.hidden=false;view.innerHTML="";const data=info.data||{};const box=socialCard(view,"🏆 نتيجة التحدي",(data.level||"")+" · "+(data.lessonName||"درس"));
  if(info.forfeit||data.status==="declined"){const won=data.winnerUid===fbUser?.uid;box.append(socialEl("p","challenge-result",won?"🏆 كسبت بالانسحاب!":(data.winnerReason==="expired"?"انتهت مهلة الدعوة (يومين) واعتُبرت منسحبًا.":"تم الانسحاب من التحدي.")),socialEl("p","social-muted",data.winnerReason==="expired"?(won?(data.opponentName||"الخصم")+" لم يقبل الدعوة خلال يومين فاعتُبر منسحبًا.":"لم تقبل الدعوة خلال يومين."):(data.opponentName||"الخصم")+" رفض التحدي."));}
@@ -1567,6 +1689,7 @@ function go(...a){st=a;try{history.pushState({st:a,ex:EXAM},"")}catch(e){HIST=fa
 back.onclick=()=>{if(HIST){try{history.back();return}catch(e){HIST=false}}st.pop();if(st.length===1&&(st[0]==="S"||st[0]==="T"))st=[];render()};
 document.getElementById("dashboard").onclick=()=>go("D");
 document.getElementById("social").onclick=()=>{challengeTarget=null;go("SOCIAL")};
+
 if("speechSynthesis" in window)speechSynthesis.getVoices();
 /* حفظ التقدم على حساب جوجل: الصق إعدادات Firebase مكان null في السطر التالي */
 const FIREBASE_CONFIG={
@@ -1580,6 +1703,33 @@ const FIREBASE_CONFIG={
 };
 var fbUser=null,db=null;const authBtn=document.getElementById("auth");let authBusy=false;
 function authUI(){if(!FIREBASE_CONFIG){authBtn.hidden=true;return}authBtn.hidden=!(typeof st!=="undefined"&&st[0]==="SETTINGS");authBtn.textContent=authBusy?"جارٍ فتح تسجيل الدخول…":fbUser?"تسجيل الخروج · "+(fbUser.displayName||fbUser.email):"ربط حساب جوجل وحفظ التقدم";authBtn.disabled=authBusy}
+async function syncPendingOfflineProgress(){
+ if(!fbUser||!db||!navigator.onLine)return;
+ const ref=db.collection("users").doc(fbUser.uid);
+ try{
+  const snap=await ref.get(),cloud=snap.exists?snap.data():{};
+  const union=(a,b)=>[...new Set([...(Array.isArray(a)?a:[]),...(Array.isArray(b)?b:[])])];
+  const mergeDateMap=(a,b)=>{const out={...(a||{})};Object.entries(b||{}).forEach(([k,v])=>{out[k]=Math.max(Number(out[k])||0,Number(v)||0)});return out};
+  const byDate=(a,b)=>{const map=new Map();[...(Array.isArray(a)?a:[]),...(Array.isArray(b)?b:[])].forEach(x=>{const key=x&& (x.date||x.id);if(key)map.set(key,x)});return [...map.values()].sort((x,y)=>String(y.date||"").localeCompare(String(x.date||""))).slice(0,100)};
+  LR=new Set(union([...LR],cloud.learned||[]));
+  profile={...profile,
+   xp:Math.max(Number(profile.xp)||0,Number(cloud.xp)||0),
+   wordXP:union(profile.wordXP,cloud.wordXP),
+   completedLessons:union(profile.completedLessons,cloud.completedLessons),
+   perfectTests:union(profile.perfectTests,cloud.perfectTests),
+   earnedBadges:union(profile.earnedBadges,cloud.earnedBadges),
+   dialoguesCompleted:union(profile.dialoguesCompleted,cloud.dialoguesCompleted),
+   studyDays:mergeDateMap(cloud.studyDays,profile.studyDays),
+   dailyWords:mergeDateMap(cloud.dailyWords,profile.dailyWords),
+   examResults:byDate(profile.examResults,cloud.examResults),
+   placementResults:byDate(profile.placementResults,cloud.placementResults),
+   reviewWords:union(profile.reviewWords,cloud.reviewWords),shopCoins:Math.max(Number(profile.shopCoins)||0,Number(cloud.shopCoins)||0),shopOwned:union(profile.shopOwned,cloud.shopOwned),shopEquipped:cloud.shopEquipped||profile.shopEquipped||{},shopRewardLedger:{...(profile.shopRewardLedger||{}),...(cloud.shopRewardLedger||{})}
+  };
+  persistProfile();
+ }catch(e){console.warn("Offline progress sync will retry later",e)}
+}
+window.addEventListener("online",()=>{if(fbUser&&db)syncPendingOfflineProgress()});
+
 function initCloud(){
  if(!FIREBASE_CONFIG||!window.firebase)return;
  try{firebase.initializeApp(FIREBASE_CONFIG);const auth=firebase.auth();db=firebase.firestore();
@@ -1602,8 +1752,9 @@ function initCloud(){
     const derivedXp=migratedWordXP.length + savedCompleted.length*50 + savedPerfect.length*100;
     const legacyXp=(Math.max(localXp,cloudXp,publicXp)===0?derivedXp:0);
     const baseXp=Math.max(localXp,cloudXp,publicXp,legacyXp);
-    profile={...profile,xp:baseXp,wordXP:migratedWordXP,completedLessons:savedCompleted,perfectTests:savedPerfect,studyDays:cloud.studyDays||profile.studyDays||{},dailyWords:cloud.dailyWords||profile.dailyWords||{},examResults:cloud.examResults||profile.examResults||[],reviewWords:cloud.reviewWords||profile.reviewWords||[],displayName:cloud.displayName||profile.displayName||""};
+    profile={...profile,xp:baseXp,wordXP:migratedWordXP,completedLessons:savedCompleted,perfectTests:savedPerfect,studyDays:cloud.studyDays||profile.studyDays||{},dailyWords:cloud.dailyWords||profile.dailyWords||{},examResults:cloud.examResults||profile.examResults||[],reviewWords:cloud.reviewWords||profile.reviewWords||[],displayName:cloud.displayName||profile.displayName||"",placementResults:cloud.placementResults||profile.placementResults||[],earnedBadges:cloud.earnedBadges||profile.earnedBadges||[],dialoguesCompleted:cloud.dialoguesCompleted||profile.dialoguesCompleted||[],shopCoins:Math.max(0,Number(cloud.shopCoins??profile.shopCoins)||0),shopOwned:Array.isArray(cloud.shopOwned)?cloud.shopOwned:(profile.shopOwned||[]),shopEquipped:cloud.shopEquipped||profile.shopEquipped||{},shopRewardLedger:cloud.shopRewardLedger||profile.shopRewardLedger||{}};
     persistProfile();
+    syncAchievements();
     await syncPublicProfile();
     render()
    }catch(e){console.error(e);alert("تم تسجيل الدخول، لكن تعذرت قراءة التقدم من Google. تأكد من إعدادات Firestore.")}})}catch(e){console.error(e)}}
@@ -1626,6 +1777,7 @@ render();
  <button type="button" data-app-tab="friends"><span class="nav-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3.5 19v-1.2A4.8 4.8 0 0 1 8.3 13h1.4a4.8 4.8 0 0 1 4.8 4.8V19"/><path d="M16 5.4a3 3 0 0 1 0 5.8M17 13.3a4.8 4.8 0 0 1 3.5 4.6V19"/></svg></span><span>الأصدقاء</span></button>
  <button type="button" data-app-tab="challenges"><span class="nav-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7.2 8h9.6a4 4 0 0 1 3.8 3l1 4.1a2.5 2.5 0 0 1-4.1 2.4l-2.1-1.8H8.6l-2.1 1.8a2.5 2.5 0 0 1-4.1-2.4l1-4.1a4 4 0 0 1 3.8-3Z"/><path d="M7 10.5v4M5 12.5h4M16.5 11.5h.01M18.5 14h.01"/></svg></span><span>التحديات</span></button>
  <button type="button" data-app-tab="profile"><span class="nav-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="9" cy="11" r="2.2"/><path d="M5.8 16a3.3 3.3 0 0 1 6.4 0M14.5 10h4M14.5 13h4"/></svg></span><span>ملفي</span></button>
+ <button type="button" data-app-tab="store"><span class="nav-ico" aria-hidden="true">🛍️</span><span>المتجر</span></button>
  <button type="button" data-app-tab="settings" aria-label="الإعدادات" title="الإعدادات"><span class="nav-ico settings-nav-icon" aria-hidden="true">⚙</span><span>الإعدادات</span></button>
 </nav>
 
@@ -1637,7 +1789,7 @@ render();
   nav.querySelectorAll('button').forEach(x=>{if(x===b)x.setAttribute('aria-current','page');else x.removeAttribute('aria-current')});
   if(typeof WELCOME!=='undefined')WELCOME=false;
   const h=document.getElementById('hdr'),c=document.getElementById('crumb');if(h)h.style.display='';if(c)c.style.display='';
-  if(tab==='home')st=[];else if(tab==='friends'){socialActiveTab='friends';st=['SOCIAL']}else if(tab==='profile')st=['D'];else if(tab==='settings')st=['SETTINGS'];else{socialActiveTab='challenges';st=['SOCIAL']}
+  if(tab==='home')st=[];else if(tab==='friends'){socialActiveTab='friends';st=['SOCIAL']}else if(tab==='profile')st=['D'];else if(tab==='store')st=['STORE'];else if(tab==='settings')st=['SETTINGS'];else{socialActiveTab='challenges';st=['SOCIAL']}
   try{history.pushState({st,ex:null},'')}catch(_){}
   if(typeof render==='function')render();
   window.scrollTo({top:0,behavior:'smooth'});
