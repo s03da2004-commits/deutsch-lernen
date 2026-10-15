@@ -349,8 +349,9 @@ body{padding-bottom:82px}
 const LESSONS={
  A1:["Guten Tag!","Freunde, Kollegen und ich","In Hamburg","Guten Appetit!","Alltag und Familie","Zeit mit Freunden","Arbeitsalltag","Fit und gesund","Meine Wohnung","Studium und Beruf","Die Jacke gefällt mir!","Ab in den Urlaub!"],
  A2:["Und was machst du?","Nach der Schulzeit","Immer online?","Große und kleine Gefühle","Leben in der Stadt","Arbeitswelten","Ganz schön mobil","Gelernt ist gelernt!","Sportlich, sportlich","Zusammen leben","Wie die Zeit vergeht!","Gute Unterhaltung!"],
- B1:["Gute Reise","Das ist ja praktisch","Veränderungen","Arbeitswelt","Umweltfreundlich","Blick nach vorn","Zwischenmenschliches","Rund um Körper und Geist","Kunststücke","Miteinander","Stadt, Land, Fluss","Geld regiert die Welt"]};
-const LEVEL_NAMES={A1:"مبتدئ",A2:"أساسي",B1:"متوسط"};
+ B1:["Gute Reise","Das ist ja praktisch","Veränderungen","Arbeitswelt","Umweltfreundlich","Blick nach vorn","Zwischenmenschliches","Rund um Körper und Geist","Kunststücke","Miteinander","Stadt, Land, Fluss","Geld regiert die Welt"],
+ B2:["Themen und Diskussionen","Argumentieren und Begründen","Gesellschaft und Kultur","Arbeit und Zukunft","Umwelt und Nachhaltigkeit","Medien und Kommunikation","Wissenschaft und Technik","Beziehungen und Zusammenleben","Bildung und Lernen","Politik und Wirtschaft"]};
+const LEVEL_NAMES={A1:"مبتدئ",A2:"أساسي",B1:"متوسط",B2:"متقدم"};
 /* ===== عدّل هنا: كلمات كل درس. المفتاح "المستوى-رقم الدرس" ===== */
 /* الصيغة: [الكلمة, المعنى, مثال بالألماني, ترجمة المثال] */
 const WORDS={"A1-1":{
@@ -929,7 +930,6 @@ function renderSpeakLevels(){
  const h=document.createElement("h2");h.className="sec";h.textContent="أهداف المستويات";view.append(h);
  const g=document.createElement("div");g.className="grid levels";
  Object.keys(LESSONS).forEach(k=>g.append(btn(`<span class="lvl">${k}</span><small>${LEVEL_NAMES[k]}</small>`,"box lv"+k,()=>go("G",k))));
- g.append(btn('<span class="lvl">B2</span><small>فوق المتوسط</small>',"box lvB2",()=>go("G","B2")));
  view.append(g);
 }
 function renderLevelGoals(lv){
@@ -1122,7 +1122,6 @@ function render(){
  if(!l){title.innerHTML='<span class="brand-logo"><span class="logo-deutsch">Deutsch</span> <span class="logo-mit">mit</span> <span class="logo-so3da">so3da</span></span>';document.getElementById("brand-note").hidden=false;crumb.textContent="اختر مستواك";
   const g=document.createElement("div");g.className="grid levels";
   Object.keys(LESSONS).forEach(k=>g.append(btn(`<span class="lvl">${k}</span><small>${LEVEL_NAMES[k]}</small>`,"box lv"+k,()=>go("G",k))));
-  g.append(btn('<span class="lvl">B2</span><small>فوق المتوسط</small>',"box lvB2",()=>go("G","B2")));
   view.append(g)}
  else if(l==="B2"&&i==null){title.textContent="B2 · فوق المتوسط";crumb.textContent="المحتوى قيد التجهيز";view.innerHTML='<div class="empty">قسم B2 جاهز، وهنا هنضيف الكلمات والدروس لما تجهزهم.</div>'}
  else if(i==null){title.textContent="مستوى "+l;crumb.textContent="اختر الدرس";
@@ -1243,7 +1242,7 @@ function setSocialUsername(username){
  return db.runTransaction(async tx=>{const old=await tx.get(profileRef);if(old.exists&&old.data().username&&old.data().username!==username)throw new Error("USERNAME_ALREADY_SET");const snap=await tx.get(unameRef);if(snap.exists&&snap.data().uid!==fbUser.uid)throw new Error("USERNAME_TAKEN");const publicData={uid:fbUser.uid,username,displayName:profile.displayName||fbUser.displayName||"لاعب ألماني",photoURL:fbUser.photoURL||"",...publicRankData(profile.xp),updatedAt:firebase.firestore.FieldValue.serverTimestamp()};tx.set(unameRef,{uid:fbUser.uid,username,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});tx.set(profileRef,publicData,{merge:true});return true}).then(()=>true).catch(e=>{console.error(e);if(e.message==="USERNAME_TAKEN")alert("اسم المستخدم ده مستخدم بالفعل، اختار اسمًا تانيًا.");else if(e.message==="USERNAME_ALREADY_SET")alert("اسم المستخدم لا يمكن تغييره حاليًا.");else alert("ماقدرتش أحفظ اسم المستخدم. تأكد من نشر قواعد Firestore واتصالك بالإنترنت.");return false});
 }
 async function renderSocial(){
- const token=++socialRenderToken;title.textContent=socialActiveTab==="challenges"?"اختار صديقًا لإرسال تحدٍّ أو لعرض سجل التحديات بينكم":"الأصدقاء";crumb.textContent="";crumb.style.display="none";view.innerHTML="";back.hidden=false;
+ const token=++socialRenderToken;title.textContent=socialActiveTab==="challenges"?"التحديات":"الأصدقاء";crumb.textContent="";crumb.style.display="none";view.innerHTML="";back.hidden=false;
  if(!fbUser||!db){view.append(socialCard(view,"سجّل الدخول الأول","لازم تدخل بحساب جوجل علشان يبقى ليك اسم مستخدم وتقدر تضيف أصحابك."));view.append(socialButton("دخول بجوجل",()=>authBtn.click()));return}
  view.append(socialEl("div","empty","جارٍ تحميل الأصدقاء والتحديات…"));
  try{
@@ -1255,7 +1254,7 @@ async function renderSocial(){
    const input=socialEl("input","social-input");input.placeholder="مثال: saeed99";input.autocomplete="off";input.maxLength=20;input.setAttribute("aria-label","اسم المستخدم");
    box.append(input,socialButton("حفظ اسم المستخدم",async()=>{const ok=await setSocialUsername(input.value);if(ok)renderSocial()}));return;
   }
-  const intro=socialCard(view,"اسمك في الموقع: @"+mine.username,"ابحث عن أصحابك بالـ username.");
+  const intro=socialCard(view,"أهلاً يا "+(mine.displayName||profile.displayName||fbUser.displayName||mine.username),"اسمك في الموقع: @"+mine.username+" · ابحث عن أصحابك بالـ username.");
   const search=socialCard(view,"🔎 إضافة صديق","اكتب اسم المستخدم من غير علامة @.");
   const inp=socialEl("input","social-input");inp.placeholder="username";inp.autocomplete="off";inp.maxLength=20;inp.setAttribute("aria-label","البحث عن اسم مستخدم");
   const result=socialEl("div","social-muted","");
@@ -1282,11 +1281,17 @@ async function renderSocial(){
   });
   searchBar.append(inp,searchBtn);search.append(searchBar,result);
   if(challengeTarget&&challengeTarget.uid){
-   const setup=socialCard(view,"⚔️ تحدي @"+(challengeTarget.username||challengeTarget.displayName||"صديق"),"اختار المستوى والدرس؛ الموقع هيخلط تلقائيًا بين المعاني والأدوات والجمع وأنواع كلمات مختلفة.");
-   const lv=socialEl("select","social-select");lv.setAttribute("aria-label","المستوى");Object.keys(LESSONS).forEach(k=>{const o=socialEl("option","",k+" · "+LEVEL_NAMES[k]);o.value=k;lv.append(o)});lv.value="B1";
-   const les=socialEl("select","social-select");les.setAttribute("aria-label","الدرس");const fillLessons=()=>{les.innerHTML="";LESSONS[lv.value].forEach((name,j)=>{const o=socialEl("option","","الدرس "+(j+1)+" · "+name);o.value=String(j);les.append(o)})};fillLessons();lv.onchange=fillLessons;
+   const setup=socialCard(view,"⚔️ تحدي @"+(challengeTarget.username||challengeTarget.displayName||"صديق"),"اختار A1 أو A2 أو B1 أو B2، أو اختار الأمثال الشعبية بشكل مستقل.");
+   const kind=socialEl("select","social-select");kind.setAttribute("aria-label","نوع التحدي");
+   [["A1","A1 · مبتدئ"],["A2","A2 · أساسي"],["B1","B1 · متوسط"],["B2","B2 · متقدم"],["proverbs","🗣️ الأمثال الشعبية"]].forEach(([v,label])=>{const o=socialEl("option","",label);o.value=v;kind.append(o)});kind.value="B1";
+   const lv=socialEl("select","social-select");lv.setAttribute("aria-label","المستوى");Object.keys(LESSONS).forEach(k=>{const o=socialEl("option","",k+" · "+(LEVEL_NAMES[k]||""));o.value=k;lv.append(o)});lv.value="B1";
+   const les=socialEl("select","social-select");les.setAttribute("aria-label","الدرس");
+   const group=socialEl("select","social-select");group.setAttribute("aria-label","مجموعة الأمثال الشعبية");
+   const fillLessons=()=>{les.innerHTML="";(LESSONS[lv.value]||[]).forEach((name,j)=>{const o=socialEl("option","","الدرس "+(j+1)+" · "+name);o.value=String(j);les.append(o)})};fillLessons();lv.onchange=fillLessons;
+   (PROVERB_GROUPS||[]).forEach((g,j)=>{const o=socialEl("option","","المجموعة "+(j+1)+" · "+g.title);o.value=String(j);group.append(o)});
+   const syncKind=()=>{const isProverbs=kind.value==="proverbs";lv.hidden=les.hidden=isProverbs;group.hidden=!isProverbs};syncKind();kind.onchange=syncKind;
    const note=socialEl("p","social-muted","20 سؤالًا · 15 ثانية لكل سؤال · هتبدأ تحل فور إرسال التحدي، والنتيجة هتفضل مخفية عن صاحبك لحد ما يخلص.");
-   setup.append(lv,les,note,socialButton("إرسال التحدي وابدأ فورًا",async()=>{const level=lv.value,lessonIndex=Number(les.value),seed=Math.floor(Math.random()*2147483646)+1;const data={challengerUid:fbUser.uid,opponentUid:challengeTarget.uid,challengerName:mine.displayName||profile.displayName||fbUser.displayName||mine.username,challengerUsername:mine.username,opponentName:challengeTarget.displayName||challengeTarget.username||"صديق",opponentUsername:challengeTarget.username||"",level,lessonIndex,lessonName:LESSONS[level][lessonIndex],questionCount:20,timePerQuestion:15,meaningWriteTime:15,questionSeed:seed,status:"pending",createdAt:firebase.firestore.FieldValue.serverTimestamp(),finishedUids:[]};try{const ref=await db.collection("challenges").add(data);challengeTarget=null;updateSocialBadge();startChallengeQuiz(ref.id,{...data,createdAt:new Date()},false)}catch(e){console.error("Challenge send failed:",e);const code=e&&e.code?e.code:"unknown";const detail=e&&e.message?e.message:"خطأ غير معروف";alert("ماقدرتش أبعت التحدي.\nرمز الخطأ: "+code+"\nالتفاصيل: "+detail+"\nافتح Console لو محتاج تفاصيل أكتر، وتأكد إن قواعد Firestore منشورة وإن الصداقة مقبولة بالفعل.")}},false),socialButton("إلغاء",()=>{challengeTarget=null;renderSocial()},true));
+   setup.append(kind,lv,les,group,note,socialButton("إرسال التحدي وابدأ فورًا",async()=>{const isProverbs=kind.value==="proverbs",level=isProverbs?"proverbs":lv.value,lessonIndex=isProverbs?Number(group.value):Number(les.value),seed=Math.floor(Math.random()*2147483646)+1;const lessonName=isProverbs?((PROVERB_GROUPS[lessonIndex]||{}).title||("المجموعة "+(lessonIndex+1))):((LESSONS[level]||[])[lessonIndex]||("الدرس "+(lessonIndex+1)));const data={challengerUid:fbUser.uid,opponentUid:challengeTarget.uid,challengerName:mine.displayName||profile.displayName||fbUser.displayName||mine.username,challengerUsername:mine.username,opponentName:challengeTarget.displayName||challengeTarget.username||"صديق",opponentUsername:challengeTarget.username||"",challengeType:isProverbs?"proverbs":"level",level,lessonIndex,lessonName,questionCount:20,timePerQuestion:15,meaningWriteTime:15,questionSeed:seed,status:"pending",createdAt:firebase.firestore.FieldValue.serverTimestamp(),finishedUids:[]};try{const ref=await db.collection("challenges").add(data);challengeTarget=null;updateSocialBadge();startChallengeQuiz(ref.id,{...data,createdAt:new Date()},false)}catch(e){console.error("Challenge send failed:",e);const code=e&&e.code?e.code:"unknown";const detail=e&&e.message?e.message:"خطأ غير معروف";alert("ماقدرتش أبعت التحدي.\nرمز الخطأ: "+code+"\nالتفاصيل: "+detail+"\nافتح Console لو محتاج تفاصيل أكتر، وتأكد إن قواعد Firestore منشورة وإن الصداقة مقبولة بالفعل.")}},false),socialButton("إلغاء",()=>{challengeTarget=null;renderSocial()},true));
   }
   let [friendsSnap,inSnap,outSnap,inChallenges,outChallenges]=await Promise.all([
    db.collection("users").doc(fbUser.uid).collection("friends").get(),
@@ -1328,11 +1333,11 @@ async function renderSocial(){
    }));
    if(token!==socialRenderToken||st[0]!=="SOCIAL")return;
    const statsBox=socialEl("div","challenge-stats");
-   [[totalPlayed,"لعبتها","#8b5cf6"],[totalWon,"كسبتها","#22a447"],[totalLost,"خسرتها","#e53935"],[totalPending,"معلّقة","#f28c28"]].forEach(([n,label,color])=>{const stat=socialEl("div","challenge-stat"),num=socialEl("strong","",String(n)),caption=socialEl("span","",label);num.style.color=color;stat.append(num,caption);statsBox.append(stat)});
+   [[totalPlayed,"لعبتها","#8b5cf6"],[totalLost,"خسرتها","#e53935"],[totalPending,"معلّقة","#f28c28"],[totalWon,"كسبتها","#22a447"]].forEach(([n,label,color])=>{const stat=socialEl("div","challenge-stat"),num=socialEl("strong","",String(n)),caption=socialEl("span","",label);num.style.color=color;stat.append(num,caption);statsBox.append(stat)});
    view.append(statsBox);
   }
   const friends=socialCard(view,"👥 أصدقائي",friendsSnap.empty?"لسه مفيش أصدقاء. ابحث عن username علشان تضيف حد.":"");
-  const challengeFriends=socialCard(view,"","");
+  const challengeFriends=socialCard(view,"⚔️ تحدَّ مع أصدقائك","اختار صديقًا لإرسال تحدٍّ.");
   const friendProfiles={};
   await Promise.all(friendsSnap.docs.map(async doc=>{try{const ps=await db.collection("publicProfiles").doc(doc.id).get();friendProfiles[doc.id]=ps.exists?ps.data():{}}catch(e){friendProfiles[doc.id]={}}}));
   if(token!==socialRenderToken||st[0]!=="SOCIAL")return;
@@ -1351,7 +1356,7 @@ async function renderSocial(){
    main.append(socialEl("small","friend-rank-line",hasPublicXp?"🏆 "+rankName+" · "+xp+" XP":"🏆 الرتبة والنقاط هتظهر بعد مزامنة حسابه"));
    if(hasPublicXp){
     const progressWrap=socialEl("div","friend-rank-progress");const progressBar=socialEl("span","friend-rank-bar");const progressFill=socialEl("i","","");progressFill.style.width=progress+"%";progressBar.append(progressFill);progressWrap.append(progressBar);
-    main.append(progressWrap);
+    progressWrap.append(socialEl("small","friend-rank-next",next==null?"أعلى رتبة":"التالي: "+next+" XP"));main.append(progressWrap);
    }
    row.append(main);
     const friendName="@"+(pub.username||f.username||"unknown");
@@ -1427,12 +1432,12 @@ async function renderSocial(){
   const outgoing=socialCard(view,"📤 طلبات الصداقة المرسلة","");const pendingOut=outSnap.docs.filter(d=>d.data().status==="pending");if(!pendingOut.length)outgoing.append(socialEl("p","social-muted","مفيش طلبات مرسلة معلقة."));pendingOut.forEach(d=>outgoing.append(socialEl("p","social-muted","في انتظار رد @"+d.data().toUid)));
   const incomingCh=socialCard(view,"🔔 التحديات الواردة","");const pendingChallenges=inChallenges.docs.filter(d=>d.data().status==="pending"&&!isChallengeStale(d.data()));if(!pendingChallenges.length)incomingCh.append(socialEl("p","social-muted","مفيش تحديات واردة حاليًا."));
   for(const doc of pendingChallenges){const ch=doc.data(),row=socialEl("div","social-person"),main=socialEl("div","social-person-main");let senderName=ch.challengerName||"لاعب",senderUsername=ch.challengerUsername||"";let senderPhoto="";try{const senderSnap=await db.collection("publicProfiles").doc(ch.challengerUid).get();if(senderSnap.exists){const sender=senderSnap.data();senderName=sender.displayName||senderName;senderUsername=sender.username||senderUsername;senderPhoto=sender.photoURL||""}}catch(e){console.warn("Could not load challenge sender profile",e)}if(senderPhoto){const img=socialEl("img","social-avatar");img.src=senderPhoto;img.alt="صورة مرسل التحدي";row.append(img)}else row.append(socialEl("div","social-avatar","👤"));main.append(socialEl("strong","","تحدي وارد من: "+senderName),socialEl("small","",(senderUsername?"@"+senderUsername+" · ":"")+(ch.level||"B1")+" · "+(ch.lessonName||"درس")+" · 20 سؤالًا · 15 ثانية لكل سؤال"));row.append(main,socialButton("قبول وابدأ",async()=>{try{if(isChallengeStale(ch)){await expireStaleChallenges([doc]);alert("انتهت مهلة الدعوة (يومين) واعتُبرت منسحبًا، وصاحب التحدي كسب بالانسحاب.");renderSocial();return}await doc.ref.update({status:"accepted",acceptedAt:firebase.firestore.FieldValue.serverTimestamp()});startChallengeQuiz(doc.id,ch,true)}catch(e){console.error(e);alert("تعذر قبول التحدي: "+(e.code||"")+" "+(e.message||""))}},true),socialButton("رفض",async()=>{try{await doc.ref.update({status:"declined",declinedAt:firebase.firestore.FieldValue.serverTimestamp(),winnerUid:ch.challengerUid,winnerReason:"declined"});alert("تم رفض التحدي، واعتُبر صاحبه فائزًا بالانسحاب.");renderSocial();updateSocialBadge()}catch(e){console.error(e);alert("تعذر رفض التحدي: "+(e.code||"")+" "+(e.message||""))}},true));incomingCh.append(row)}
-
-  intro.dataset.socialSection="friends";search.dataset.socialSection="friends";friends.dataset.socialSection="friends";incoming.dataset.socialSection="friends";outgoing.dataset.socialSection="friends";challengeFriends.dataset.socialSection="challenges";incomingCh.dataset.socialSection="challenges";
+  const outgoingCh=socialCard(view,"⚔️ تحدياتي المرسلة","");if(!outChallenges.docs.length)outgoingCh.append(socialEl("p","social-muted","لسه ما بعتش تحديات."));outChallenges.docs.slice().reverse().forEach(doc=>{const ch=doc.data(),row=socialEl("div","social-person"),main=socialEl("div","social-person-main");let status=ch.status==="pending"?(isChallengeStale(ch)?"انتهت مهلة الدعوة (يومين) — فوز لك بالانسحاب":"في انتظار قبول التحدي"+(challengeTimeLeftText(ch)?" · ⏳ "+challengeTimeLeftText(ch):"")):ch.status==="accepted"?"التحدي مقبول":ch.status==="declined"?(ch.winnerReason==="expired"?"انتهت مهلة الدعوة (يومين) — فوز لك بالانسحاب":"انسحب الخصم — فوز لك بالانسحاب"):ch.status==="completed"?"انتهى التحدي":"حالة التحدي";main.append(socialEl("strong","",(ch.opponentName||"صديق")+" · "+(ch.lessonName||"درس")),socialEl("small","",status));row.append(main);if(ch.status==="completed"||ch.status==="declined")row.append(socialButton("عرض النتيجة",()=>{challengeFinal=null;challengeWaiting=null;activeChallengeRun=null;st=["CHALLENGE",doc.id];try{history.pushState({st,ex:EXAM},"")}catch(e){}resumeChallengeRoute(doc.id)},true));outgoingCh.append(row)});
+  intro.dataset.socialSection="friends";search.dataset.socialSection="friends";friends.dataset.socialSection="friends";incoming.dataset.socialSection="friends";outgoing.dataset.socialSection="friends";challengeFriends.dataset.socialSection="challenges";incomingCh.dataset.socialSection="challenges";outgoingCh.dataset.socialSection="challenges";
   if(socialActiveTab==="challenges"){
    [intro,search,friends,incoming,outgoing].forEach(el=>el.remove());
   }else{
-   [challengeFriends,incomingCh].forEach(el=>el.remove());
+   [challengeFriends,incomingCh,outgoingCh].forEach(el=>el.remove());
   }
   const refresh=socialButton("🔄 تحديث القائمة",()=>renderSocial(),true);view.append(refresh);
  }catch(e){console.error(e);if(token===socialRenderToken){view.innerHTML="";view.append(socialCard(view,"حصلت مشكلة في تحميل الأصدقاء","تأكد من اتصال الإنترنت ومن نشر قواعد Firestore الموجودة مع ملفات الموقع."),socialButton("إعادة المحاولة",()=>renderSocial()))}}
@@ -1440,7 +1445,7 @@ async function renderSocial(){
 function seededRandom(seed){let a=(seed>>>0)||1;return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 function seededShuffle(arr,rng){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 function buildChallengeQuestions(level,lessonIndex,seed){
- const rng=seededRandom(seed),raw=(WORDS[level+"-"+(lessonIndex+1)]||{}),words=[];
+ const rng=seededRandom(seed),raw=(WORDS[level+"-"+(lessonIndex+1)]||WORDS[(level==="B2"?"B1":level)+"-"+(lessonIndex+1)]||{}),words=[];
  for(const c of ["m","f","n","v","a"])(raw[c]||[]).forEach(w=>words.push({c,de:w[0],ar:w[1]}));
  const types={meaning:[],article:[]};
  const makeMeaning=(w)=>{
@@ -1474,15 +1479,21 @@ function buildChallengeQuestions(level,lessonIndex,seed){
  }
  return qs.slice(0,20);
 }
+function buildProverbChallengeQuestions(groupIndex,seed){
+ const rng=seededRandom(seed),group=(PROVERB_GROUPS||[])[groupIndex],items=(group&&group.items)||[],all=(PROVERB_GROUPS||[]).flatMap(g=>g.items||[]);
+ if(!items.length)return buildChallengeQuestions("B1",0,seed);
+ const qs=[];for(let i=0;i<20;i++){const item=items[i%items.length];const distractors=seededShuffle(all.filter(x=>x.de!==item.de),rng).slice(0,2);const choices=seededShuffle([item,...distractors],rng);qs.push({type:"proverb",word:item.de,prompt:item.situation||item.de,options:choices.map(x=>x.de),answer:choices.findIndex(x=>x.de===item.de),promptDir:"ltr"})}return seededShuffle(qs,rng);
+}
 function startChallengeQuiz(id,data,isOpponent){
  if(!fbUser||!db){alert("سجّل الدخول بجوجل الأول.");return}
- activeChallengeRun={id,data,isOpponent,questions:buildChallengeQuestions(data.level,data.lessonIndex,data.questionSeed),index:0,correct:0,speedPoints:0,elapsedMs:0,startedAt:Date.now(),questionStart:0,timer:null,locked:false};challengeWaiting=null;challengeFinal=null;st=["CHALLENGE",id];try{history.pushState({st,ex:EXAM},"")}catch(e){}showChallengeQuestion();
+ const questions=data.challengeType==="proverbs"?buildProverbChallengeQuestions(data.lessonIndex,data.questionSeed):buildChallengeQuestions(data.level,data.lessonIndex,data.questionSeed);
+ activeChallengeRun={id,data,isOpponent,questions,index:0,correct:0,speedPoints:0,elapsedMs:0,startedAt:Date.now(),questionStart:0,timer:null,locked:false};challengeWaiting=null;challengeFinal=null;st=["CHALLENGE",id];try{history.pushState({st,ex:EXAM},"")}catch(e){}showChallengeQuestion();
 }
 function showChallengeQuestion(){
  const run=activeChallengeRun;if(!run)return;clearInterval(run.timer);run.locked=false;
  if(run.index>=20){submitChallengeResult(run);return}
  const q=run.questions[run.index],limit=15000;
- title.textContent="تحدي الألماني ⚔️";crumb.textContent=(run.data.level||"B1")+" · "+(run.data.lessonName||"درس")+(run.isOpponent?" · قبلت التحدي":" · تحديك المرسل");back.hidden=true;view.innerHTML="";
+ title.textContent="تحدي الألماني ⚔️";crumb.textContent=(run.data.challengeType==="proverbs"?"الأمثال الشعبية":(run.data.level||"B1"))+" · "+(run.data.lessonName||"درس")+(run.isOpponent?" · قبلت التحدي":" · تحديك المرسل");back.hidden=true;view.innerHTML="";
  const meta=socialEl("p","crumb",""+(run.index+1)+" / 20");view.append(meta);
  const timer=socialEl("div","challenge-timer",(limit/1000)+" ثوانٍ");timer.id="challengeTimer";view.append(timer);
  const prompt=socialEl("div","qbox "+(q.promptDir==="rtl"?"":"de"),q.prompt);view.append(prompt);
