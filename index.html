@@ -2203,7 +2203,7 @@ window.addEventListener("online",()=>{if(fbUser&&db)syncPendingOfflineProgress()
 function initCloud(){
  if(!FIREBASE_CONFIG||!window.firebase)return;
  try{firebase.initializeApp(FIREBASE_CONFIG);const auth=firebase.auth();db=firebase.firestore();
-  authBtn.onclick=async()=>{if(authBusy)return;if(fbUser){try{await auth.signOut()}catch(e){alert("تعذّر تسجيل الخروج: "+e.message)}return}authBusy=true;authUI();const provider=new firebase.auth.GoogleAuthProvider();try{const mobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);if(mobile){await auth.signInWithRedirect(provider);return}await auth.signInWithPopup(provider)}catch(e){if(e&&e.code==="auth/cancelled-popup-request"){console.info("تم تجاهل طلب تسجيل دخول مكرر؛ نافذة تسجيل الدخول الأخرى ما زالت قيد الفتح.")}else if(e&&e.code==="auth/popup-closed-by-user"){/* المستخدم أغلق نافذة تسجيل الدخول */}else if(e&&["auth/internal-error","auth/popup-blocked","auth/operation-not-supported-in-this-environment"].includes(e.code)){console.warn("Google popup sign-in failed; retrying with redirect:",e);try{await auth.signInWithRedirect(provider);return}catch(redirectError){console.error("Google redirect sign-in failed:",redirectError);alert("تعذّر تسجيل الدخول بجوجل ("+(redirectError.code||e.code||"unknown")+"): "+(redirectError.message||e.message||"افتح الموقع في Chrome وحاول مرة أخرى."))}}else{console.error("Google sign-in failed:",e);alert("تعذّر تسجيل الدخول بجوجل ("+(e&&e.code?e.code:"unknown")+"): "+(e&&e.message?e.message:"حاول مرة أخرى."))}}finally{authBusy=false;authUI()}};
+  authBtn.onclick=async()=>{if(authBusy)return;if(fbUser){try{await auth.signOut()}catch(e){alert("تعذّر تسجيل الخروج: "+e.message)}return}authBusy=true;authUI();const provider=new firebase.auth.GoogleAuthProvider();try{await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);const mobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);if(mobile){await auth.signInWithRedirect(provider);return}await auth.signInWithPopup(provider)}catch(e){if(e&&e.code==="auth/cancelled-popup-request"){console.info("تم تجاهل طلب تسجيل دخول مكرر؛ نافذة تسجيل الدخول الأخرى ما زالت قيد الفتح.")}else if(e&&e.code==="auth/popup-closed-by-user"){/* المستخدم أغلق نافذة تسجيل الدخول */}else if(e&&["auth/internal-error","auth/popup-blocked","auth/operation-not-supported-in-this-environment"].includes(e.code)){console.warn("Google popup sign-in failed; retrying with redirect:",e);try{await auth.signInWithRedirect(provider);return}catch(redirectError){console.error("Google redirect sign-in failed:",redirectError);alert("تعذّر تسجيل الدخول بجوجل ("+(redirectError.code||e.code||"unknown")+"): "+(redirectError.message||e.message||"افتح الموقع في Chrome وحاول مرة أخرى."))}}else{console.error("Google sign-in failed:",e);alert("تعذّر تسجيل الدخول بجوجل ("+(e&&e.code?e.code:"unknown")+"): "+(e&&e.message?e.message:"حاول مرة أخرى."))}}finally{authBusy=false;authUI()}};
   auth.getRedirectResult().catch(e=>{console.error("Google redirect result failed:",e);alert("تعذّر إكمال تسجيل الدخول بجوجل ("+(e&&e.code?e.code:"unknown")+"): "+(e&&e.message?e.message:"افتح الموقع في Chrome وحاول مرة أخرى."))});
   auth.onAuthStateChanged(async u=>{fbUser=u;authUI();setupSocialBadges();if(!u){renderDashboardIfVisible();return}
    try{
@@ -2235,13 +2235,7 @@ function initCloud(){
 try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
 try{history.replaceState({st:[],ex:null},"")}catch(e){HIST=false}
 window.addEventListener("popstate",e=>{const s=e.state;st=(s&&s.st)||[];if(s&&"ex" in s)EXAM=s.ex;render()});
-/* شاشة الترحيب تظهر كل مرة تدخل الموقع حتى لو التبويب كان مفتوح في الخلفية */
-let HIDDEN_AT=0;
-function showWelcomeAgain(){stopRead();WELCOME=true;st=[];try{history.replaceState({st:[],ex:null},"")}catch(e){}render()}
-document.addEventListener("visibilitychange",()=>{
- if(document.visibilityState==="hidden")HIDDEN_AT=Date.now();
- else if(HIDDEN_AT&&Date.now()-HIDDEN_AT>30000){HIDDEN_AT=0;showWelcomeAgain()}});
-window.addEventListener("pageshow",e=>{if(e.persisted)showWelcomeAgain()});
+/* لا نعيد المستخدم إلى شاشة الترحيب عند الرجوع من الخلفية؛ حتى لا يبدو وكأنه خرج من الحساب. */
 authUI();window.addEventListener("load",initCloud);
 render();
 </script>
