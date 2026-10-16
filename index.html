@@ -1067,9 +1067,39 @@ const A1_DIALOGUES=[
   ["Walid","Hier sind zehn Euro.","تفضل، هذه عشرة يورو."],
   ["Kassierer","Danke! Hier sind zwei Euro zurück.","شكرًا! تفضل، يوروين الباقيين."],
   ["Saeed","Vielen Dank! Auf Wiedersehen!","شكرًا جزيلًا! إلى اللقاء!"],
-  ["Kassierer","Auf Wiedersehen!","إلى اللقاء!"]] }
+  ["Kassierer","Auf Wiedersehen!","إلى اللقاء!"]] },
+ {title:"Beim Arzt",arTitle:"عند الطبيب",icon:"🩺",speakers:{Saeed:"Saeed",Arzt:"الطبيب"},lines:[
+  ["Arzt","Guten Morgen! Was ist los?","صباح الخير! ما المشكلة؟"],
+  ["Saeed","Guten Morgen! Ich bin krank.","صباح الخير! أنا مريض."],
+  ["Arzt","Was tut Ihnen weh?","ماذا يؤلمك؟"],
+  ["Saeed","Mein Kopf tut weh. Ich habe auch Fieber.","رأسي يؤلمني، وعندي حُمّى أيضًا."],
+  ["Arzt","Haben Sie Husten?","هل عندك سعال؟"],
+  ["Saeed","Ja, ein bisschen.","نعم، قليلًا."],
+  ["Arzt","Seit wann sind Sie krank?","منذ متى وأنت مريض؟"],
+  ["Saeed","Seit gestern.","منذ أمس."],
+  ["Arzt","Ich untersuche Sie. Machen Sie bitte den Mund auf.","سأفحصك. من فضلك افتح فمك."],
+  ["Saeed","Brauche ich Medikamente?","هل أحتاج إلى أدوية؟"],
+  ["Arzt","Ja, hier ist ein Rezept.","نعم، هذه روشتة."],
+  ["Saeed","Vielen Dank! Auf Wiedersehen!","شكرًا جزيلًا! إلى اللقاء!"],
+  ["Arzt","Gute Besserung! Auf Wiedersehen!","أتمنى لك الشفاء العاجل! إلى اللقاء!"]] },
+ {title:"Kleidung kaufen",arTitle:"شراء ملابس",icon:"👕",speakers:{Saeed:"Saeed",Verkäufer:"البائع"},lines:[
+  ["Verkäufer","Guten Tag! Kann ich Ihnen helfen?","نهارك سعيد! هل يمكنني مساعدتك؟"],
+  ["Saeed","Ja, ich suche eine Jacke.","نعم، أنا أبحث عن جاكيت."],
+  ["Verkäufer","Welche Farbe möchten Sie?","ما اللون الذي تريده؟"],
+  ["Saeed","Ich möchte eine schwarze Jacke.","أريد جاكيت أسود."],
+  ["Verkäufer","Welche Größe haben Sie?","ما مقاسك؟"],
+  ["Saeed","Größe M, bitte.","مقاس M من فضلك."],
+  ["Verkäufer","Hier, bitte. Möchten Sie die Jacke anprobieren?","تفضل. هل تريد تجربة الجاكيت؟"],
+  ["Saeed","Ja, wo ist die Umkleidekabine?","نعم، أين غرفة القياس؟"],
+  ["Verkäufer","Dort rechts.","هناك على اليمين."],
+  ["Saeed","Die Jacke passt gut. Wie viel kostet sie?","الجاكيت مناسب لي. كم سعره؟"],
+  ["Verkäufer","Sie kostet 45 Euro.","سعرها 45 يورو."],
+  ["Saeed","Gut, ich nehme sie. Kann ich mit Karte bezahlen?","حسنًا، سأشتريها. هل يمكنني الدفع بالبطاقة؟"],
+  ["Verkäufer","Ja, natürlich.","نعم، بالتأكيد."],
+  ["Saeed","Vielen Dank! Auf Wiedersehen!","شكرًا جزيلًا! إلى اللقاء!"],
+  ["Verkäufer","Danke schön! Auf Wiedersehen!","شكرًا جزيلًا! إلى اللقاء!"]] }
 ];
-function dialogueSpeakerClass(s){return ({Saeed:"speaker-saeed",Walid:"speaker-walid",Kellner:"speaker-job",Mitarbeiter:"speaker-job",Kassierer:"speaker-job"})[s]||"speaker-saeed"}
+function dialogueSpeakerClass(s){return ({Saeed:"speaker-saeed",Walid:"speaker-walid",Kellner:"speaker-job",Mitarbeiter:"speaker-job",Kassierer:"speaker-job",Arzt:"speaker-job",Verkäufer:"speaker-job"})[s]||"speaker-saeed"}
 function renderDialogues(lv){
  title.textContent="المحادثات · A1";crumb.textContent="A1 · اختر المحادثة";view.innerHTML="";
  const note=document.createElement("p");note.className="feature-note";note.textContent="اختار الموقف، واقرأ كل جملة ألمانية ومعناها بالعربي. لون كل متحدث ثابت لتسهيل المتابعة.";view.append(note);
