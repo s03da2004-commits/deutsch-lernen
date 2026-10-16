@@ -1658,7 +1658,12 @@ async function renderSocial(){
    box.append(input,socialButton("حفظ اسم المستخدم",async()=>{const ok=await setSocialUsername(input.value);if(ok)renderSocial()}));return;
   }
   const socialTabs=socialEl("div","social-tabs");socialTabs.style.cssText="display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px";
-  [["friends","👥 الأصدقاء"],["league","🏆 دوري الأبطال"],["challenges","⚔️ التحديات"]].forEach(([tab,label])=>{const b=socialButton(label,()=>{socialActiveTab=tab;challengeTarget=null;renderSocial()},socialActiveTab!==tab);b.style.flex="1 1 120px";socialTabs.append(b)});view.append(socialTabs);
+  [["friends","👥 الأصدقاء"],["challenges","⚔️ التحديات"]].forEach(([tab,label])=>{const active=tab==="challenges"?(socialActiveTab==="challenges"||socialActiveTab==="league"):socialActiveTab===tab;const b=socialButton(label,()=>{socialActiveTab=tab;challengeTarget=null;renderSocial()},!active);b.style.flex="1 1 120px";socialTabs.append(b)});view.append(socialTabs);
+  if(socialActiveTab==="challenges"||socialActiveTab==="league"){
+   const challengeTabs=socialEl("div","social-tabs");challengeTabs.style.cssText="display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px";
+   [["challenges","⚔️ تحدي الأصدقاء"],["league","🏆 دوري الأبطال"]].forEach(([tab,label])=>{const b=socialButton(label,()=>{socialActiveTab=tab;challengeTarget=null;renderSocial()},socialActiveTab!==tab);b.style.flex="1 1 140px";challengeTabs.append(b)});
+   view.append(challengeTabs);
+  }
   const intro=socialCard(view,"اسمك في الموقع","@"+mine.username+" · ابحث عن أصحابك بالـ username.");
   const search=socialCard(view,"🔎 إضافة صديق","اكتب اسم المستخدم من غير علامة @.");
   // في تبويب التحديات لا تعرض أقسام الأصدقاء ولو مؤقتًا أثناء تحميل بقية البيانات.
@@ -1760,7 +1765,6 @@ async function renderSocial(){
    const myPreviousRank=previousRanked.findIndex(x=>x.uid===fbUser.uid)+1;const previousHasPoints=previousRanked.some(x=>x.points>0);const prize=!previousHasPoints?0:myPreviousRank===1?100:myPreviousRank===2?70:myPreviousRank===3?50:0;
    if(prize>0&&lastWeekKey&&mine.leaguePrizeWeekKey!==lastWeekKey){const did=await grantShopCoinsOnce("league-prize",lastWeekKey+":"+fbUser.uid,prize);if(did){await db.collection("publicProfiles").doc(fbUser.uid).set({leaguePrizeWeekKey:lastWeekKey},{merge:true});alert("مكافأة دوري الأبطال عن الأسبوع الماضي: المركز "+myPreviousRank+" — حصلت على "+prize+" عملة متجر!");}}
    const ranked=roster.map(x=>({...x,points:getCurrentPoints(x)})).sort((a,b)=>b.points-a.points||String(a.pub.username||a.uid).localeCompare(String(b.pub.username||b.uid)));
-   view.innerHTML="";const leagueTabs=socialEl("div","social-tabs");leagueTabs.style.cssText="display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px";[["friends","👥 الأصدقاء"],["league","🏆 دوري الأبطال"],["challenges","⚔️ التحديات"]].forEach(([tab,label])=>{const b=socialButton(label,()=>{socialActiveTab=tab;challengeTarget=null;renderSocial()},socialActiveTab!==tab);b.style.flex="1 1 120px";leagueTabs.append(b)});view.append(leagueTabs);
    const panel=socialCard(view,"🏆 دوري الأبطال", "الترتيب بينك وبين أصدقائك حسب نقاط الإنجازات هذا الأسبوع. كل عملة مكافأة من الإنجازات = نقطة دوري، والنقاط تتصفّر مع بداية الأسبوع.");
    const rewardNote=socialEl("div","social-muted","مكافآت نهاية الأسبوع: 🥇 100 عملة متجر · 🥈 70 عملة · 🥉 50 عملة. باقي المراكز بدون مكافأة.");rewardNote.style.cssText="padding:10px;border-radius:10px;background:var(--soft);margin:8px 0 12px";panel.append(rewardNote);
    if(!friendsSnap.size)panel.append(socialEl("p","social-muted","أضف أصدقاء علشان يظهر الترتيب بينكم."));
