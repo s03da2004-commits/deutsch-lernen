@@ -1774,6 +1774,7 @@ async function renderSocial(){
   const friends=socialCard(view,"👥 أصدقائي ("+friendsSnap.size+")",friendsSnap.empty?"لسه مفيش أصدقاء. ابحث عن username علشان تضيف حد.":"");
   friendsSnap.docs.forEach(async doc=>{
    const f={uid:doc.id,...doc.data()},pub=friendProfiles[doc.id]||{};
+   if(socialActiveTab==="friends"){
    // تبويب الأصدقاء: يعرض الرتبة وXP والتقدم العام من الملف الشخصي العام.
    const row=socialEl("div","social-person friend-row");const friendBg=shopEquippedClass("background",pub);if(friendBg)row.classList.add(friendBg);
    if((pub.photoURL||f.photoURL)){const img=socialEl("img","social-avatar");img.src=pub.photoURL||f.photoURL;img.alt="صورة الصديق";img.referrerPolicy="no-referrer";shopApplyAvatar(img,pub);img.onerror=()=>{img.replaceWith(socialEl("div","social-avatar","👤"))};row.append(img)}else {const av=socialEl("div","social-avatar","👤");shopApplyAvatar(av,pub);row.append(av)}
@@ -1809,6 +1810,9 @@ async function renderSocial(){
     delFriendBtn.style.color="#e53935";delFriendBtn.style.borderColor="#e53935";delFriendBtn.style.marginTop="8px";
     row.append(delFriendBtn);friends.append(row);
 
+   }
+   if(socialActiveTab==="challenges"){
+   // لا ننشئ بطاقات التحديات ولا نحسب إحصاءاتها أثناء عرض الأصدقاء؛ هذا يقلل الحمل بشكل ملحوظ.
    // تبويب التحديات: معلومات الصديق وأزرار التحدي والسجل مع إحصائيات بينكما.
    const challengeRow=socialEl("div","social-person friend-row challenge-friend-row");const challengeBg=shopEquippedClass("background",pub);if(challengeBg)challengeRow.classList.add(challengeBg);
    const friendPhoto=pub.photoURL||f.photoURL||"";
@@ -1857,6 +1861,7 @@ async function renderSocial(){
    const stats=socialEl("div","friend-challenge-stats");
    [[recordsForFriend.length,"التحديات بينكم","#8b5cf6"],[wonBetween,"مرات كسبتها","#22a447"],[pendingBetween,"التحديات المعلّقة","#f28c28"]].forEach(([n,label,color])=>{const stat=socialEl("div","friend-challenge-stat"),num=socialEl("strong","",String(n)),caption=socialEl("span","",label);num.style.color=color;stat.append(num,caption);stats.append(stat)});
    challengeRow.append(stats);challengeFriends.append(challengeRow);
+   }
   });
   const incoming=socialCard(view,"📩 طلبات الصداقة الواردة","");const pendingIn=inSnap.docs.filter(d=>d.data().status==="pending");if(!pendingIn.length)incoming.append(socialEl("p","social-muted","مفيش طلبات جديدة."));
   for(const doc of pendingIn){const r=doc.data(),row=socialEl("div","social-person"),main=socialEl("div","social-person-main");let senderPhoto=r.fromPhotoURL||"";if(!senderPhoto&&r.fromUid){try{const senderProfileSnap=await db.collection("publicProfiles").doc(r.fromUid).get();if(senderProfileSnap.exists)senderPhoto=senderProfileSnap.data().photoURL||""}catch(e){console.warn("Could not load friend request sender photo",e)}}if(senderPhoto){const img=socialEl("img","social-avatar");img.src=senderPhoto;img.alt="صورة مرسل طلب الصداقة";img.referrerPolicy="no-referrer";img.onerror=()=>{img.replaceWith(socialEl("div","social-avatar","👤"))};row.append(img)}else row.append(socialEl("div","social-avatar","👤"));main.append(socialEl("strong","",r.fromName||"لاعب"),socialEl("small","","@"+(r.fromUsername||"unknown")));row.append(main,socialButton("قبول",async()=>{try{await doc.ref.update({status:"accepted",acceptedAt:firebase.firestore.FieldValue.serverTimestamp()});const me={uid:fbUser.uid,username:mine.username,displayName:mine.displayName||profile.displayName||fbUser.displayName||mine.username,photoURL:fbUser.photoURL||""};const otherSnap=await db.collection("publicProfiles").doc(r.fromUid).get(),other=otherSnap.exists?otherSnap.data():{};const batch=db.batch();batch.set(db.collection("users").doc(fbUser.uid).collection("friends").doc(r.fromUid),{uid:r.fromUid,username:other.username||r.fromUsername,displayName:other.displayName||r.fromName,photoURL:other.photoURL||"",addedAt:firebase.firestore.FieldValue.serverTimestamp()});batch.set(db.collection("users").doc(r.fromUid).collection("friends").doc(fbUser.uid),{uid:fbUser.uid,username:me.username,displayName:me.displayName,photoURL:me.photoURL,addedAt:firebase.firestore.FieldValue.serverTimestamp()});await batch.commit();alert("تمت إضافة الصديق بنجاح!");renderSocial()}catch(e){console.error(e);alert("تعذر قبول الطلب. تأكد من نشر قواعد Firestore.")}},true),socialButton("رفض",async()=>{try{await doc.ref.update({status:"rejected",rejectedAt:firebase.firestore.FieldValue.serverTimestamp()});renderSocial()}catch(e){alert("تعذر رفض الطلب.")}},true));incoming.append(row)}
@@ -1870,7 +1875,7 @@ async function renderSocial(){
    [challengeFriends,incomingCh].forEach(el=>el.remove());
   }
   const refresh=socialButton("🔄 تحديث القائمة",()=>renderSocial(),true);view.append(refresh);
- }catch(e){console.error(e);if(token===socialRenderToken){view.innerHTML="";view.append(socialCard(view,"حصلت مشكلة في تحميل الأصدقاء","تأكد من اتصال الإنترنت ومن نشر قواعد Firestore الموجودة مع ملفات الموقع."),socialButton("إعادة المحاولة",()=>renderSocial()))}}
+ }catch(e){console.error("Social page load failed:",e);if(token===socialRenderToken){view.innerHTML="";const code=e&&e.code?e.code:"unknown";let message="حصلت مشكلة أثناء تحميل البيانات. ";if(code==="permission-denied")message+="صلاحيات Firestore رفضت القراءة. راجع قواعد Firestore المنشورة، خصوصًا users/{uid}/friends وpublicProfiles.";else if(code==="unavailable"||code==="deadline-exceeded")message+="الاتصال بقاعدة البيانات بطيء أو غير متاح مؤقتًا؛ جرّب تحديث الصفحة.";else message+="رمز الخطأ: "+code+(e&&e.message?" — "+e.message:"");view.append(socialCard(view,"حصلت مشكلة في تحميل الأصدقاء",message),socialButton("إعادة المحاولة",()=>renderSocial()))}}
 }
 function seededRandom(seed){let a=(seed>>>0)||1;return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 function seededShuffle(arr,rng){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
