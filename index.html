@@ -457,6 +457,21 @@ body{padding-bottom:82px}
 :root[data-theme="dark"] .speaker-job .dialogue-speaker{background:#581c87;color:#e9d5ff}
 @media(max-width:420px){.dialogue-cards{gap:8px}.dialogue-card{min-height:112px;padding:11px 7px;font-size:14px}.dialogue-german{font-size:17px}}
 
+
+/* صفحة الإنجازات وتبويبات المتجر */
+.shop-main-tabs-three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.shop-main-tabs-three .shop-main-tab{padding:11px 5px;font-size:13px}
+.shop-tabs{grid-template-columns:repeat(4,minmax(0,1fr))}
+.achievement-main-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:5px;background:var(--bg);border:1px solid var(--line);border-radius:15px;margin:12px 0}
+.achievement-main-tab{border:0;border-radius:11px;padding:12px 8px;background:transparent;color:var(--ink);font:800 14px Cairo,sans-serif;cursor:pointer}
+.achievement-main-tab.active{background:var(--card);color:#9a6a05;box-shadow:0 2px 9px #00000012;outline:1px solid #d6a80055}
+.home-special-actions{display:grid;grid-template-columns:1fr;gap:10px;margin:12px 0 18px}
+.home-achievements-button{display:flex;align-items:center;gap:12px;width:100%;text-align:right;padding:14px 16px;border:1px solid #e9bd34;border-radius:16px;background:linear-gradient(120deg,#fff3b0 0%,#f6c945 52%,#e5a91c 100%);color:#4b3100;box-shadow:0 7px 20px #c58a1c30;font-family:Cairo,sans-serif;cursor:pointer}
+.home-achievement-icon{display:grid;place-items:center;width:48px;height:48px;flex:none;border-radius:14px;background:#fff8d8;border:1px solid #f1d16b;font-size:28px;box-shadow:inset 0 0 0 2px #fff8}
+.home-achievements-button strong,.home-achievements-button small{display:block}.home-achievements-button strong{font-size:18px;font-weight:900}.home-achievements-button small{font-size:12px;margin-top:2px;color:#684900;font-weight:700}.home-achievement-arrow{font-size:23px;font-weight:900;margin-right:auto}
+:root[data-theme="dark"] .home-achievements-button{background:linear-gradient(120deg,#55410e,#9b7111 55%,#bd8b1b);border-color:#d6a800;color:#fff5cb}
+:root[data-theme="dark"] .home-achievements-button small{color:#fff0b1}
+@media(max-width:520px){.shop-main-tabs-three .shop-main-tab{font-size:11px;padding:10px 3px}.shop-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}.home-achievements-button{padding:12px}.home-achievement-icon{width:42px;height:42px;font-size:24px}.home-achievements-button strong{font-size:16px}}
 </style>
 </head>
 <body>
@@ -968,41 +983,39 @@ function shopBadge(publicData){const eq=(publicData&&publicData.shopEquipped)||p
 function shopApplyAvatar(el,publicData){const cl=shopEquippedClass("frame",publicData);if(cl)el.classList.add(cl)}
 function shopAchievementReward(b){return b.id==="xp-1000"?40:(b.id==="words-100"||b.id==="lessons-10"?25:(b.id==="perfect"||b.id==="streak-7"?20:10))}
 function renderStore(){
- title.textContent="🛍️ متجر العملات والمكافآت";crumb.textContent="اعرف طرق جمع العملات ثم اشترِ المظهر الذي يعجبك";view.innerHTML="";
+ title.textContent="🛍️ متجر العملات والمكافآت";crumb.textContent="اجمع العملات، اشترِ العناصر، وراجع ممتلكاتك";view.innerHTML="";
  if(!fbUser){const msg=document.createElement("section");msg.className="social-card";msg.append(socialEl("h2","","اربط حسابك أولًا"),socialEl("p","social-muted","سجّل الدخول بحساب Google عشان نحفظ رصيد المتجر ومشترياتك على Firebase وتفضل معاك على أي جهاز."));view.append(msg,btn("فتح الإعدادات وتسجيل الدخول","go",()=>go("SETTINGS")));return}
  const balance=document.createElement("div");balance.className="shop-balance";balance.innerHTML=`<div><small>رصيدك الحالي</small><br><strong>${shopCoins()} 🪙</strong></div><div class="shop-balance-note"><span>رصيد المتجر</span><small>منفصل عن نقاط الخبرة XP</small></div>`;view.append(balance);
- const mainTabs=document.createElement("div");mainTabs.className="shop-main-tabs";
- const earnTab=document.createElement("button");earnTab.type="button";earnTab.className="shop-main-tab";earnTab.textContent="🎯 جمع العملات والإنجازات";
- const buyTab=document.createElement("button");buyTab.type="button";buyTab.className="shop-main-tab active";buyTab.textContent="🛍️ تصفّح المتجر";
- mainTabs.append(earnTab,buyTab);view.append(mainTabs);
- // القسم الأول: شرح طرق جمع العملات ومكافآت كل إنجاز
+ const mainTabs=document.createElement("div");mainTabs.className="shop-main-tabs shop-main-tabs-three";
+ const panels=[{id:"earn",label:"🪙 جمع العملات"},{id:"shop",label:"🛍️ المتجر"},{id:"owned",label:"🎒 الممتلكات"}];const panelButtons={};
+ panels.forEach((x,i)=>{const b=document.createElement("button");b.type="button";b.className="shop-main-tab"+(x.id==="shop"?" active":"");b.textContent=x.label;b.onclick=()=>setPanel(x.id);panelButtons[x.id]=b;mainTabs.append(b)});view.append(mainTabs);
  const earnSection=document.createElement("section");earnSection.className="shop-section";
- const earnHeading=document.createElement("h2");earnHeading.className="shop-section-title";earnHeading.textContent="① اجمع العملات — المكافآت والإنجازات";
- const earnIntro=document.createElement("p");earnIntro.className="social-muted";earnIntro.textContent="اتعلّم واختبر نفسك وشارك في التحديات؛ العملات دي منفصلة عن نقاط الخبرة XP.";
+ const earnHeading=document.createElement("h2");earnHeading.className="shop-section-title";earnHeading.textContent="طرق جمع العملات";
+ const earnIntro=document.createElement("p");earnIntro.className="social-muted";earnIntro.textContent="أنجز الأنشطة التالية لتحصل على عملات المتجر. تابع تفاصيل المهام اليومية والأسبوعية من أيقونة الإنجازات في الصفحة الرئيسية.";
  const methods=document.createElement("div");methods.className="shop-earning-grid";
  const earningMethods=[
+  {emoji:"📖",name:"مراجعة الكلمات",amount:"من 5 عملات يوميًا",desc:"أكمل مهام الكلمات اليومية من صفحة الإنجازات."},
   {emoji:"📝",name:"إكمال اختبار",amount:"+5 عملات",desc:"تحصل عليها عند إنهاء الاختبار."},
-  {emoji:"💯",name:"درجة كاملة",amount:"+10 إضافية",desc:"مكافأة إضافية فوق الـ5 عملات؛ المجموع 15 عملة للاختبار المثالي."},
-  {emoji:"⚔️",name:"إكمال تحدّي",amount:"+8 عملات",desc:"تُمنح عند إكمال مشاركتك في التحدي."},
-  {emoji:"🏆",name:"الفوز بالتحدّي",amount:"+12 إضافية",desc:"تضاف للفائز فقط، بجانب مكافأة إكمال التحدي."}
+  {emoji:"💯",name:"درجة كاملة",amount:"+10 إضافية",desc:"مكافأة إضافية فوق مكافأة إنهاء الاختبار؛ المجموع 15 عملة للاختبار المثالي."},
+  {emoji:"⚔️",name:"إكمال تحدٍّ",amount:"+8 عملات",desc:"تُمنح عند إكمال مشاركتك في التحدي."},
+  {emoji:"🏆",name:"الفوز بالتحدي",amount:"+12 إضافية",desc:"تضاف للفائز بجانب مكافأة إكمال التحدي."},
+  {emoji:"🎯",name:"المهام الأسبوعية",amount:"حتى 40 عملة للإنجاز",desc:"أكمل أهداف الأسبوع واجمع مكافآتها من صفحة الإنجازات."}
  ];
  earningMethods.forEach(x=>{const card=document.createElement("article");card.className="shop-earning-card";const icon=document.createElement("span");icon.className="shop-earning-emoji";icon.textContent=x.emoji;const h=document.createElement("strong");h.textContent=x.name;const amount=document.createElement("b");amount.className="shop-earning-amount";amount.textContent=x.amount;const desc=document.createElement("p");desc.textContent=x.desc;card.append(icon,h,amount,desc);methods.append(card)});
- const dailyHeading=document.createElement("h3");dailyHeading.className="shop-achievements-heading";dailyHeading.textContent="☀️ الإنجازات اليومية";const dailyNote=document.createElement("p");dailyNote.className="social-muted";dailyNote.textContent="تتجدد يوميًا عند منتصف الليل بتوقيت القاهرة. كل إنجاز مكتمل يمنحك عملات مرة واحدة في اليوم.";
- const dailyGrid=document.createElement("div");dailyGrid.className="shop-achievement-list";syncDailyAchievements();const dailyEarned=new Set(profile.earnedDailyAchievements||[]);
- DAILY_ACHIEVEMENT_DEFS.forEach(a=>{const ok=dailyEarned.has(a.id);const row=document.createElement("div");row.className="shop-achievement-row"+(ok?" is-earned":"");const icon=document.createElement("span");icon.className="shop-achievement-icon";icon.textContent=ok?a.emoji:"🔒";const info=document.createElement("div");info.className="shop-achievement-info";const name=document.createElement("strong");name.textContent=a.name;const desc=document.createElement("small");desc.textContent=ok?"تم الإنجاز اليوم ✓":a.desc;info.append(name,desc);const reward=document.createElement("b");reward.className="shop-achievement-reward";reward.textContent="+"+a.reward+" 🪙";row.append(icon,info,reward);dailyGrid.append(row)});
- const achievementHeading=document.createElement("h3");achievementHeading.className="shop-achievements-heading";achievementHeading.textContent="🏅 الإنجازات الأسبوعية";const weeklyNote=document.createElement("p");weeklyNote.className="social-muted";weeklyNote.textContent="تتجدد كل سبت الساعة 5:00 صباحًا بتوقيت مصر، وتبدأ أهداف الأسبوع من الصفر دون التأثير على XP أو مشترياتك.";
- const achievementGrid=document.createElement("div");achievementGrid.className="shop-achievement-list";syncAchievements();const earned=new Set(profile.earnedBadges||[]);
- ACHIEVEMENT_DEFS.forEach(b=>{const ok=earned.has(b.id);const row=document.createElement("div");row.className="shop-achievement-row"+(ok?" is-earned":"");const icon=document.createElement("span");icon.className="shop-achievement-icon";icon.textContent=ok?b.emoji:"🔒";const info=document.createElement("div");info.className="shop-achievement-info";const name=document.createElement("strong");name.textContent=b.name;const desc=document.createElement("small");desc.textContent=ok?"تم الإنجاز هذا الأسبوع ✓":b.desc;info.append(name,desc);const reward=document.createElement("b");reward.className="shop-achievement-reward";reward.textContent="+"+shopAchievementReward(b)+" 🪙";row.append(icon,info,reward);achievementGrid.append(row)});
- earnSection.append(earnHeading,earnIntro,methods,dailyHeading,dailyNote,dailyGrid,achievementHeading,weeklyNote,achievementGrid);
+ earnSection.append(earnHeading,earnIntro,methods,btn("🏆 افتح الإنجازات اليومية والأسبوعية","go alt",()=>go("ACHIEVEMENTS")));
  const shopSection=document.createElement("section");shopSection.className="shop-section shop-buy-section";
- const shopHeading=document.createElement("h2");shopHeading.className="shop-section-title";shopHeading.textContent="② المتجر — اشترِ وفعّل العناصر";
- const shopIntro=document.createElement("p");shopIntro.className="social-muted";shopIntro.textContent="اختار إطارًا لصورتك أو لقبًا أو شارة أو خلفية. العناصر التي تشتريها تظل ملكك وتقدر تغيّر العنصر المفعّل في أي وقت.";
- const tabs=document.createElement("div");tabs.className="shop-tabs";const grid=document.createElement("div");grid.className="shop-grid";let active="all";
- const renderItems=()=>{grid.innerHTML="";SHOP_ITEMS.filter(it=>active==="all"||it.type===active||(active==="title"&&it.type==="badge")).forEach(it=>{const owned=(profile.shopOwned||[]).includes(it.id),equipped=(profile.shopEquipped||{})[it.type]===it.id;const card=document.createElement("article");card.className="shop-item";const preview=document.createElement("div");preview.className="shop-preview";preview.textContent=it.emoji;if(it.style)preview.classList.add(it.style);if(it.type==="title")preview.innerHTML=`<span class="shop-title">${it.name}</span>`;if(it.type==="badge")preview.innerHTML=`<span class="shop-exclusive-badge">${it.emoji} ${it.name}</span>`;if(it.type==="background")preview.style.background=it.id==="bg-midnight"?"linear-gradient(135deg,#27203b,#5b4385)":it.id==="bg-forest"?"linear-gradient(135deg,#163d35,#38836a)":"linear-gradient(135deg,#6b294d,#e18a65)";const h=document.createElement("h3");h.textContent=it.name;const d=document.createElement("p");d.textContent=it.desc;const price=document.createElement("div");price.className="shop-price";price.textContent=it.price+" 🪙";const b=document.createElement("button");b.textContent=equipped?"مفعّل ✓":owned?"تفعيل العنصر":shopCoins()<it.price?"عملات غير كافية · ينقصك "+(it.price-shopCoins()):"شراء · "+it.price+" عملة";b.disabled=equipped||(!owned&&shopCoins()<it.price);b.onclick=()=>buyOrEquipShopItem(it.id,b);card.append(preview,h,d,price,b);grid.append(card)});};
- [["all","الكل"],["frame","إطارات الصور"],["title","الألقاب والشارات"],["background","الخلفيات"]].forEach(([key,label])=>{const b=document.createElement("button");b.className="shop-tab"+(key===active?" active":"");b.textContent=label;b.onclick=()=>{active=key;[...tabs.children].forEach(x=>x.classList.toggle("active",x===b));renderItems()};tabs.append(b)});
- shopSection.append(shopHeading,shopIntro,tabs,grid);view.append(earnSection,shopSection);
- const setStorePanel=(panel)=>{const showEarn=panel==="earn";earnSection.hidden=!showEarn;shopSection.hidden=showEarn;earnTab.classList.toggle("active",showEarn);buyTab.classList.toggle("active",!showEarn)};
- earnTab.onclick=()=>setStorePanel("earn");buyTab.onclick=()=>setStorePanel("shop");setStorePanel("shop");renderItems();
+ const shopHeading=document.createElement("h2");shopHeading.className="shop-section-title";shopHeading.textContent="تصفّح المتجر";
+ const shopIntro=document.createElement("p");shopIntro.className="social-muted";shopIntro.textContent="اختار القسم اللي محتاجه: إطارات الصور، الألقاب، الشارات أو الخلفيات. العنصر اللي تشتريه هتلاقيه في تبويب الممتلكات.";
+ const tabs=document.createElement("div");tabs.className="shop-tabs";const grid=document.createElement("div");grid.className="shop-grid";let active="frame";
+ const renderItems=(ownedOnly=false)=>{grid.innerHTML="";const items=SHOP_ITEMS.filter(it=>ownedOnly?(profile.shopOwned||[]).includes(it.id):it.type===active);if(!items.length){const empty=document.createElement("div");empty.className="empty";empty.textContent=ownedOnly?"لسه ما اشتريتش أي عناصر. تصفّح المتجر واشتري أول عنصر ليك!":"مفيش عناصر في القسم ده حاليًا.";grid.append(empty);return}items.forEach(it=>{const owned=(profile.shopOwned||[]).includes(it.id),equipped=(profile.shopEquipped||{})[it.type]===it.id;const card=document.createElement("article");card.className="shop-item";const preview=document.createElement("div");preview.className="shop-preview";preview.textContent=it.emoji;if(it.style)preview.classList.add(it.style);if(it.type==="title")preview.innerHTML=`<span class="shop-title">${it.name}</span>`;if(it.type==="badge")preview.innerHTML=`<span class="shop-exclusive-badge">${it.emoji} ${it.name}</span>`;if(it.type==="background")preview.style.background=it.id==="bg-midnight"?"linear-gradient(135deg,#27203b,#5b4385)":it.id==="bg-forest"?"linear-gradient(135deg,#163d35,#38836a)":"linear-gradient(135deg,#6b294d,#e18a65)";const h=document.createElement("h3");h.textContent=it.name;const d=document.createElement("p");d.textContent=it.desc;const price=document.createElement("div");price.className="shop-price";price.textContent=owned?"في ممتلكاتك ✓":it.price+" 🪙";const b=document.createElement("button");b.textContent=equipped?"مفعّل ✓":owned?"تفعيل العنصر":shopCoins()<it.price?"عملات غير كافية · ينقصك "+(it.price-shopCoins()):"شراء · "+it.price+" عملة";b.disabled=equipped||(!owned&&shopCoins()<it.price);b.onclick=()=>buyOrEquipShopItem(it.id,b);card.append(preview,h,d,price,b);grid.append(card)});};
+ const categories=[["frame","🖼️ إطارات الصور"],["title","🏷️ الألقاب"],["badge","🎖️ الشارات"],["background","🌄 الخلفيات"]];
+ categories.forEach(([key,label])=>{const b=document.createElement("button");b.type="button";b.className="shop-tab"+(key===active?" active":"");b.textContent=label;b.onclick=()=>{active=key;[...tabs.children].forEach(x=>x.classList.toggle("active",x===b));renderItems(false)};tabs.append(b)});
+ shopSection.append(shopHeading,shopIntro,tabs,grid);
+ const ownedSection=document.createElement("section");ownedSection.className="shop-section";const ownedHeading=document.createElement("h2");ownedHeading.className="shop-section-title";ownedHeading.textContent="🎒 ممتلكاتي";const ownedIntro=document.createElement("p");ownedIntro.className="social-muted";ownedIntro.textContent="كل العناصر اللي اشتريتها محفوظة هنا. تقدر تفعّل أي عنصر تمتلكه من غير ما تدفع عملات مرة تانية.";const ownedGrid=document.createElement("div");ownedGrid.className="shop-grid";ownedSection.append(ownedHeading,ownedIntro,ownedGrid);
+ function renderOwned(){ownedGrid.innerHTML="";const items=SHOP_ITEMS.filter(it=>(profile.shopOwned||[]).includes(it.id));if(!items.length){const empty=document.createElement("div");empty.className="empty";empty.textContent="لسه ما عندكش ممتلكات. روح تبويب المتجر واختار أول عنصر يعجبك.";ownedGrid.append(empty);return}items.forEach(it=>{const equipped=(profile.shopEquipped||{})[it.type]===it.id;const card=document.createElement("article");card.className="shop-item";const preview=document.createElement("div");preview.className="shop-preview";preview.textContent=it.emoji;if(it.style)preview.classList.add(it.style);if(it.type==="title")preview.innerHTML=`<span class="shop-title">${it.name}</span>`;if(it.type==="badge")preview.innerHTML=`<span class="shop-exclusive-badge">${it.emoji} ${it.name}</span>`;if(it.type==="background")preview.style.background=it.id==="bg-midnight"?"linear-gradient(135deg,#27203b,#5b4385)":it.id==="bg-forest"?"linear-gradient(135deg,#163d35,#38836a)":"linear-gradient(135deg,#6b294d,#e18a65)";const h=document.createElement("h3");h.textContent=it.name;const d=document.createElement("p");d.textContent=it.desc;const b=document.createElement("button");b.textContent=equipped?"مفعّل حاليًا ✓":"تفعيل العنصر";b.disabled=equipped;b.onclick=()=>buyOrEquipShopItem(it.id,b);card.append(preview,h,d,b);ownedGrid.append(card)})}
+ view.append(earnSection,shopSection,ownedSection);
+ function setPanel(id){earnSection.hidden=id!=="earn";shopSection.hidden=id!=="shop";ownedSection.hidden=id!=="owned";Object.entries(panelButtons).forEach(([k,b])=>b.classList.toggle("active",k===id));if(id==="owned")renderOwned();if(id==="shop")renderItems(false)}
+ setPanel("shop");renderItems(false);
 }
 async function buyOrEquipShopItem(id,button){
  if(!fbUser||!db){alert("سجّل الدخول الأول عشان تشتري وتحفظ مشترياتك.");return}const item=shopItem(id);if(!item)return;
@@ -1470,13 +1483,13 @@ const ACHIEVEMENT_DEFS=[
 ];
 function syncAchievements(){ensureWeeklyAchievements();profile.earnedBadges=profile.earnedBadges||[];const newly=[];ACHIEVEMENT_DEFS.forEach(b=>{if(b.test()&&!profile.earnedBadges.includes(b.id)){profile.earnedBadges.push(b.id);newly.push(b)}});if(newly.length){persistProfile();const weekKey=profile.achievementWeekKey||currentAchievementWeekKey();newly.forEach((b)=>{const reward=b.id==="xp-1000"?40:(b.id==="words-100"||b.id==="lessons-10"?25:(b.id==="perfect"||b.id==="streak-7"?20:10));grantShopCoinsOnce("achievement",weekKey+":"+b.id,reward)});if(fbUser&&newly.length)alert("إنجاز أسبوعي جديد! حصلت على "+newly.reduce((n,b)=>n+(b.id==="xp-1000"?40:(b.id==="words-100"||b.id==="lessons-10"?25:(b.id==="perfect"||b.id==="streak-7"?20:10))),0)+" عملة متجر 🏆")}return newly}
 function renderAchievements(){
- syncAchievements();title.textContent="الإنجازات والشارات";crumb.textContent="كل خطوة في تعلمك تستحق التقدير";view.innerHTML="";
- const earned=profile.earnedBadges||[],card=document.createElement("section");card.className="feature-card";
- const h=document.createElement("h2");h.textContent=`🏆 حصلت على ${earned.length} من ${ACHIEVEMENT_DEFS.length} شارات`;
- const p=document.createElement("p");p.className="feature-note";p.textContent="إنجازات أسبوعية تتجدد كل يوم سبت الساعة 5:00 صباحًا بتوقيت مصر. التقدم يبدأ من جديد، وتحتفظ بنقاط الخبرة والمشتريات ورصيد العملات.";card.append(h,p);
- const grid=document.createElement("div");grid.className="badge-grid";
- ACHIEVEMENT_DEFS.forEach(b=>{const ok=earned.includes(b.id);const el=document.createElement("div");el.className="achievement-badge"+(ok?" earned":"");el.innerHTML=`<span class="badge-emoji">${ok?b.emoji:"🔒"}</span><strong>${b.name}</strong><small>${ok?"تم الإنجاز":b.desc}</small>`;grid.append(el)});
- card.append(grid);view.append(card,btn("العودة للرئيسية","go alt",()=>go()));
+ syncDailyAchievements();syncAchievements();title.textContent="🏆 الإنجازات";crumb.textContent="أنجز مهامك واجمع العملات كل يوم وكل أسبوع";view.innerHTML="";
+ const tabs=document.createElement("div");tabs.className="achievement-main-tabs";const dailyTab=document.createElement("button");dailyTab.type="button";dailyTab.className="achievement-main-tab active";dailyTab.textContent="☀️ المهام اليومية";const weeklyTab=document.createElement("button");weeklyTab.type="button";weeklyTab.className="achievement-main-tab";weeklyTab.textContent="🏆 المهام الأسبوعية";tabs.append(dailyTab,weeklyTab);view.append(tabs);
+ const dailyPanel=document.createElement("section");dailyPanel.className="feature-card";const dailyTitle=document.createElement("h2");dailyTitle.textContent="☀️ إنجازات اليوم";const dailySummary=document.createElement("p");dailySummary.className="feature-note";const dailyEarned=new Set(profile.earnedDailyAchievements||[]);dailySummary.textContent=`أنجزت ${dailyEarned.size} من ${DAILY_ACHIEVEMENT_DEFS.length} مهام اليوم.`;const dailyGrid=document.createElement("div");dailyGrid.className="badge-grid";
+ DAILY_ACHIEVEMENT_DEFS.forEach(a=>{const ok=dailyEarned.has(a.id),el=document.createElement("div");el.className="achievement-badge"+(ok?" earned":"");const icon=document.createElement("span");icon.className="badge-emoji";icon.textContent=ok?a.emoji:"🔒";const name=document.createElement("strong");name.textContent=a.name;const desc=document.createElement("small");desc.textContent=(ok?"اكتمل اليوم ✓ · ":a.desc+" · ")+"مكافأة "+a.reward+" عملات";el.append(icon,name,desc);dailyGrid.append(el)});dailyPanel.append(dailyTitle,dailySummary,dailyGrid);
+ const weeklyPanel=document.createElement("section");weeklyPanel.className="feature-card";weeklyPanel.hidden=true;const weeklyTitle=document.createElement("h2");weeklyTitle.textContent="🏆 إنجازات الأسبوع";const earned=new Set(profile.earnedBadges||[]);const weeklySummary=document.createElement("p");weeklySummary.className="feature-note";weeklySummary.textContent=`أنجزت ${earned.size} من ${ACHIEVEMENT_DEFS.length} إنجازات هذا الأسبوع.`;const weeklyGrid=document.createElement("div");weeklyGrid.className="badge-grid";
+ ACHIEVEMENT_DEFS.forEach(a=>{const ok=earned.has(a.id),el=document.createElement("div");el.className="achievement-badge"+(ok?" earned":"");const icon=document.createElement("span");icon.className="badge-emoji";icon.textContent=ok?a.emoji:"🔒";const name=document.createElement("strong");name.textContent=a.name;const desc=document.createElement("small");desc.textContent=(ok?"اكتمل هذا الأسبوع ✓ · ":a.desc+" · ")+"مكافأة "+shopAchievementReward(a)+" عملة";el.append(icon,name,desc);weeklyGrid.append(el)});weeklyPanel.append(weeklyTitle,weeklySummary,weeklyGrid);
+ const setTab=which=>{const daily=which==="daily";dailyPanel.hidden=!daily;weeklyPanel.hidden=daily;dailyTab.classList.toggle("active",daily);weeklyTab.classList.toggle("active",!daily)};dailyTab.onclick=()=>setTab("daily");weeklyTab.onclick=()=>setTab("weekly");view.append(dailyPanel,weeklyPanel,btn("العودة للرئيسية","go alt",()=>go()));
 }
 
 function render(){
@@ -1495,6 +1508,7 @@ function render(){
  if(l==="DIALOGUE"){renderDialogue(i);return}
  if(l==="D"){renderDashboard();return}
  if(l==="STORE"){renderStore();return}
+ if(l==="ACHIEVEMENTS"){renderAchievements();return}
  if(l==="SETTINGS"){renderSettings();return}
  if(l==="SOCIAL"){renderSocial();return}
  if(l==="CHALLENGE"){if(activeChallengeRun)return;if(challengeFinal&&challengeFinal.id===i){renderChallengeFinal(challengeFinal);return}if(challengeWaiting&&challengeWaiting.id===i){renderChallengeWaiting(challengeWaiting);return}resumeChallengeRoute(i);return}
@@ -1503,7 +1517,8 @@ function render(){
  if(!l){title.innerHTML='<span class="brand-logo"><span class="logo-deutsch">Deutsch</span> <span class="logo-mit">mit</span> <span class="logo-so3da">so3da</span></span>';document.getElementById("brand-note").hidden=false;crumb.textContent="اختر مستواك";
   const g=document.createElement("div");g.className="grid levels";
   Object.keys(LESSONS).forEach(k=>g.append(btn(`<span class="lvl">${k}</span><small>${LEVEL_NAMES[k]}</small>` ,"box lv"+k,()=>go("G",k))));
-  view.append(g)}
+  view.append(g);
+  const achievementsBtn=btn("<span class=\"home-achievement-icon\">🏆</span><span><strong>الإنجازات</strong><small>المهام اليومية والأسبوعية · اجمع العملات</small></span><span class=\"home-achievement-arrow\">←</span>","home-achievements-button",()=>go("ACHIEVEMENTS"));const homeActions=document.createElement("div");homeActions.className="home-special-actions";homeActions.append(achievementsBtn);view.append(homeActions)}
  else if(l==="B2"&&i==null){title.textContent="B2 · فوق المتوسط";crumb.textContent="المحتوى قيد التجهيز";view.innerHTML='<div class="empty">قسم B2 جاهز، وهنا هنضيف الكلمات والدروس لما تجهزهم.</div>'}
  else if(i==null){title.textContent="مستوى "+l;crumb.textContent="اختر الدرس";
   const g=document.createElement("div");g.className="grid lessons";
@@ -1544,7 +1559,9 @@ function renderDashboard(){
  const rankPhoto=document.createElement("div");rankPhoto.className="rank-card-avatar";shopApplyAvatar(rankPhoto);const myBgClass=shopEquippedClass("background");if(myBgClass)rank.classList.add(myBgClass);rankPhoto.setAttribute("role","img");rankPhoto.setAttribute("aria-label","الصورة الشخصية");rankPhoto.textContent="👤";
  if(fbUser&&fbUser.photoURL){const photo=document.createElement("img");photo.src=fbUser.photoURL;photo.alt="صورتك الشخصية";photo.referrerPolicy="no-referrer";photo.onerror=()=>{photo.remove();rankPhoto.textContent="👤"};rankPhoto.textContent="";rankPhoto.append(photo)}
  rank.innerHTML=`<div class="rank-card-top"><div class="rank-card-top-copy"><p style="margin:0 0 4px;opacity:.8">رتبتك الحالية</p><p class="rank-name">${r.name}</p></div></div><div class="xp-line"><span>${xp} XP</span><span>${nextRank?"الرتبة الجاية: "+nextRank.name:"وصلت لأعلى رتبة!"}</span></div><span class="bar" style="background:rgba(255,255,255,.25);height:10px"><i style="width:${progress}%;background:#FFCE00"></i></span><small>سلسلة المذاكرة: 🔥 ${streakCount()} يوم</small>`;
- rank.querySelector(".rank-card-top").prepend(rankPhoto);view.append(rank);view.append(btn("🛍️ افتح متجر المظهر · "+shopCoins()+" عملة","go alt",()=>go("STORE")));
+ rank.querySelector(".rank-card-top").prepend(rankPhoto);view.append(rank);
+ const homeActions=document.createElement("div");homeActions.className="home-special-actions";homeActions.append(btn("🛍️ افتح متجر المظهر · "+shopCoins()+" عملة","go alt",()=>go("STORE")));view.append(homeActions);
+
  const stats=document.createElement("div");stats.className="grid dash-grid";
  [[learned,"كلمة متعلّمة"],[completed,"درس مكتمل"]].forEach(([n,t])=>{const d=document.createElement("div");d.className="stat";d.innerHTML=`<strong>${n}</strong><span>${t}</span>`;stats.append(d)});view.append(stats);
  const h1=document.createElement("h2");h1.className="sec";h1.textContent="تقدم حفظ الكلمات خلال الأسبوع";view.append(h1);const dailyGoal=document.createElement("p");dailyGoal.textContent="الهدف اليومي: حفظ 20 كلمة";dailyGoal.style.cssText="margin:-8px 0 12px;color:var(--text);font-weight:700";view.append(dailyGoal);renderWeeklyWords(view,7);
