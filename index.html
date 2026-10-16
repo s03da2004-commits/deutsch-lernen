@@ -913,7 +913,7 @@ const view=document.getElementById("view"),title=document.getElementById("title"
 let st=[];
 let LR=new Set();
 const PROFILE_KEY="de-profile-v2";
-let profile={xp:0,wordXP:[],completedLessons:[],perfectTests:[],studyDays:{},dailyWords:{},examResults:[],reviewWords:[],displayName:"",placementResults:[],earnedBadges:[],dialoguesCompleted:[],shopCoins:0,shopOwned:[],shopEquipped:{}};
+let profile={xp:0,wordXP:[],completedLessons:[],perfectTests:[],studyDays:{},dailyWords:{},examResults:[],reviewWords:[],displayName:"",placementResults:[],earnedBadges:[],achievementWeekKey:"",weeklyAchievementStats:{words:[],lessons:[],perfectTests:[],studyDays:[],xp:0},dialoguesCompleted:[],shopCoins:0,shopOwned:[],shopEquipped:{}};
 try{LR=new Set(JSON.parse(localStorage.getItem("de-learned")||"[]"))}catch(e){}
 try{const old=JSON.parse(localStorage.getItem(PROFILE_KEY)||"{}");profile={...profile,...old}}catch(e){}
 function publicRankData(xpValue){
@@ -987,11 +987,13 @@ function renderStore(){
   {emoji:"🏆",name:"الفوز بالتحدّي",amount:"+12 إضافية",desc:"تضاف للفائز فقط، بجانب مكافأة إكمال التحدي."}
  ];
  earningMethods.forEach(x=>{const card=document.createElement("article");card.className="shop-earning-card";const icon=document.createElement("span");icon.className="shop-earning-emoji";icon.textContent=x.emoji;const h=document.createElement("strong");h.textContent=x.name;const amount=document.createElement("b");amount.className="shop-earning-amount";amount.textContent=x.amount;const desc=document.createElement("p");desc.textContent=x.desc;card.append(icon,h,amount,desc);methods.append(card)});
- const achievementHeading=document.createElement("h3");achievementHeading.className="shop-achievements-heading";achievementHeading.textContent="🏅 الإنجازات ومكافأة كل إنجاز";
- const achievementGrid=document.createElement("div");achievementGrid.className="shop-achievement-list";
- syncAchievements();const earned=new Set(profile.earnedBadges||[]);
- ACHIEVEMENT_DEFS.forEach(b=>{const ok=earned.has(b.id);const row=document.createElement("div");row.className="shop-achievement-row"+(ok?" is-earned":"");const icon=document.createElement("span");icon.className="shop-achievement-icon";icon.textContent=ok?b.emoji:"🔒";const info=document.createElement("div");info.className="shop-achievement-info";const name=document.createElement("strong");name.textContent=b.name;const desc=document.createElement("small");desc.textContent=ok?"تم الإنجاز بالفعل":b.desc;info.append(name,desc);const reward=document.createElement("b");reward.className="shop-achievement-reward";reward.textContent="+"+shopAchievementReward(b)+" 🪙";row.append(icon,info,reward);achievementGrid.append(row)});
- earnSection.append(earnHeading,earnIntro,methods,achievementHeading,achievementGrid);
+ const dailyHeading=document.createElement("h3");dailyHeading.className="shop-achievements-heading";dailyHeading.textContent="☀️ الإنجازات اليومية";const dailyNote=document.createElement("p");dailyNote.className="social-muted";dailyNote.textContent="تتجدد يوميًا عند منتصف الليل بتوقيت القاهرة. كل إنجاز مكتمل يمنحك عملات مرة واحدة في اليوم.";
+ const dailyGrid=document.createElement("div");dailyGrid.className="shop-achievement-list";syncDailyAchievements();const dailyEarned=new Set(profile.earnedDailyAchievements||[]);
+ DAILY_ACHIEVEMENT_DEFS.forEach(a=>{const ok=dailyEarned.has(a.id);const row=document.createElement("div");row.className="shop-achievement-row"+(ok?" is-earned":"");const icon=document.createElement("span");icon.className="shop-achievement-icon";icon.textContent=ok?a.emoji:"🔒";const info=document.createElement("div");info.className="shop-achievement-info";const name=document.createElement("strong");name.textContent=a.name;const desc=document.createElement("small");desc.textContent=ok?"تم الإنجاز اليوم ✓":a.desc;info.append(name,desc);const reward=document.createElement("b");reward.className="shop-achievement-reward";reward.textContent="+"+a.reward+" 🪙";row.append(icon,info,reward);dailyGrid.append(row)});
+ const achievementHeading=document.createElement("h3");achievementHeading.className="shop-achievements-heading";achievementHeading.textContent="🏅 الإنجازات الأسبوعية";const weeklyNote=document.createElement("p");weeklyNote.className="social-muted";weeklyNote.textContent="تتجدد كل سبت الساعة 5:00 صباحًا بتوقيت مصر، وتبدأ أهداف الأسبوع من الصفر دون التأثير على XP أو مشترياتك.";
+ const achievementGrid=document.createElement("div");achievementGrid.className="shop-achievement-list";syncAchievements();const earned=new Set(profile.earnedBadges||[]);
+ ACHIEVEMENT_DEFS.forEach(b=>{const ok=earned.has(b.id);const row=document.createElement("div");row.className="shop-achievement-row"+(ok?" is-earned":"");const icon=document.createElement("span");icon.className="shop-achievement-icon";icon.textContent=ok?b.emoji:"🔒";const info=document.createElement("div");info.className="shop-achievement-info";const name=document.createElement("strong");name.textContent=b.name;const desc=document.createElement("small");desc.textContent=ok?"تم الإنجاز هذا الأسبوع ✓":b.desc;info.append(name,desc);const reward=document.createElement("b");reward.className="shop-achievement-reward";reward.textContent="+"+shopAchievementReward(b)+" 🪙";row.append(icon,info,reward);achievementGrid.append(row)});
+ earnSection.append(earnHeading,earnIntro,methods,dailyHeading,dailyNote,dailyGrid,achievementHeading,weeklyNote,achievementGrid);
  const shopSection=document.createElement("section");shopSection.className="shop-section shop-buy-section";
  const shopHeading=document.createElement("h2");shopHeading.className="shop-section-title";shopHeading.textContent="② المتجر — اشترِ وفعّل العناصر";
  const shopIntro=document.createElement("p");shopIntro.className="social-muted";shopIntro.textContent="اختار إطارًا لصورتك أو لقبًا أو شارة أو خلفية. العناصر التي تشتريها تظل ملكك وتقدر تغيّر العنصر المفعّل في أي وقت.";
@@ -1020,7 +1022,7 @@ async function buyOrEquipShopItem(id,button){
  }catch(e){console.error("Shop transaction failed",e);button.disabled=false;button.textContent=oldText;if(e.message==="NOT_ENOUGH_COINS")alert("رصيد عملات المتجر غير كافٍ.");else alert("الشراء لم يكتمل، ولم يتم خصم العملات. تأكد من اتصال الإنترنت وقواعد Firestore ثم حاول مرة أخرى.")}
 }
 function persistProfile(){
- const data={learned:[...LR],xp:profile.xp||0,wordXP:profile.wordXP||[],completedLessons:profile.completedLessons||[],perfectTests:profile.perfectTests||[],studyDays:profile.studyDays||{},dailyWords:profile.dailyWords||{},examResults:profile.examResults||[],reviewWords:profile.reviewWords||[],placementResults:profile.placementResults||[],earnedBadges:profile.earnedBadges||[],dialoguesCompleted:profile.dialoguesCompleted||[]};
+ const data={learned:[...LR],xp:profile.xp||0,wordXP:profile.wordXP||[],completedLessons:profile.completedLessons||[],perfectTests:profile.perfectTests||[],studyDays:profile.studyDays||{},dailyWords:profile.dailyWords||{},examResults:profile.examResults||[],reviewWords:profile.reviewWords||[],placementResults:profile.placementResults||[],earnedBadges:profile.earnedBadges||[],achievementWeekKey:profile.achievementWeekKey||currentAchievementWeekKey(),weeklyAchievementStats:profile.weeklyAchievementStats||freshWeeklyAchievementStats(),dailyAchievementKey:profile.dailyAchievementKey||currentAchievementDayKey(),dailyAchievementStats:profile.dailyAchievementStats||freshDailyAchievementStats(),earnedDailyAchievements:profile.earnedDailyAchievements||[],dialoguesCompleted:profile.dialoguesCompleted||[]};
  try{localStorage.setItem("de-learned",JSON.stringify(data.learned));localStorage.setItem(PROFILE_KEY,JSON.stringify({...profile}))}catch(e){}
  if(fbUser&&db){db.collection("users").doc(fbUser.uid).set(data,{merge:true}).catch(e=>console.error("Cloud save failed",e));syncPublicProfile();}
 }
@@ -1029,26 +1031,54 @@ const wid=(l,i,c,de)=>l+"-"+i+"-"+c+"-"+de;
 const RANKS=[{name:"الرايق",min:0,next:100},{name:"الجامد",min:100,next:300},{name:"القادر",min:300,next:600},{name:"المطرشم",min:600,next:1000},{name:"الادولف",min:1000,next:2000},{name:"القدوه",min:2000,next:Infinity}];
 function currentRank(){let r=RANKS[0];for(const x of RANKS)if((profile.xp||0)>=x.min)r=x;return r}
 function todayKey(d=new Date()){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
-function studyActivity(){const k=todayKey();profile.studyDays=profile.studyDays||{};profile.studyDays[k]=(profile.studyDays[k]||0)+1}
+function currentAchievementWeekKey(now=new Date()){
+ const parts=new Intl.DateTimeFormat("en-GB",{timeZone:"Africa/Cairo",year:"numeric",month:"2-digit",day:"2-digit",weekday:"short",hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).formatToParts(now),v={};parts.forEach(p=>{if(p.type!=="literal")v[p.type]=p.value});
+ const weekday={Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6}[v.weekday]??0;
+ const d=new Date(Date.UTC(Number(v.year),Number(v.month)-1,Number(v.day))),daysSinceSaturday=(weekday-6+7)%7;d.setUTCDate(d.getUTCDate()-daysSinceSaturday);
+ if(weekday===6&&Number(v.hour)<5)d.setUTCDate(d.getUTCDate()-7);
+ return d.getUTCFullYear()+"-"+String(d.getUTCMonth()+1).padStart(2,"0")+"-"+String(d.getUTCDate()).padStart(2,"0");
+}
+function freshWeeklyAchievementStats(){return {words:[],lessons:[],perfectTests:[],studyDays:[],xp:0}}
+function currentAchievementDayKey(now=new Date()){
+ const parts=new Intl.DateTimeFormat("en-CA",{timeZone:"Africa/Cairo",year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(now),v={};parts.forEach(p=>{if(p.type!=="literal")v[p.type]=p.value});return `${v.year}-${v.month}-${v.day}`;
+}
+function freshDailyAchievementStats(){return {words:[],lessons:[],tests:[],perfectTests:[],studied:false,xp:0}}
+function ensureDailyAchievements(){
+ const key=currentAchievementDayKey();
+ if(profile.dailyAchievementKey!==key){profile.dailyAchievementKey=key;profile.dailyAchievementStats=freshDailyAchievementStats();profile.earnedDailyAchievements=[];persistProfile();}
+ if(!profile.dailyAchievementStats)profile.dailyAchievementStats=freshDailyAchievementStats();
+ const st=profile.dailyAchievementStats;for(const k of ['words','lessons','tests','perfectTests'])if(!Array.isArray(st[k]))st[k]=[];st.studied=!!st.studied;st.xp=Math.max(0,Number(st.xp)||0);return st;
+}
+function ensureWeeklyAchievements(){
+ const key=currentAchievementWeekKey();
+ if(profile.achievementWeekKey!==key){profile.achievementWeekKey=key;profile.weeklyAchievementStats=freshWeeklyAchievementStats();profile.earnedBadges=[];persistProfile();}
+ if(!profile.weeklyAchievementStats)profile.weeklyAchievementStats=freshWeeklyAchievementStats();
+ const st=profile.weeklyAchievementStats;
+ for(const k of ['words','lessons','perfectTests','studyDays'])if(!Array.isArray(st[k]))st[k]=[];
+ st.xp=Math.max(0,Number(st.xp)||0);return st;
+}
+function weeklyStudyStreak(){const st=ensureWeeklyAchievements(),days=new Set(st.studyDays);let d=new Date(),key=todayKey(d);if(!days.has(key)){d.setDate(d.getDate()-1);key=todayKey(d);if(!days.has(key))return 0}let n=0;while(days.has(key)){n++;d.setDate(d.getDate()-1);key=todayKey(d)}return n}
+function studyActivity(){const k=todayKey();profile.studyDays=profile.studyDays||{};profile.studyDays[k]=(profile.studyDays[k]||0)+1;const st=ensureWeeklyAchievements();if(!st.studyDays.includes(k))st.studyDays.push(k);ensureDailyAchievements().studied=true}
 function streakCount(){const days=profile.studyDays||{};let n=0,d=new Date(),k=todayKey(d);if(!days[k]){d.setDate(d.getDate()-1);k=todayKey(d);if(!days[k])return 0}while(days[k]){n++;d.setDate(d.getDate()-1);k=todayKey(d)}return n}
-function awardXP(n){profile.xp=Math.max(0,(profile.xp||0)+n);}
+function awardXP(n){profile.xp=Math.max(0,(profile.xp||0)+n);const amount=Math.max(0,Number(n)||0);const st=ensureWeeklyAchievements();st.xp+=amount;ensureDailyAchievements().xp+=amount;}
 function markWordLearned(id,l,i){
+ const weekly=ensureWeeklyAchievements();if(!weekly.words.includes(id))weekly.words.push(id);const daily=ensureDailyAchievements();if(!daily.words.includes(id))daily.words.push(id);
  const isNew=!LR.has(id);if(isNew){LR.add(id);profile.wordXP=profile.wordXP||[];if(!profile.wordXP.includes(id)){profile.wordXP.push(id);awardXP(1)}profile.dailyWords=profile.dailyWords||{};const day=todayKey();profile.dailyWords[day]=(profile.dailyWords[day]||0)+1}
  studyActivity();
  const lessonKey=l+"-"+i,lessonWords=levelWords(l).filter(w=>w.i===i);
- if(lessonWords.length&&lessonWords.every(w=>LR.has(w.id))){profile.completedLessons=profile.completedLessons||[];if(!profile.completedLessons.includes(lessonKey)){profile.completedLessons.push(lessonKey);awardXP(50);alert("عاش! خلصت الدرس وكسبت 50 XP 🎉")}}
- persistProfile();syncAchievements();renderDashboardIfVisible();
+ if(lessonWords.length&&lessonWords.every(w=>LR.has(w.id))){if(!weekly.lessons.includes(lessonKey))weekly.lessons.push(lessonKey);const dailyNow=ensureDailyAchievements();if(!dailyNow.lessons.includes(lessonKey))dailyNow.lessons.push(lessonKey);profile.completedLessons=profile.completedLessons||[];if(!profile.completedLessons.includes(lessonKey)){profile.completedLessons.push(lessonKey);awardXP(50);alert("عاش! خلصت الدرس وكسبت 50 XP 🎉")}}
+ persistProfile();syncDailyAchievements();syncAchievements();renderDashboardIfVisible();
 }
 function finishQuiz(l,mode,score,total,lessonIndex){
  const now=new Date(),perfect=total>0&&score===total;
  profile.examResults=profile.examResults||[];
  profile.examResults.unshift({date:now.toISOString(),level:l,lesson:lessonIndex==null?null:lessonIndex,mode,score,total,perfect});profile.examResults=profile.examResults.slice(0,100);
- studyActivity();
+ studyActivity();const dailyNow=ensureDailyAchievements();
  const quizKey=(lessonIndex==null?l+"-practice-"+mode:l+"-lesson-"+lessonIndex+"-"+mode)+"-"+now.getTime();
- grantShopCoinsOnce("quiz",quizKey,perfect?15:5);
- if(perfect){profile.perfectTests=profile.perfectTests||[];profile.perfectTests.push(quizKey);profile.perfectTests=profile.perfectTests.slice(-500);awardXP(100);alert("درجة كاملة! كسبت 100 XP و15 عملة متجر 💯")}
+ grantShopCoinsOnce("quiz",quizKey,perfect?15:5);dailyNow.tests.push(quizKey);
+ if(perfect){profile.perfectTests=profile.perfectTests||[];profile.perfectTests.push(quizKey);profile.perfectTests=profile.perfectTests.slice(-500);const weekly=ensureWeeklyAchievements();weekly.perfectTests.push(quizKey);dailyNow.perfectTests.push(quizKey);awardXP(100);alert("درجة كاملة! كسبت 100 XP و15 عملة متجر 💯")}
  else alert("تم حفظ نتيجتك! كسبت 5 عملات متجر 🪙");
- persistProfile();syncAchievements();
+ persistProfile();syncDailyAchievements();syncAchievements();
 }
 function addReviewWord(w,wrong){profile.reviewWords=profile.reviewWords||[];if(wrong){if(!profile.reviewWords.includes(w.id))profile.reviewWords.push(w.id)}else profile.reviewWords=profile.reviewWords.filter(id=>id!==w.id);persistProfile()}
 function renderDashboardIfVisible(){if(st[0]==="D")renderDashboard() }
@@ -1415,22 +1445,35 @@ function speak(t,c){
  u.pitch=P[0];u.rate=P[1];const v=P[2]||de[0];if(v)u.voice=v;
  speechSynthesis.speak(u)}
 function btn(html,cls,fn){const b=document.createElement("button");b.className=cls;b.innerHTML=html;b.onclick=fn;return b}
-const ACHIEVEMENT_DEFS=[
- {id:"first-word",emoji:"🌱",name:"أول خطوة",desc:"احفظ أول كلمة",test:()=>LR.size>=1},
- {id:"words-25",emoji:"📚",name:"جامع الكلمات",desc:"احفظ 25 كلمة",test:()=>LR.size>=25},
- {id:"words-100",emoji:"🧠",name:"100 كلمة",desc:"احفظ 100 كلمة",test:()=>LR.size>=100},
- {id:"lesson-1",emoji:"✅",name:"أول درس",desc:"أكمل درسًا بالكامل",test:()=>((profile.completedLessons||[]).length)>=1},
- {id:"lessons-10",emoji:"🏅",name:"عشرة دروس",desc:"أكمل 10 دروس",test:()=>((profile.completedLessons||[]).length)>=10},
- {id:"perfect",emoji:"💯",name:"درجة كاملة",desc:"احصل على الدرجة النهائية في اختبار",test:()=>((profile.perfectTests||[]).length)>=1},
- {id:"streak-7",emoji:"🔥",name:"أسبوع من الالتزام",desc:"ذاكر 7 أيام متتالية",test:()=>streakCount()>=7},
- {id:"xp-1000",emoji:"👑",name:"نجم المنصة",desc:"اجمع 1000 نقطة خبرة",test:()=>(profile.xp||0)>=1000}
+const DAILY_ACHIEVEMENT_DEFS=[
+ {id:"daily-words-5",emoji:"📖",name:"خمس كلمات اليوم",desc:"راجع 5 كلمات مختلفة اليوم",test:()=>ensureDailyAchievements().words.length>=5,reward:5},
+ {id:"daily-lesson",emoji:"✅",name:"درس اليوم",desc:"أكمل درسًا واحدًا اليوم",test:()=>ensureDailyAchievements().lessons.length>=1,reward:8},
+ {id:"daily-quiz",emoji:"📝",name:"اختبار اليوم",desc:"أكمل اختبارًا اليوم",test:()=>ensureDailyAchievements().tests.length>=1,reward:5},
+ {id:"daily-perfect",emoji:"💯",name:"علامة كاملة اليوم",desc:"احصل على الدرجة الكاملة في اختبار اليوم",test:()=>ensureDailyAchievements().perfectTests.length>=1,reward:10},
+ {id:"daily-study",emoji:"🔥",name:"حافظ على العادة",desc:"ذاكر اليوم ولو قليلًا",test:()=>ensureDailyAchievements().studied,reward:3}
 ];
-function syncAchievements(){profile.earnedBadges=profile.earnedBadges||[];const newly=[];ACHIEVEMENT_DEFS.forEach(b=>{if(b.test()&&!profile.earnedBadges.includes(b.id)){profile.earnedBadges.push(b.id);newly.push(b)}});if(newly.length){persistProfile();newly.forEach((b)=>{const reward=b.id==="xp-1000"?40:(b.id==="words-100"||b.id==="lessons-10"?25:(b.id==="perfect"||b.id==="streak-7"?20:10));grantShopCoinsOnce("achievement",b.id,reward)});if(fbUser&&newly.length)alert("إنجاز جديد! حصلت على "+newly.reduce((n,b)=>n+(b.id==="xp-1000"?40:(b.id==="words-100"||b.id==="lessons-10"?25:(b.id==="perfect"||b.id==="streak-7"?20:10))),0)+" عملة متجر 🏆")}return newly}
+function syncDailyAchievements(){
+ ensureDailyAchievements();profile.earnedDailyAchievements=profile.earnedDailyAchievements||[];const newly=[];
+ DAILY_ACHIEVEMENT_DEFS.forEach(a=>{if(a.test()&&!profile.earnedDailyAchievements.includes(a.id)){profile.earnedDailyAchievements.push(a.id);newly.push(a)}});
+ if(newly.length){persistProfile();const dayKey=profile.dailyAchievementKey||currentAchievementDayKey();let total=0;newly.forEach(a=>{total+=a.reward;grantShopCoinsOnce("daily-achievement",dayKey+":"+a.id,a.reward)});if(fbUser)alert("إنجاز يومي جديد! كسبت "+total+" عملة متجر 🪙");}
+ return newly;
+}
+const ACHIEVEMENT_DEFS=[
+ {id:"first-word",emoji:"🌱",name:"أول خطوة",desc:"راجع أو احفظ كلمة خلال الأسبوع",test:()=>ensureWeeklyAchievements().words.length>=1},
+ {id:"words-25",emoji:"📚",name:"جامع الكلمات",desc:"راجع 25 كلمة مختلفة خلال الأسبوع",test:()=>ensureWeeklyAchievements().words.length>=25},
+ {id:"words-100",emoji:"🧠",name:"100 كلمة",desc:"راجع 100 كلمة مختلفة خلال الأسبوع",test:()=>ensureWeeklyAchievements().words.length>=100},
+ {id:"lesson-1",emoji:"✅",name:"أول درس",desc:"أكمل أو راجع درسًا بالكامل خلال الأسبوع",test:()=>ensureWeeklyAchievements().lessons.length>=1},
+ {id:"lessons-10",emoji:"🏅",name:"عشرة دروس",desc:"أكمل أو راجع 10 دروس خلال الأسبوع",test:()=>ensureWeeklyAchievements().lessons.length>=10},
+ {id:"perfect",emoji:"💯",name:"درجة كاملة",desc:"احصل على درجة كاملة في اختبار خلال الأسبوع",test:()=>ensureWeeklyAchievements().perfectTests.length>=1},
+ {id:"streak-7",emoji:"🔥",name:"أسبوع من الالتزام",desc:"ذاكر 7 أيام متتالية خلال الأسبوع",test:()=>weeklyStudyStreak()>=7},
+ {id:"xp-1000",emoji:"👑",name:"نجم المنصة",desc:"اجمع 1000 نقطة خبرة خلال الأسبوع",test:()=>ensureWeeklyAchievements().xp>=1000}
+];
+function syncAchievements(){ensureWeeklyAchievements();profile.earnedBadges=profile.earnedBadges||[];const newly=[];ACHIEVEMENT_DEFS.forEach(b=>{if(b.test()&&!profile.earnedBadges.includes(b.id)){profile.earnedBadges.push(b.id);newly.push(b)}});if(newly.length){persistProfile();const weekKey=profile.achievementWeekKey||currentAchievementWeekKey();newly.forEach((b)=>{const reward=b.id==="xp-1000"?40:(b.id==="words-100"||b.id==="lessons-10"?25:(b.id==="perfect"||b.id==="streak-7"?20:10));grantShopCoinsOnce("achievement",weekKey+":"+b.id,reward)});if(fbUser&&newly.length)alert("إنجاز أسبوعي جديد! حصلت على "+newly.reduce((n,b)=>n+(b.id==="xp-1000"?40:(b.id==="words-100"||b.id==="lessons-10"?25:(b.id==="perfect"||b.id==="streak-7"?20:10))),0)+" عملة متجر 🏆")}return newly}
 function renderAchievements(){
  syncAchievements();title.textContent="الإنجازات والشارات";crumb.textContent="كل خطوة في تعلمك تستحق التقدير";view.innerHTML="";
  const earned=profile.earnedBadges||[],card=document.createElement("section");card.className="feature-card";
  const h=document.createElement("h2");h.textContent=`🏆 حصلت على ${earned.length} من ${ACHIEVEMENT_DEFS.length} شارات`;
- const p=document.createElement("p");p.className="feature-note";p.textContent="الشارات مرتبطة بتقدمك الفعلي، ولا تُمنح النقاط مرة أخرى عند إعادة فتح الصفحة.";card.append(h,p);
+ const p=document.createElement("p");p.className="feature-note";p.textContent="إنجازات أسبوعية تتجدد كل يوم سبت الساعة 5:00 صباحًا بتوقيت مصر. التقدم يبدأ من جديد، وتحتفظ بنقاط الخبرة والمشتريات ورصيد العملات.";card.append(h,p);
  const grid=document.createElement("div");grid.className="badge-grid";
  ACHIEVEMENT_DEFS.forEach(b=>{const ok=earned.includes(b.id);const el=document.createElement("div");el.className="achievement-badge"+(ok?" earned":"");el.innerHTML=`<span class="badge-emoji">${ok?b.emoji:"🔒"}</span><strong>${b.name}</strong><small>${ok?"تم الإنجاز":b.desc}</small>`;grid.append(el)});
  card.append(grid);view.append(card,btn("العودة للرئيسية","go alt",()=>go()));
@@ -1505,14 +1548,8 @@ function renderDashboard(){
  const stats=document.createElement("div");stats.className="grid dash-grid";
  [[learned,"كلمة متعلّمة"],[completed,"درس مكتمل"]].forEach(([n,t])=>{const d=document.createElement("div");d.className="stat";d.innerHTML=`<strong>${n}</strong><span>${t}</span>`;stats.append(d)});view.append(stats);
  const h1=document.createElement("h2");h1.className="sec";h1.textContent="تقدم حفظ الكلمات خلال الأسبوع";view.append(h1);const dailyGoal=document.createElement("p");dailyGoal.textContent="الهدف اليومي: حفظ 20 كلمة";dailyGoal.style.cssText="margin:-8px 0 12px;color:var(--text);font-weight:700";view.append(dailyGoal);renderWeeklyWords(view,7);
- // الإنجازات والشارات جزء من الملف الشخصي بدل صفحة مستقلة.
- syncAchievements();
- const badgeHeading=document.createElement("h2");badgeHeading.className="sec";badgeHeading.textContent="🏆 الإنجازات والشارات";view.append(badgeHeading);
- const earned=profile.earnedBadges||[];
- const badgeSummary=document.createElement("p");badgeSummary.className="feature-note";badgeSummary.textContent=`أنجزت ${earned.length} من ${ACHIEVEMENT_DEFS.length} شارات`;view.append(badgeSummary);
- const badgeGrid=document.createElement("div");badgeGrid.className="badge-grid";
- ACHIEVEMENT_DEFS.forEach(b=>{const ok=earned.includes(b.id);const el=document.createElement("div");el.className="achievement-badge"+(ok?" earned":"");const emoji=document.createElement("span");emoji.className="badge-emoji";emoji.textContent=ok?b.emoji:"🔒";const name=document.createElement("strong");name.textContent=b.name;const desc=document.createElement("small");desc.textContent=ok?"تم الإنجاز":b.desc;el.append(emoji,name,desc);badgeGrid.append(el)});
- view.append(badgeGrid);
+ // الإنجازات الأسبوعية تُعرض داخل تبويب «جمع العملات والإنجازات» في المتجر فقط.
+ // لا نعرض لوحة الإنجازات مرة ثانية داخل الملف الشخصي لتقليل التكرار والزحام.
  window.scrollTo(0,0);
 }
 function renderSettings(){
@@ -1927,7 +1964,9 @@ async function syncPendingOfflineProgress(){
    wordXP:union(profile.wordXP,cloud.wordXP),
    completedLessons:union(profile.completedLessons,cloud.completedLessons),
    perfectTests:union(profile.perfectTests,cloud.perfectTests),
-   earnedBadges:union(profile.earnedBadges,cloud.earnedBadges),
+   dailyAchievementKey:cloud.dailyAchievementKey===currentAchievementDayKey()?cloud.dailyAchievementKey:profile.dailyAchievementKey,dailyAchievementStats:cloud.dailyAchievementKey===currentAchievementDayKey()?(cloud.dailyAchievementStats||profile.dailyAchievementStats||freshDailyAchievementStats()):(profile.dailyAchievementKey===currentAchievementDayKey()?(profile.dailyAchievementStats||freshDailyAchievementStats()):freshDailyAchievementStats()),earnedDailyAchievements:cloud.dailyAchievementKey===currentAchievementDayKey()?(cloud.earnedDailyAchievements||profile.earnedDailyAchievements||[]):(profile.dailyAchievementKey===currentAchievementDayKey()?(profile.earnedDailyAchievements||[]):[]),earnedBadges:(cloud.achievementWeekKey===currentAchievementWeekKey()&&profile.achievementWeekKey===currentAchievementWeekKey()?union(profile.earnedBadges,cloud.earnedBadges):(cloud.achievementWeekKey===currentAchievementWeekKey()?(cloud.earnedBadges||[]):(profile.achievementWeekKey===currentAchievementWeekKey()?(profile.earnedBadges||[]):[]))),
+   achievementWeekKey:currentAchievementWeekKey(),
+   weeklyAchievementStats:(()=>{const a=profile.achievementWeekKey===currentAchievementWeekKey()?(profile.weeklyAchievementStats||freshWeeklyAchievementStats()):freshWeeklyAchievementStats();const b=cloud.achievementWeekKey===currentAchievementWeekKey()?(cloud.weeklyAchievementStats||freshWeeklyAchievementStats()):freshWeeklyAchievementStats();return {words:[...new Set([...(a.words||[]),...(b.words||[])])],lessons:[...new Set([...(a.lessons||[]),...(b.lessons||[])])],perfectTests:[...new Set([...(a.perfectTests||[]),...(b.perfectTests||[])])],studyDays:[...new Set([...(a.studyDays||[]),...(b.studyDays||[])])],xp:Math.max(Number(a.xp)||0,Number(b.xp)||0)}})(),
    dialoguesCompleted:union(profile.dialoguesCompleted,cloud.dialoguesCompleted),
    studyDays:mergeDateMap(cloud.studyDays,profile.studyDays),
    dailyWords:mergeDateMap(cloud.dailyWords,profile.dailyWords),
@@ -1962,8 +2001,11 @@ function initCloud(){
     const derivedXp=migratedWordXP.length + savedCompleted.length*50 + savedPerfect.length*100;
     const legacyXp=(Math.max(localXp,cloudXp,publicXp)===0?derivedXp:0);
     const baseXp=Math.max(localXp,cloudXp,publicXp,legacyXp);
-    profile={...profile,xp:baseXp,wordXP:migratedWordXP,completedLessons:savedCompleted,perfectTests:savedPerfect,studyDays:cloud.studyDays||profile.studyDays||{},dailyWords:cloud.dailyWords||profile.dailyWords||{},examResults:cloud.examResults||profile.examResults||[],reviewWords:cloud.reviewWords||profile.reviewWords||[],displayName:cloud.displayName||profile.displayName||"",placementResults:cloud.placementResults||profile.placementResults||[],earnedBadges:cloud.earnedBadges||profile.earnedBadges||[],dialoguesCompleted:cloud.dialoguesCompleted||profile.dialoguesCompleted||[],shopCoins:Math.max(0,Number(cloud.shopCoins??profile.shopCoins)||0),shopOwned:Array.isArray(cloud.shopOwned)?cloud.shopOwned:(profile.shopOwned||[]),shopEquipped:cloud.shopEquipped||profile.shopEquipped||{},shopRewardLedger:cloud.shopRewardLedger||profile.shopRewardLedger||{}};
+    profile={...profile,xp:baseXp,wordXP:migratedWordXP,completedLessons:savedCompleted,perfectTests:savedPerfect,studyDays:cloud.studyDays||profile.studyDays||{},dailyWords:cloud.dailyWords||profile.dailyWords||{},examResults:cloud.examResults||profile.examResults||[],reviewWords:cloud.reviewWords||profile.reviewWords||[],displayName:cloud.displayName||profile.displayName||"",placementResults:cloud.placementResults||profile.placementResults||[],earnedBadges:(cloud.achievementWeekKey===currentAchievementWeekKey()&&profile.achievementWeekKey===currentAchievementWeekKey()?[...new Set([...(profile.earnedBadges||[]),...(cloud.earnedBadges||[])])]:cloud.achievementWeekKey===currentAchievementWeekKey()?(cloud.earnedBadges||[]):profile.achievementWeekKey===currentAchievementWeekKey()?(profile.earnedBadges||[]):[]),achievementWeekKey:currentAchievementWeekKey(),weeklyAchievementStats:(()=>{const a=profile.achievementWeekKey===currentAchievementWeekKey()?(profile.weeklyAchievementStats||freshWeeklyAchievementStats()):freshWeeklyAchievementStats();const b=cloud.achievementWeekKey===currentAchievementWeekKey()?(cloud.weeklyAchievementStats||freshWeeklyAchievementStats()):freshWeeklyAchievementStats();return {words:[...new Set([...(a.words||[]),...(b.words||[])])],lessons:[...new Set([...(a.lessons||[]),...(b.lessons||[])])],perfectTests:[...new Set([...(a.perfectTests||[]),...(b.perfectTests||[])])],studyDays:[...new Set([...(a.studyDays||[]),...(b.studyDays||[])])],xp:Math.max(Number(a.xp)||0,Number(b.xp)||0)}})(),dialoguesCompleted:cloud.dialoguesCompleted||profile.dialoguesCompleted||[],shopCoins:Math.max(0,Number(cloud.shopCoins??profile.shopCoins)||0),shopOwned:Array.isArray(cloud.shopOwned)?cloud.shopOwned:(profile.shopOwned||[]),shopEquipped:cloud.shopEquipped||profile.shopEquipped||{},shopRewardLedger:cloud.shopRewardLedger||profile.shopRewardLedger||{}};
+    ensureWeeklyAchievements();
+    ensureDailyAchievements();
     persistProfile();
+    syncDailyAchievements();
     syncAchievements();
     await syncPublicProfile();
     render()
