@@ -434,6 +434,15 @@ body{padding-bottom:82px}
 .dialogue-card:hover{transform:translateY(-2px);border-color:var(--primary-dark)}
 .dialogue-card-icon{display:grid;place-items:center;width:48px;height:48px;border-radius:14px;background:var(--bg);font-size:27px}
 .dialogue-card small{font-size:12px;font-weight:500;color:var(--mute)}
+.dialogue-card-wrap{display:flex;flex-direction:column;gap:0;min-width:0;height:164px;border:1.5px solid var(--line);border-radius:14px;overflow:hidden;background:var(--card)}
+.dialogue-card-wrap .dialogue-card{width:100%;flex:2;min-height:0;border:0;border-radius:0;padding:10px 8px;gap:5px}
+.dialogue-card-wrap .dialogue-card-icon{width:38px;height:38px;font-size:23px}
+.dialogue-exercise-button{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;flex:0 0 48px;padding:7px 10px;border:0;border-top:1px solid var(--line);border-radius:0;background:var(--bg);color:var(--ink);font:800 13px Cairo,sans-serif;cursor:pointer}
+.dialogue-exercise-button .exercise-icon{font-size:17px;line-height:1}
+.dialogue-exercise-choice{display:grid;grid-template-columns:1fr;gap:6px;padding:8px;border-top:1px solid var(--line);background:var(--card)}
+.dialogue-exercise-choice button{width:100%;min-height:38px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--ink);font:700 12px Cairo,sans-serif;cursor:pointer}
+.dialogue-card-wrap:has(.dialogue-exercise-choice){height:auto;min-height:164px}
+@media(max-width:380px){.dialogue-card-wrap{height:154px}.dialogue-card-wrap .dialogue-card{font-size:13px}.dialogue-card small{font-size:11px}.dialogue-exercise-button{flex-basis:44px}}
 .dialogue-sheet{border:1px solid var(--line);border-radius:14px;background:var(--card);padding:12px 14px;margin:12px 0}
 .dialogue-turn{padding:12px 0;border-bottom:1px solid var(--line)}
 .dialogue-turn:last-child{border-bottom:0}
@@ -456,6 +465,23 @@ body{padding-bottom:82px}
 :root[data-theme="dark"] .speaker-walid .dialogue-speaker{background:#7c2d12;color:#fed7aa}
 :root[data-theme="dark"] .speaker-job .dialogue-speaker{background:#581c87;color:#e9d5ff}
 @media(max-width:420px){.dialogue-cards{gap:8px}.dialogue-card{min-height:112px;padding:11px 7px;font-size:14px}.dialogue-german{font-size:17px}}
+
+/* صوت المحادثات والتدريب التفاعلي */
+.dialogue-controls{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.dialogue-controls .go{flex:1;min-width:145px}
+.dialogue-practice-panel{border:1px solid var(--line);border-radius:14px;background:var(--card);padding:14px;margin:12px 0}
+.dialogue-role-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0}
+.dialogue-role-option{padding:11px;border:1px solid var(--line);border-radius:11px;background:var(--bg);color:var(--ink);font:700 14px Cairo,sans-serif;cursor:pointer}
+.dialogue-role-option.selected{border-color:var(--primary-dark);box-shadow:0 0 0 2px var(--primary-dark) inset}
+.dialogue-practice-status{margin:10px 0;padding:10px;border-radius:10px;background:var(--bg);line-height:1.7}
+.dialogue-user-line{direction:ltr;text-align:left;font-size:22px;font-weight:800;line-height:1.8;padding:18px 14px;margin:12px 0;border:2px solid var(--primary-dark);border-radius:14px;background:var(--bg);color:var(--ink);min-height:74px}
+.dialogue-user-line:empty{display:none}
+.dialogue-turn.dialogue-current{background:var(--bg);border-radius:10px;padding:12px;margin:4px -5px;border:1px solid var(--primary-dark)}
+.dialogue-turn.dialogue-your-turn{border-inline-start:4px solid #d97706;padding-inline-start:10px}
+.dialogue-practice-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.dialogue-practice-actions .go{flex:1;min-width:120px}
+@media(max-width:420px){.dialogue-controls{flex-direction:column}.dialogue-controls .go{width:100%}.dialogue-role-grid{grid-template-columns:1fr 1fr}}
+
 
 
 /* صفحة الإنجازات وتبويبات المتجر */
@@ -1104,7 +1130,7 @@ function renderQuiz(l){if(EXAM!==null)return renderExam(l,EXAM);
  const pool=levelWords(l),learned=pool.filter(w=>LR.has(w.id));
  if(!learned.length){view.innerHTML='<div class="empty">علّم بعلامة ✓ على كلمات حفظتها الأول، وبعدها ارجع للتمرين.</div>';return}
  const g=document.createElement("div");g.className="grid";
- [["ma","الكلمة ← اختر المعنى"],["art","الكلمة ← اختر der / die / das"],["am","المعنى ← اختر الكلمة"],["pl","الاسم ← اكتب شكل الجمع"]].forEach(([k,n])=>{
+ [["translate","ترجمة"],["listen","أنت سمعت إيه؟"],["art","اختر der / die / das"],["pl","الاسم ← اكتب شكل الجمع"]].forEach(([k,n])=>{
   
   g.append(btn(n,"box",()=>runQuiz(l,k,learned,pool)))});
  view.append(g)}
@@ -1115,7 +1141,7 @@ function renderExam(l,j){
  title.textContent="امتحان: "+LESSONS[l][j];crumb.textContent="10 أسئلة عشوائية من كلمات الدرس ("+words.length+" كلمة)، سواء علّمت عليها أو لأ";
  if(!words.length){view.innerHTML='<div class="empty">مفيش كلمات في الدرس ده لسه.</div>';return}
  const g=document.createElement("div");g.className="grid";
- [["ma","الكلمة ← اختر المعنى"],["art","الكلمة ← اختر der / die / das"],["am","المعنى ← اختر الكلمة"],["pl","الاسم ← اكتب شكل الجمع"]].forEach(([k,n])=>g.append(btn(n,"box",()=>runQuiz(l,k,words,pool))));
+ [["translate","ترجمة"],["listen","أنت سمعت إيه؟"],["art","اختر der / die / das"],["pl","الاسم ← اكتب شكل الجمع"]].forEach(([k,n])=>g.append(btn(n,"box",()=>runQuiz(l,k,words,pool))));
  view.append(g)}
 /* موضوع جديد في أهداف A1 > مواضيع التحدث: الماضي */
 TOPICS.push({
@@ -1282,22 +1308,124 @@ function renderDialogues(lv){
  title.textContent="المحادثات · A1";crumb.textContent="A1 · اختر المحادثة";view.innerHTML="";
  const note=document.createElement("p");note.className="feature-note";note.textContent="اختار الموقف، واقرأ كل جملة ألمانية ومعناها بالعربي. لون كل متحدث ثابت لتسهيل المتابعة.";view.append(note);
  const cards=document.createElement("div");cards.className="dialogue-cards";
- A1_DIALOGUES.forEach((d,i)=>{const b=btn(`<span class="dialogue-card-icon" aria-hidden="true">${d.icon}</span><span>${d.title}</span><small>${d.arTitle}</small>`,"dialogue-card",()=>go("DIALOGUE",i));cards.append(b)});
+ A1_DIALOGUES.forEach((d,i)=>{const wrap=document.createElement("div");wrap.className="dialogue-card-wrap";const b=btn(`<span class="dialogue-card-icon" aria-hidden="true">${d.icon}</span><span>${d.title}</span><small>${d.arTitle}</small>`,"dialogue-card",()=>go("DIALOGUE",i));const exercise=btn('<span class="exercise-icon" aria-hidden="true">✍️</span><span>تمرين</span>',"dialogue-exercise-button",()=>{const existing=wrap.querySelector('.dialogue-exercise-choice');if(existing){existing.remove();exercise.setAttribute('aria-expanded','false');return}cards.querySelectorAll('.dialogue-exercise-choice').forEach(el=>el.remove());cards.querySelectorAll('.dialogue-exercise-button').forEach(el=>el.setAttribute('aria-expanded','false'));const chooser=document.createElement('div');chooser.className='dialogue-exercise-choice';chooser.append(btn('🎭 دور مين؟','',()=>go('DIALOGUE',{index:i,exercise:true})),btn('🎧 الرد المناسب','',()=>go('DIALOGUE_REPLY',i)));wrap.append(chooser);exercise.setAttribute('aria-expanded','true')});exercise.setAttribute("aria-label","اختيار نوع تمرين محادثة "+d.title);exercise.setAttribute('aria-expanded','false');wrap.append(b,exercise);cards.append(wrap)});
  view.append(cards);
 }
-function renderDialogue(index){
- const d=A1_DIALOGUES[Number(index)];if(!d){go("DIALOGUES","A1");return}
- title.textContent=d.title;crumb.textContent="A1 · المحادثات · "+d.arTitle;view.innerHTML="";
- const intro=document.createElement("p");intro.className="feature-note";intro.textContent=d.arTitle;view.append(intro);
- const sheet=document.createElement("section");sheet.className="dialogue-sheet";
- d.lines.forEach(([who,de,ar])=>{const turn=document.createElement("div");turn.className="dialogue-turn "+dialogueSpeakerClass(who);const label=document.createElement("span");label.className="dialogue-speaker";label.textContent=d.speakers[who]||who;const german=document.createElement("div");german.className="dialogue-german";german.lang="de";german.textContent=de;const arabic=document.createElement("div");arabic.className="dialogue-translation";arabic.textContent=ar;turn.append(label,german,arabic);sheet.append(turn)});
- view.append(sheet,btn("↩ العودة إلى المحادثات","go alt",()=>go("DIALOGUES","A1")));
+let DIALOGUE_SESSION_TOKEN=0,DIALOGUE_TIMER=null,DIALOGUE_RECOGNITION=null;
+function stopDialogueSession(){
+ DIALOGUE_SESSION_TOKEN++;
+ if(DIALOGUE_TIMER){clearTimeout(DIALOGUE_TIMER);DIALOGUE_TIMER=null}
+ if(DIALOGUE_RECOGNITION){try{DIALOGUE_RECOGNITION.onresult=null;DIALOGUE_RECOGNITION.onerror=null;DIALOGUE_RECOGNITION.onend=null;DIALOGUE_RECOGNITION.stop()}catch(e){}DIALOGUE_RECOGNITION=null}
+ try{if('speechSynthesis' in window)speechSynthesis.cancel()}catch(e){}
+}
+function dialogueVoiceStyle(who,index,voices){
+ const lower=String(who).toLowerCase();
+ const preferred=voices.find(v=>/de[-_]de/i.test(v.lang))||voices.find(v=>/^de/i.test(v.lang));
+ const voice=voices.length>1?voices[index%voices.length]:preferred;
+ const hash=[...lower].reduce((a,ch)=>a+ch.charCodeAt(0),0);
+ return {voice:voice||null,pitch:0.82+(hash%6)*0.09,rate:0.88+(hash%4)*0.045};
+}
+function speakDialogueLine(text,who,index,token){
+ return new Promise(resolve=>{
+  if(token!==DIALOGUE_SESSION_TOKEN)return resolve();
+  if(!('speechSynthesis' in window)){DIALOGUE_TIMER=setTimeout(resolve,Math.max(1400,text.split(/\s+/).length*360));return}
+  const u=new SpeechSynthesisUtterance(text);u.lang='de-DE';
+  const voices=speechSynthesis.getVoices().filter(v=>/^de([_-]|$)/i.test(v.lang));
+  const style=dialogueVoiceStyle(who,index,voices);if(style.voice)u.voice=style.voice;u.pitch=style.pitch;u.rate=style.rate;
+  let done=false;const finish=()=>{if(done)return;done=true;if(DIALOGUE_TIMER){clearTimeout(DIALOGUE_TIMER);DIALOGUE_TIMER=null}resolve()};
+  u.onend=finish;u.onerror=finish;DIALOGUE_TIMER=setTimeout(finish,Math.max(9000,text.split(/\s+/).length*900));
+  try{speechSynthesis.speak(u)}catch(e){finish()}
+ });
+}
+function renderDialogue(routeArg){
+ const openExercise=!!(routeArg&&typeof routeArg==='object'&&routeArg.exercise);
+ const index=routeArg&&typeof routeArg==='object'?routeArg.index:routeArg;
+ const d=A1_DIALOGUES[Number(index)];if(!d){go('DIALOGUES','A1');return}
+ stopDialogueSession();title.textContent=d.title;crumb.textContent='A1 · المحادثات · '+d.arTitle;view.innerHTML='';
+ const controls=document.createElement('div');controls.className='dialogue-controls';
+ const listenBtn=btn('🔊 اسمع المحادثة كاملة','go',()=>playFullDialogue());
+ controls.append(listenBtn);view.append(controls);
+ const practicePanel=document.createElement('section');practicePanel.className='dialogue-practice-panel';practicePanel.hidden=true;view.append(practicePanel);
+ const sheet=document.createElement('section');sheet.className='dialogue-sheet';
+ const turns=[];
+ d.lines.forEach(([who,de,ar],lineIndex)=>{const turn=document.createElement('div');turn.className='dialogue-turn '+dialogueSpeakerClass(who);turn.dataset.line=String(lineIndex);const label=document.createElement('span');label.className='dialogue-speaker';label.textContent=d.speakers[who]||who;const german=document.createElement('div');german.className='dialogue-german';german.lang='de';german.textContent=de;const arabic=document.createElement('div');arabic.className='dialogue-translation';arabic.textContent=ar;turn.append(label,german,arabic);sheet.append(turn);turns.push(turn)});
+ view.append(sheet);
+ let selectedRole='',practiceToken=0;
+ const uniqueSpeakers=[...new Set(d.lines.map(line=>line[0]))];
+ function highlightLine(i,isUser=false){turns.forEach((el,j)=>{el.classList.toggle('dialogue-current',j===i);el.classList.toggle('dialogue-your-turn',j===i&&isUser)});if(turns[i])turns[i].scrollIntoView({behavior:'smooth',block:'nearest'})}
+ async function playFullDialogue(){
+  stopDialogueSession();const token=++DIALOGUE_SESSION_TOKEN;practicePanel.hidden=true;sheet.hidden=false;listenBtn.disabled=true;listenBtn.textContent='🔊 المحادثة شغّالة…';
+  for(let i=0;i<d.lines.length;i++){if(token!==DIALOGUE_SESSION_TOKEN)return;highlightLine(i,false);await speakDialogueLine(d.lines[i][1],d.lines[i][0],uniqueSpeakers.indexOf(d.lines[i][0]),token);if(token!==DIALOGUE_SESSION_TOKEN)return;await new Promise(r=>{DIALOGUE_TIMER=setTimeout(r,250)})}
+  if(token===DIALOGUE_SESSION_TOKEN){listenBtn.disabled=false;listenBtn.textContent='🔊 اسمع المحادثة مرة أخرى';turns.forEach(el=>el.classList.remove('dialogue-current','dialogue-your-turn'))}
+ }
+ function showRolePicker(){stopDialogueSession();sheet.hidden=true;practicePanel.hidden=false;practicePanel.innerHTML='';selectedRole='';
+  const h=document.createElement('h3');h.textContent='اختار الشخصية اللي عايز تمثّلها';practicePanel.append(h);
+  const grid=document.createElement('div');grid.className='dialogue-role-grid';
+  uniqueSpeakers.forEach(who=>{const b=btn('🎭 '+(d.speakers[who]||who),'dialogue-role-option',()=>{selectedRole=who;grid.querySelectorAll('button').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');startBtn.disabled=false});b.setAttribute('aria-pressed','false');grid.append(b)});
+  const note=document.createElement('p');note.className='feature-note';note.textContent='هتسمع الشخصيات الأخرى فقط. لما ييجي دورك هتظهر جملتك الألماني وحدها، من غير عرض باقي الحوار.';
+  const startBtn=btn('▶ ابدأ التمرين','go',()=>startPractice());startBtn.disabled=true;
+  practicePanel.append(grid,note,startBtn);
+ }
+ function startPractice(){
+  if(!selectedRole)return;stopDialogueSession();const token=++DIALOGUE_SESSION_TOKEN;practiceToken=token;practicePanel.innerHTML='';listenBtn.disabled=true;
+  sheet.hidden=true;
+  const h=document.createElement('h3');h.textContent='دورك: '+(d.speakers[selectedRole]||selectedRole);
+  const currentLine=document.createElement('div');currentLine.className='dialogue-user-line';currentLine.lang='de';currentLine.setAttribute('aria-live','polite');currentLine.hidden=true;
+  const status=document.createElement('div');status.className='dialogue-practice-status';status.setAttribute('aria-live','polite');status.textContent='بدأ التدريب…';
+  const actions=document.createElement('div');actions.className='dialogue-practice-actions';
+  const nextBtn=btn('كملت جملتي ✓','go',()=>advanceUser());const stopBtn=btn('⏹ إيقاف التدريب','go alt',()=>{stopDialogueSession();status.textContent='تم إيقاف التدريب.';nextBtn.disabled=true;stopBtn.disabled=true;listenBtn.disabled=false});
+  actions.append(nextBtn,stopBtn);practicePanel.append(h,currentLine,status,actions);practicePanel.hidden=false;
+  let pos=0,waiting=false;
+  function advanceUser(){if(token!==DIALOGUE_SESSION_TOKEN||!waiting)return;waiting=false;currentLine.hidden=true;if(DIALOGUE_TIMER){clearTimeout(DIALOGUE_TIMER);DIALOGUE_TIMER=null}if(DIALOGUE_RECOGNITION){try{DIALOGUE_RECOGNITION.onresult=null;DIALOGUE_RECOGNITION.onerror=null;DIALOGUE_RECOGNITION.onend=null;DIALOGUE_RECOGNITION.stop()}catch(e){}DIALOGUE_RECOGNITION=null}status.textContent='تمام! نكمل المحادثة…';setTimeout(()=>{if(token===DIALOGUE_SESSION_TOKEN)runNext()},350)}
+  async function runNext(){
+   if(token!==DIALOGUE_SESSION_TOKEN)return;
+   if(pos>=d.lines.length){currentLine.hidden=true;status.textContent='🎉 خلصت المحادثة! ممتاز. تقدر تعيد التدريب أو تختار محادثة تانية.';nextBtn.disabled=true;stopBtn.textContent='⏹ إنهاء التدريب';stopBtn.onclick=()=>{stopDialogueSession();practicePanel.hidden=true;listenBtn.disabled=false};listenBtn.disabled=false;
+    profile.dialoguesCompleted=[...new Set([...(profile.dialoguesCompleted||[]),d.title])];persistProfile();turns.forEach(el=>el.classList.remove('dialogue-current','dialogue-your-turn'));return}
+   const [who,de]=d.lines[pos];const current=pos++;
+   if(who!==selectedRole){currentLine.hidden=true;status.textContent=(d.speakers[who]||who)+' بيتكلم…';await speakDialogueLine(de,who,uniqueSpeakers.indexOf(who),token);if(token!==DIALOGUE_SESSION_TOKEN)return;DIALOGUE_TIMER=setTimeout(()=>{DIALOGUE_TIMER=null;runNext()},350);return}
+   waiting=true;currentLine.textContent=de;currentLine.hidden=false;status.textContent='🎙️ دورك دلوقتي! قول الجملة الظاهرة بالألماني.';nextBtn.disabled=false;
+   const SpeechRec=window.SpeechRecognition||window.webkitSpeechRecognition;
+   if(SpeechRec){try{const rec=new SpeechRec();DIALOGUE_RECOGNITION=rec;rec.lang='de-DE';rec.continuous=false;rec.interimResults=false;rec.maxAlternatives=1;rec.onresult=()=>{if(token!==DIALOGUE_SESSION_TOKEN||!waiting)return;status.textContent='سمعتك!';setTimeout(advanceUser,550)};rec.onerror=()=>{if(token!==DIALOGUE_SESSION_TOKEN)return;status.textContent='اتكلم في وقتك، أو اضغط «كملت جملتي» للمتابعة.'};rec.start();DIALOGUE_TIMER=setTimeout(()=>{if(token===DIALOGUE_SESSION_TOKEN&&waiting){status.textContent='انتهى وقت الجملة، نكمل…';DIALOGUE_TIMER=null;advanceUser()}},16000)}catch(e){fallbackUserWait(de)}}else fallbackUserWait(de);
+  }
+  function fallbackUserWait(line){status.textContent='🎙️ دورك! قول الجملة بصوتك. هتستنى شوية وبعدها تقدر تكمل بالزر.';const duration=Math.min(11000,Math.max(4500,line.split(/\s+/).length*650));DIALOGUE_TIMER=setTimeout(()=>{if(token===DIALOGUE_SESSION_TOKEN&&waiting){status.textContent='انتهى وقت الجملة، نكمل…';DIALOGUE_TIMER=null;advanceUser()}},duration)}
+  nextBtn.disabled=true;runNext();
+ }
+ if(openExercise)showRolePicker();
 }
 
+
+function renderDialogueReply(index){
+ const d=A1_DIALOGUES[Number(index)];if(!d){go("DIALOGUES","A1");return}
+ const allPairs=[];
+ A1_DIALOGUES.forEach((dialogue,di)=>dialogue.lines.forEach((line,j)=>{
+  if(/[?؟]/.test(line[1])&&dialogue.lines[j+1]&&dialogue.lines[j+1][0]!==line[0])allPairs.push({question:line[1],questionSpeaker:dialogue.speakers[line[0]]||line[0],answer:dialogue.lines[j+1][1],dialogueIndex:di,answerSpeaker:dialogue.speakers[dialogue.lines[j+1][0]]||dialogue.lines[j+1][0]});
+ }));
+ const pairs=d.lines.map((line,j)=>({line,j})).filter(x=>/[?؟]/.test(x.line[1])&&d.lines[x.j+1]&&d.lines[x.j+1][0]!==x.line[0]).map(x=>({question:x.line[1],questionSpeaker:d.speakers[x.line[0]]||x.line[0],answer:d.lines[x.j+1][1],dialogueIndex:Number(index),answerSpeaker:d.speakers[d.lines[x.j+1][0]]||d.lines[x.j+1][0]}));
+ if(!pairs.length){view.innerHTML='<div class="empty">مفيش أسئلة مناسبة للتدريب في المحادثة دي لسه.</div>';return}
+ title.textContent="الرد المناسب";crumb.textContent="المحادثات · "+d.title;
+ let questions=pairs.slice().sort(()=>Math.random()-.5).slice(0,10),idx=0,score=0,answered=false;
+ const box=document.createElement("section");box.className="dialogue-practice-panel";view.append(box);
+ function show(){
+  box.innerHTML="";answered=false;
+  if(idx>=questions.length){finishQuiz("A1","dialogue-reply",score,questions.length,null);const h=document.createElement("h2");h.textContent="خلصت التمرين! 🎉";const p=document.createElement("p");p.textContent=`نتيجتك: ${score} من ${questions.length}`;box.append(h,p,btn("إعادة التمرين","go",()=>go("DIALOGUE_REPLY",index)));return}
+  const item=questions[idx];const prog=document.createElement("p");prog.className="crumb";prog.textContent=`السؤال ${idx+1} من ${questions.length} · النتيجة ${score}`;
+  const heading=document.createElement("h3");heading.textContent="اسمع السؤال واختار الرد المناسب:";
+  const audio=btn("🔊 اسمع السؤال","go",()=>speak(item.question));audio.style.margin="8px 0 14px";
+  const speaker=document.createElement("p");speaker.className="feature-note";speaker.textContent="المتحدث: "+item.questionSpeaker;
+  const opts=document.createElement("div");opts.className="grid";
+  const distractors=allPairs.filter(x=>x.answer!==item.answer).sort(()=>Math.random()-.5).map(x=>x.answer).filter((v,j,a)=>a.indexOf(v)===j).slice(0,2);
+  const choices=[item.answer,...distractors];while(choices.length<3){const fallback=allPairs.map(x=>x.answer).find(x=>!choices.includes(x));if(!fallback)break;choices.push(fallback)}
+  choices.sort(()=>Math.random()-.5);const feedback=document.createElement("p");feedback.className="crumb";feedback.setAttribute("aria-live","polite");
+  choices.forEach(choice=>{const b=btn(choice,"proverb-quiz-option",()=>{if(answered)return;answered=true;[...opts.children].forEach(el=>{el.disabled=true;if(el.textContent===item.answer)el.classList.add("correct");else if(el===b)el.classList.add("wrong")});if(choice===item.answer){score++;feedback.textContent="صح! ده الرد المناسب 👏"}else feedback.textContent="مش ده الرد المناسب. الإجابة الصحيحة: "+item.answer;next.hidden=false});b.dir="ltr";b.style.textAlign="left";opts.append(b)});
+  const next=btn(idx+1<questions.length?"السؤال التالي ←":"شوف النتيجة","go",()=>{idx++;show()});next.hidden=true;
+  box.append(prog,heading,speaker,audio,opts,feedback,next);
+  setTimeout(()=>{if(box.contains(audio))speak(item.question)},180);
+ }
+ show();
+}
 
 function renderProverbGroups(){
  title.textContent="Deutsche Sprichwörter · الأمثال الشعبية";crumb.textContent="B2 · اختر مجموعة";
- view.append(btn("🧠 ابدأ تدريب الأمثال · اختار المثل المناسب للموقف","go proverb-training-start",()=>go("PQ","all")));
  const pg=document.createElement("div");pg.className="grid proverb-grid";
  PROVERB_GROUPS.forEach((group,i)=>{
   const savedCount=group.items.filter(item=>localStorage.getItem("saved-german-proverb-"+item.n)==="1").length;
@@ -1308,11 +1436,13 @@ function renderProverbGroups(){
  });
  view.append(pg)
 }
-function renderProverbQuiz(groupIndex){
+function renderProverbQuiz(routeArg){
+ const listenMode=!!(routeArg&&typeof routeArg==="object"&&routeArg.mode==="listen");
+ const groupIndex=routeArg&&typeof routeArg==="object"?routeArg.groupIndex:routeArg;
  const all=PROVERB_GROUPS.flatMap((g,gi)=>g.items.map(item=>({...item,groupIndex:gi})));
  const pool=groupIndex==="all"?all:(PROVERB_GROUPS[Number(groupIndex)]||{items:[]}).items.map(item=>({...item,groupIndex:Number(groupIndex)}));
  if(!pool.length){view.innerHTML='<div class="empty">مفيش أمثال متاحة للتدريب هنا.</div>';return}
- title.textContent="تدريب الأمثال";crumb.textContent=groupIndex==="all"?"كل الأمثال · اختر المثل المناسب للموقف":PROVERB_GROUPS[Number(groupIndex)].title+" · تدريب";
+ title.textContent=listenMode?"أنت سمعت إيه؟ · الأمثال":"تدريب الأمثال";crumb.textContent=groupIndex==="all"?(listenMode?"كل الأمثال · استمع واختر المثل نفسه":"كل الأمثال · اختر المثل المناسب للموقف"):((PROVERB_GROUPS[Number(groupIndex)]||{title:"كل الأمثال"}).title+" · تدريب");
  let questions=pool.slice().sort(()=>Math.random()-.5).slice(0,10),idx=0,score=0,answered=false;
  const box=document.createElement("div");box.className="proverb-item";view.append(box);
  function showQuestion(){
@@ -1320,18 +1450,22 @@ function renderProverbQuiz(groupIndex){
   if(idx>=questions.length){
    const h=document.createElement("h2");h.textContent="خلص التدريب! 🎉";
    const p=document.createElement("p");p.textContent=`نتيجتك: ${score} من ${questions.length}`;
-   box.append(h,p,btn("إعادة التدريب","go",()=>go("PQ",groupIndex)),btn("العودة إلى مجموعات الأمثال","go",()=>go("PG")));return
+   box.append(h,p,btn("إعادة التدريب","go",()=>go("PQ",listenMode?{mode:"listen",groupIndex}:groupIndex)),btn("العودة إلى مجموعات الأمثال","go",()=>go("PG")));return
   }
   const item=questions[idx];
   const progress=document.createElement("p");progress.className="crumb";progress.textContent=`السؤال ${idx+1} من ${questions.length} · النتيجة ${score}`;
-  const prompt=document.createElement("h3");prompt.textContent="اقرأ الموقف واختر المثل الألماني المناسب:";
+  const prompt=document.createElement("h3");prompt.textContent=listenMode?"اسمع المثل الألماني واختار المثل نفسه من الاختيارات:":"اقرأ الموقف واختر المثل الألماني المناسب:";
   const situation=document.createElement("p");situation.className="proverb-situation";situation.style.fontSize="17px";
-  // In the quiz, show only the situation, never the answer proverb itself.
-  let quizSituation=item.situation.replace(new RegExp(item.de.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"),"gi"),"");
-  quizSituation=quizSituation.replace(/[„“”«»]/g,"").replace(/\s{2,}/g," ").replace(/\s+([,.!?;:])/g,"$1");
-  quizSituation=quizSituation.replace(/(?:Sein|Ihre?|Ein|Der|Die)\s+(?:Freund(?:in)?|Mutter|Vater|Bruder|Schwester|Kollege|Kollegin|Lehrer|Lehrerin|Chef|Chefin|Vater|Mitarbeiter|Schüler|Lehrerin)?\s*(?:sagt|sagen|meint|denkt):?\s*[.!?]*/gi,"");
-  quizSituation=quizSituation.replace(/\s{2,}/g," ").replace(/\s+([,.!?;:])/g,"$1").replace(/([,:;])\s*[.!?]+/g,"$1").replace(/\s*[.!?]+\s*$/g,".").trim();
-  situation.textContent=quizSituation;
+  let audioButton=null;
+  if(listenMode){audioButton=btn("🔊 اسمع المثل مرة أخرى","go",()=>speak(item.de));audioButton.style.margin="8px 0 14px";}
+  else {
+   // In the situation quiz, show only the situation, never the answer proverb itself.
+   let quizSituation=item.situation.replace(new RegExp(item.de.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"),"gi"),"");
+   quizSituation=quizSituation.replace(/[„“”«»]/g,"").replace(/\s{2,}/g," ").replace(/\s+([,.!?;:])/g,"$1");
+   quizSituation=quizSituation.replace(/(?:Sein|Ihre?|Ein|Der|Die)\s+(?:Freund(?:in)?|Mutter|Vater|Bruder|Schwester|Kollege|Kollegin|Lehrer|Lehrerin|Chef|Chefin|Vater|Mitarbeiter|Schüler|Lehrerin)?\s*(?:sagt|sagen|meint|denkt):?\s*[.!?]*/gi,"");
+   quizSituation=quizSituation.replace(/\s{2,}/g," ").replace(/\s+([,.!?;:])/g,"$1").replace(/([,:;])\s*[.!?]+/g,"$1").replace(/\s*[.!?]+\s*$/g,".").trim();
+   situation.textContent=quizSituation;
+  }
   const opts=document.createElement("div");
   const wrong=all.filter(x=>x.n!==item.n).sort(()=>Math.random()-.5).slice(0,3);
   const choices=[item,...wrong].sort(()=>Math.random()-.5);
@@ -1345,7 +1479,7 @@ function renderProverbQuiz(groupIndex){
    });b.dir="ltr";b.style.textAlign="left";opts.append(b)
   });
   const next=btn("السؤال التالي ←","go",()=>{idx++;showQuestion()});next.hidden=true;
-  box.append(progress,prompt,situation,opts,feedback,next)
+  if(listenMode){box.append(progress,prompt,audioButton,opts,feedback,next);setTimeout(()=>{if(box.contains(audioButton))speak(item.de)},180)}else box.append(progress,prompt,situation,opts,feedback,next)
  }
  showQuestion();
 }
@@ -1427,23 +1561,33 @@ function runQuiz(l,mode,learned,pool){if(mode==="pl")return runPlural(l,learned)
  const qs=sh(mode==="art"?learned.filter(w=>"mfn".includes(w.c)):learned).slice(0,QN);let n=0,score=0;
  function show(){
   view.innerHTML="";
-  if(!qs.length){view.innerHTML='<div class="empty">علّم بـ ✓ على أسماء (مذكر أو مؤنث أو محايد) الأول عشان تتدرب على الأدوات.</div>';view.append(btn("رجوع","go alt",()=>renderQuiz(l)));return}
+  if(!qs.length){view.innerHTML='<div class="empty">مفيش كلمات متاحة للتمرين ده في الكلمات اللي حفظتها لسه.</div>';view.append(btn("رجوع","go alt",()=>renderQuiz(l)));return}
   if(n>=qs.length){finishQuiz(l,mode,score,qs.length,EXAM);view.innerHTML=`<div class="empty"><h2>النتيجة: ${score} من ${qs.length}</h2></div>`;view.append(btn("إعادة التمرين","go",()=>runQuiz(l,mode,learned,pool)),btn("نوع تمرين تاني","go alt",()=>renderQuiz(l)));return}
   const w=qs[n],noun=w.de.replace(/^(der|die|das) /,"");
   const same=pool.filter(x=>x.c===w.c),P=same.length>=4?same:pool;
-  let q,ans,all;
-  if(mode==="ma"){q=w.de;ans=w.ar;all=P.map(x=>x.ar)}
+  let q,ans,all,reverse=false;
+  if(mode==="translate"){
+   reverse=n%2===1;
+   if(reverse){q=w.ar;ans=w.de;all=pool.map(x=>x.de)}else{q=w.de;ans=w.ar;all=pool.map(x=>x.ar)}
+  }else if(mode==="listen"){q="";ans=w.ar;all=pool.map(x=>x.ar)}
+  else if(mode==="ma"){q=w.de;ans=w.ar;all=P.map(x=>x.ar)}
   else if(mode==="art"){q=noun;ans=art[w.c];all=["der","die","das"]}
   else{q=w.ar;ans=w.de;all=P.map(x=>x.de)}
   const ch=mode==="art"?all:sh([ans,...sh([...new Set(all)].filter(o=>o!==ans)).slice(0,3)]);
   let done=0;
-  view.innerHTML=`<p class="crumb">سؤال ${n+1} من ${qs.length}</p><div class="qbox ${mode==="am"?"":"de"}">${q}</div>`;
+  const prompt=document.createElement("p");prompt.className="crumb";prompt.textContent=mode==="listen"?`أنت سمعت إيه؟ · سؤال ${n+1} من ${qs.length}`:mode==="translate"?(reverse?`ترجم للألماني · سؤال ${n+1} من ${qs.length}`:`ترجم للعربي · سؤال ${n+1} من ${qs.length}`):`سؤال ${n+1} من ${qs.length}`;view.append(prompt);
+  if(mode==="listen"){
+   const audio=btn("🔊 اسمع الكلمة الألمانية","go",()=>speak(w.de,w.c));audio.style.margin="8px 0 14px";view.append(audio);
+   // Play once when entering the question; the button remains available for replay.
+   setTimeout(()=>{if(view.contains(audio)&&n<qs.length)speak(w.de,w.c)},180);
+  }else{const qbox=document.createElement("div");qbox.className="qbox "+(mode==="translate"&&!reverse||mode!=="translate"&&mode!=="art"?"de":"");qbox.textContent=q;view.append(qbox)}
   const g=document.createElement("div");g.className="grid cats";
   ch.forEach(c=>{const b=btn(c,"box",()=>{if(done)return;done=1;
-   if(c===ans){score++;addReviewWord(w,false);b.classList.add("ok")}else{addReviewWord(w,true);b.classList.add("bad");[...g.children].find(x=>x.textContent===ans).classList.add("ok")}
+   if(c===ans){score++;addReviewWord(w,false);b.classList.add("ok")}else{addReviewWord(w,true);b.classList.add("bad");[...g.children].find(x=>x.textContent===ans)?.classList.add("ok")}
    view.append(btn(n+1<qs.length?"التالي":"شوف النتيجة","go",()=>{n++;show()}))});
-   if(mode!=="ma")b.style.direction="ltr";g.append(b)});
-  view.append(g)}
+   if((mode==="translate"&&reverse)||mode!=="translate"&&mode!=="ma"&&mode!=="listen")b.style.direction="ltr";g.append(b)});
+  view.append(g)
+ }
  show()}
 const ICON='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 4V5L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>';
 /* m = رجل بالغ، f = شابة، n = طفل، وباقي الأقسام صوت عادي */
@@ -1496,7 +1640,7 @@ function render(){
  /* ألغِ أي تحميل اجتماعي معلّق عند مغادرة صفحة الأصدقاء، حتى لا تعود بطاقات الأصدقاء/التحديات للظهور فوق الصفحة الرئيسية. */
  if(st[0]!=="SOCIAL")socialRenderToken++;
  view.innerHTML="";const homeView=st.length===0;document.getElementById("dashboard").hidden=!homeView;document.getElementById("social").hidden=!homeView;crumb.style.display="";document.getElementById("hdr").classList.toggle("page-view",!homeView&&!WELCOME);document.getElementById("hdr").classList.toggle("home-view",homeView||WELCOME);if(WELCOME){document.getElementById("hdr").classList.remove("page-view");renderWelcome();return}
- const[l,i,c,d]=st;stopRead();
+ const[l,i,c,d]=st;stopDialogueSession();stopRead();
  document.getElementById("brand-note").hidden=st.length!==0;
  back.hidden=!st.length;
  if(l==="S"){renderSpeak(i,c,d);return}
@@ -1506,6 +1650,7 @@ function render(){
  if(l==="G"){renderLevelGoals(i);return}
  if(l==="DIALOGUES"){renderDialogues(i||"A1");return}
  if(l==="DIALOGUE"){renderDialogue(i);return}
+ if(l==="DIALOGUE_REPLY"){renderDialogueReply(i);return}
  if(l==="D"){renderDashboard();return}
  if(l==="STORE"){renderStore();return}
  if(l==="ACHIEVEMENTS"){renderAchievements();return}
