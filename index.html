@@ -1301,7 +1301,33 @@ const A1_DIALOGUES=[
   ["Saeed","Gut, ich nehme sie. Kann ich mit Karte bezahlen?","حسنًا، سأشتريها. هل يمكنني الدفع بالبطاقة؟"],
   ["Verkäufer","Ja, natürlich.","نعم، بالتأكيد."],
   ["Saeed","Vielen Dank! Auf Wiedersehen!","شكرًا جزيلًا! إلى اللقاء!"],
-  ["Verkäufer","Danke schön! Auf Wiedersehen!","شكرًا جزيلًا! إلى اللقاء!"]] }
+  ["Verkäufer","Danke schön! Auf Wiedersehen!","شكرًا جزيلًا! إلى اللقاء!"]] },
+ {title:"Das Wetter",arTitle:"الطقس",icon:"🌦️",speakers:{Saeed:"Saeed",Walid:"Walid"},lines:[
+  ["Saeed","Hallo, Walid! Wie ist das Wetter heute?","أهلًا يا وليد! إيه أخبار الجو النهارده؟"],
+  ["Walid","Hallo, Saeed! Heute ist es sonnig und warm.","أهلًا يا سعيد! النهارده الجو مشمس ودافئ."],
+  ["Saeed","Wirklich? Gestern war es sehr kalt.","بجد؟ إمبارح كان الجو برد جدًا."],
+  ["Walid","Ja, aber heute sind es 25 Grad.","أيوه، بس النهارده درجة الحرارة 25 درجة."],
+  ["Saeed","Super! Regnet es morgen?","رائع! هو بكرة هتمطر؟"],
+  ["Walid","Ich glaube nicht. Vielleicht ist es windig.","مش أعتقد، ممكن يكون فيه رياح."],
+  ["Saeed","Dann können wir morgen im Park spazieren gehen.","يبقى ممكن نتمشى بكرة في الحديقة."],
+  ["Walid","Gute Idee! Hoffentlich ist das Wetter schön.","فكرة حلوة! يا رب الجو يكون جميل."],
+  ["Saeed","Ja, aber am Abend ist es vielleicht kalt.","أيوه، بس ممكن الجو يكون برد بالليل."],
+  ["Walid","Kein Problem! Ich nehme eine Jacke mit.","مفيش مشكلة! هاخد معايا جاكيت."],
+  ["Saeed","Super! Bis morgen! Tschüss!","تمام! أشوفك بكرة! سلام!"],
+  ["Walid","Bis morgen! Tschüss!","أشوفك بكرة! سلام!"]] },
+ {title:"Das Wochenende",arTitle:"عطلة نهاية الأسبوع",icon:"🏖️",speakers:{Saeed:"Saeed",Walid:"Walid"},lines:[
+  ["Saeed","Hallo, Walid! Was machst du am Wochenende?","أهلًا يا وليد! هتعمل إيه في الويك إند؟"],
+  ["Walid","Hallo, Saeed! Ich weiß noch nicht. Hast du eine Idee?","أهلًا يا سعيد! لسه معرفش. عندك فكرة؟"],
+  ["Saeed","Ja! Wir können ins Kino gehen. Hast du Lust?","أيوه! ممكن نروح السينما. تحب؟"],
+  ["Walid","Ja, gern! Aber ich möchte auch Fußball spielen.","أيوه، بكل سرور! بس أنا كمان عايز ألعب كورة."],
+  ["Saeed","Okay! Wir spielen am Samstag Fußball und gehen am Sonntag ins Kino.","تمام! نلعب كورة يوم السبت ونروح السينما يوم الأحد."],
+  ["Walid","Super! Wo treffen wir uns?","رائع! هنتقابل فين؟"],
+  ["Saeed","Wir treffen uns um zehn Uhr vor dem Kino.","هنتقابل الساعة عشرة قدام السينما."],
+  ["Walid","Nein, am Samstag spielen wir Fußball. Wir treffen uns am Sportplatz.","لأ، إحنا يوم السبت هنلعب كورة. نتقابل في الملعب."],
+  ["Saeed","Ach ja, stimmt! Um zehn Uhr?","آه صح! الساعة عشرة؟"],
+  ["Walid","Ja, genau! Und am Sonntag gehen wir zusammen ins Kino.","أيوه، بالضبط! ويوم الأحد نروح السينما مع بعض."],
+  ["Saeed","Gute Idee! Bis Samstag!","فكرة حلوة! أشوفك يوم السبت!"],
+  ["Walid","Bis Samstag! Tschüss!","أشوفك يوم السبت! سلام!"]] }
 ];
 function dialogueSpeakerClass(s){return ({Saeed:"speaker-saeed",Walid:"speaker-walid",Kellner:"speaker-job",Mitarbeiter:"speaker-job",Kassierer:"speaker-job",Arzt:"speaker-job",Verkäufer:"speaker-job"})[s]||"speaker-saeed"}
 function renderDialogues(lv){
