@@ -94,6 +94,20 @@ h1{margin:0;font-size:clamp(26px,5vw,38px);font-weight:900;flex:1}.brand-stack{f
 
 .tile-bottom>*{min-width:0}
 @media(max-width:520px){.lessons{grid-template-columns:repeat(2,minmax(0,1fr))}.tile{height:154px;min-height:154px}.tile .t1{font-size:15px;padding:8px 7px;min-height:0}.tile .t3{font-size:12px}.tile .t2{font-size:11px}}
+
+/* Grammatik A1: interaktive Übungen */
+.grammar-intro{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px}
+.grammar-groups{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.grammar-group{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:16px;text-align:right;color:var(--ink);font:inherit;cursor:pointer}
+.grammar-group strong{display:block;font-size:18px}.grammar-group small{color:var(--mute)}
+.grammar-progress{height:8px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:10px}.grammar-progress i{display:block;height:100%;background:var(--primary-dark)}
+.grammar-question{background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:20px;margin-bottom:14px}
+.grammar-qtitle{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}
+.grammar-prompt{font-size:22px;font-weight:800;direction:ltr;text-align:center;margin:14px 0;overflow-wrap:anywhere}
+.grammar-options{display:grid;gap:10px}.grammar-option{width:100%;padding:12px 14px;text-align:left;direction:ltr;background:var(--card);border:1.5px solid var(--line);border-radius:10px;color:var(--ink);font:600 17px Cairo,sans-serif;cursor:pointer}.grammar-option:disabled{opacity:.9}.grammar-option.correct{background:#d9f5e6;border-color:#159455;color:#125b36}.grammar-option.wrong{background:#ffe0e3;border-color:#d62839;color:#8e1622}
+.grammar-input{width:100%;padding:12px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:17px Cairo,sans-serif;direction:ltr;text-align:left}.grammar-check{display:block;width:auto;min-width:120px;margin:8px auto 0;padding:5px 13px;border:0;border-radius:7px;background:var(--primary-dark);color:#fff;font:600 13px Cairo,sans-serif;cursor:pointer}.grammar-check:disabled{opacity:.65}.grammar-feedback{margin-top:12px;font-weight:800;text-align:center}.grammar-audio{display:flex;justify-content:center;margin:12px 0}.grammar-audio button{border:0;border-radius:12px;padding:12px 20px;background:var(--primary-dark);color:white;font:700 16px Cairo,sans-serif;cursor:pointer}.grammar-token-row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;direction:ltr;margin:14px 0}.grammar-token{padding:8px 12px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--ink);font:600 16px Cairo,sans-serif;cursor:pointer}.grammar-token.used{opacity:.35}.grammar-answer-line{min-height:48px;border:1.5px dashed var(--line);border-radius:10px;padding:8px;direction:ltr;text-align:left;margin:10px 0}.grammar-lesson-tile .t1{color:#7544C5;font-weight:700}.grammar-lesson-tile .num{color:#7544C5;font-size:16px;font-weight:700}
+@media(max-width:520px){.grammar-prompt{font-size:19px}.grammar-question{padding:14px}}
+
 .sec{margin:34px 0 12px;font-size:22px;font-weight:900}
 .topic{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:6px;text-align:start}
 .topic .tt{direction:ltr;font-size:19px;font-weight:700}
@@ -1061,7 +1075,7 @@ async function buyOrEquipShopItem(id,button){
  }catch(e){console.error("Shop transaction failed",e);button.disabled=false;button.textContent=oldText;if(e.message==="NOT_ENOUGH_COINS")alert("رصيد عملات المتجر غير كافٍ.");else alert("الشراء لم يكتمل، ولم يتم خصم العملات. تأكد من اتصال الإنترنت وقواعد Firestore ثم حاول مرة أخرى.")}
 }
 function persistProfile(){
- const data={learned:[...LR],xp:profile.xp||0,wordXP:profile.wordXP||[],completedLessons:profile.completedLessons||[],perfectTests:profile.perfectTests||[],studyDays:profile.studyDays||{},dailyWords:profile.dailyWords||{},examResults:profile.examResults||[],reviewWords:profile.reviewWords||[],placementResults:profile.placementResults||[],earnedBadges:profile.earnedBadges||[],achievementWeekKey:profile.achievementWeekKey||currentAchievementWeekKey(),weeklyAchievementStats:profile.weeklyAchievementStats||freshWeeklyAchievementStats(),dailyAchievementKey:profile.dailyAchievementKey||currentAchievementDayKey(),dailyAchievementStats:profile.dailyAchievementStats||freshDailyAchievementStats(),earnedDailyAchievements:profile.earnedDailyAchievements||[],dialoguesCompleted:profile.dialoguesCompleted||[],leaguePoints:profile.leaguePoints||0,leagueWeekKey:profile.leagueWeekKey||currentAchievementWeekKey(),leaguePreviousPoints:profile.leaguePreviousPoints||0,leaguePreviousWeekKey:profile.leaguePreviousWeekKey||""};
+ const data={learned:[...LR],xp:profile.xp||0,wordXP:profile.wordXP||[],completedLessons:profile.completedLessons||[],perfectTests:profile.perfectTests||[],studyDays:profile.studyDays||{},dailyWords:profile.dailyWords||{},examResults:profile.examResults||[],reviewWords:profile.reviewWords||[],placementResults:profile.placementResults||[],earnedBadges:profile.earnedBadges||[],achievementWeekKey:profile.achievementWeekKey||currentAchievementWeekKey(),weeklyAchievementStats:profile.weeklyAchievementStats||freshWeeklyAchievementStats(),dailyAchievementKey:profile.dailyAchievementKey||currentAchievementDayKey(),dailyAchievementStats:profile.dailyAchievementStats||freshDailyAchievementStats(),earnedDailyAchievements:profile.earnedDailyAchievements||[],dialoguesCompleted:profile.dialoguesCompleted||[],grammarCompleted:profile.grammarCompleted||[],grammarResults:profile.grammarResults||[],leaguePoints:profile.leaguePoints||0,leagueWeekKey:profile.leagueWeekKey||currentAchievementWeekKey(),leaguePreviousPoints:profile.leaguePreviousPoints||0,leaguePreviousWeekKey:profile.leaguePreviousWeekKey||""};
  try{localStorage.setItem("de-learned",JSON.stringify(data.learned));localStorage.setItem(PROFILE_KEY,JSON.stringify({...profile}))}catch(e){}
  if(fbUser&&db){db.collection("users").doc(fbUser.uid).set(data,{merge:true}).catch(e=>console.error("Cloud save failed",e));syncPublicProfile();}
 }
@@ -1206,12 +1220,232 @@ function renderSpeakLevels(){
  Object.keys(LESSONS).forEach(k=>g.append(btn(`<span class="lvl">${k}</span><small>${LEVEL_NAMES[k]}</small>`,"box lv"+k,()=>go("G",k))));
  view.append(g);
 }
+const GRAMMAR_LESSON_TITLES=["Guten Tag!","Freunde, Kollegen und ich","In Hamburg","Guten Appetit!","Alltag und Familie","Zeit mit Freunden","Arbeitsalltag","Fit und gesund","Meine Wohnung","Studium und Beruf","Die Jacke gefällt mir!","Ab in den Urlaub!"];
+const GRAMMAR_META=[
+ {focus:"Personalpronomen · sein · heißen · kommen · W-Fragen",mcq:[
+ ["Ich ___ Saeed.","heiße","heißt","heißen"],["Wie ___ du?","heißt","heiße","heißen"],["Er ___ aus Deutschland.","kommt","komme","kommen"],["Wir ___ Deutsch.","lernen","lernt","lernst"],["Woher ___ Sie?","kommen","kommst","kommt"],["___ heißt du?","Wie","Wer","Woher"],["Das ___ Anna.","ist","bin","bist"],["Ihr ___ sehr nett.","seid","sind","ist"],["___ wohnst du?","Wo","Wer","Wie viel"],["Sie (هي) ___ Englisch.","spricht","sprechen","sprecht"]],
+ fill:[["Ich ___ (kommen) aus Ägypten.","komme"],["Du ___ (sein) Student.","bist"],["Er ___ (heißen) Max.","heißt"],["Wir ___ (sein) Freunde.","sind"],["Ihr ___ (kommen) aus Berlin.","kommt"],["Frau Müller, woher ___ Sie? (kommen)","kommen"],["Anna und Lisa ___ (lernen) Deutsch.","lernen"],["Ich bin Ali. Und wer ___ du? (sein)","bist"],["Paul wohnt in München. ___ kommt aus Deutschland.","Er"],["Maria ist Studentin. ___ lernt Deutsch.","Sie"]],
+ form:[["du / Wie / heißen","Wie heißt du?"],["kommen / Woher / Sie","Woher kommen Sie?"],["du / Wo / wohnen","Wo wohnst du?"],["er / Wie / heißen","Wie heißt er?"],["Sie / Deutsch / sprechen","Sprechen Sie Deutsch?"]],
+ order:[["aus Ägypten / komme / Ich","Ich komme aus Ägypten."],["in Berlin / wohnt / Er","Er wohnt in Berlin."],["Deutsch / wir / lernen","Wir lernen Deutsch."],["ist / Das / Anna","Das ist Anna."],["heißen / Wie / Sie","Wie heißen Sie?"]],
+ listen:[["Ich komme aus Ägypten.","Woher kommt die Person?","Aus Ägypten.",["Aus Deutschland.","Aus Österreich."]],["Ich heiße Anna.","Wie heißt die Person?","Anna.",["Maria.","Lisa."]],["Ich wohne in Berlin.","Wo wohnt die Person?","In Berlin.",["In Hamburg.","In München."]],["Er spricht Deutsch.","Welche Sprache spricht er?","Deutsch.",["Englisch.","Arabisch."]],["Wir lernen Deutsch.","Was lernen die Personen?","Deutsch.",["Englisch.","Französisch."]]]},
+ {focus:"Personalpronomen · Präsens · Satzstellung",mcq:[["Ich ___ in Kairo.","wohne","wohnt","wohnst"],["Du ___ Fußball.","spielst","spiele","spielt"],["Meine Freunde ___ sehr nett.","sind","ist","seid"],["Wir ___ heute zusammen.","lernen","lernt","lernst"],["Er ___ bei Siemens.","arbeitet","arbeiten","arbeitest"],["___ ihr aus Ägypten?","Kommt","Kommen","Kommst"],["Mona und Ali ___ Deutsch.","lernen","lernt","lernst"],["Du ___ einen Bruder.","hast","hat","habe"],["Paul und ich ___ Freunde.","sind","seid","ist"],["Was ___ du gern?","machst","macht","mache"]],fill:[["Ich ___ in Hamburg. (wohnen)","wohne"],["Du ___ gern Fußball. (spielen)","spielst"],["Er ___ heute. (arbeiten)","arbeitet"],["Wir ___ zusammen. (lernen)","lernen"],["Ihr ___ sehr gut Deutsch. (sprechen)","sprecht"],["Meine Freunde ___ aus Berlin. (kommen)","kommen"],["Sie (هي) ___ in einer Firma. (arbeiten)","arbeitet"],["Ich ___ einen Bruder. (haben)","habe"],["Du ___ sehr nett. (sein)","bist"],["Er ___ Max. (heißen)","heißt"]],form:[["du / Was / machen","Was machst du?"],["ihr / Wo / wohnen","Wo wohnt ihr?"],["gern / du / spielst / Fußball","Spielst du gern Fußball?"],["arbeiten / Wo / Sie","Wo arbeiten Sie?"],["Deutsch / lernen / sie","Lernen sie Deutsch?"]],order:[["heute / Ich / arbeite","Ich arbeite heute."],["gern / Fußball / spielt / Er","Er spielt gern Fußball."],["in Hamburg / wohnen / Wir","Wir wohnen in Hamburg."],["Deutsch / Meine Freunde / lernen","Meine Freunde lernen Deutsch."],["am Montag / arbeitet / Sie","Sie arbeitet am Montag."]],listen:[["Ich arbeite in einem Büro.","Wo arbeitet die Person?","In einem Büro.",["In einer Schule.","In einem Hotel."]],["Wir spielen gern Fußball.","Was spielen die Personen gern?","Fußball.",["Tennis.","Basketball."]],["Er wohnt in Hamburg.","Wo wohnt er?","In Hamburg.",["In Berlin.","In Köln."]],["Sie lernt Deutsch.","Was lernt sie?","Deutsch.",["Englisch.","Spanisch."]],["Ich habe zwei Brüder.","Wie viele Brüder hat die Person?","Zwei.",["Einen.","Drei."]]]},
+ {focus:"Länder · Sprachen · Fragen · nicht/kein",mcq:[["Ich komme ___ Ägypten.","aus","in","am"],["Er wohnt ___ Berlin.","in","aus","nach"],["Sprichst du Deutsch? – Ja, ich ___.","spreche","spricht","sprechen"],["Ich spreche ___ Englisch.","kein","nicht","keine"],["Woher ___ du?","kommst","kommt","kommen"],["Sie kommt ___ der Türkei.","aus","in","am"],["Wir wohnen ___ Deutschland.","in","aus","von"],["Welche Sprache ___ du?","sprichst","spreche","spricht"],["Er kommt nicht aus Wien, ___ aus Graz.","sondern","aber","oder"],["Ich ___ aus Ägypten.","komme","kommt","kommen"]],fill:[["Ich komme ___ Ägypten.","aus"],["Wir wohnen ___ Deutschland.","in"],["Du ___ Deutsch. (sprechen)","sprichst"],["Er ___ aus Österreich. (kommen)","kommt"],["Ich spreche ___ Französisch. (nicht)","nicht"],["Woher ___ Sie? (kommen)","kommen"],["Mona ___ in Hamburg. (wohnen)","wohnt"],["Welche Sprache ___ ihr? (sprechen)","sprecht"],["Ali kommt ___ Kairo. (aus)","aus"],["Sie wohnen ___ Berlin. (in)","in"]],form:[["du / Woher / kommen","Woher kommst du?"],["Sie / Wo / wohnen","Wo wohnen Sie?"],["du / Welche Sprache / sprechen","Welche Sprache sprichst du?"],["ihr / aus Ägypten / kommen","Kommt ihr aus Ägypten?"],["Deutsch / Sie / sprechen","Sprechen Sie Deutsch?"]],order:[["aus Ägypten / kommt / Er","Er kommt aus Ägypten."],["in Berlin / wohnen / Wir","Wir wohnen in Berlin."],["spreche / Ich / Arabisch","Ich spreche Arabisch."],["nicht / Sie / aus Deutschland / kommt","Sie kommt nicht aus Deutschland."],["Woher / ihr / kommt","Woher kommt ihr?"]],listen:[["Ich komme aus Kairo.","Woher kommt die Person?","Aus Kairo.",["Aus Berlin.","Aus Wien."]],["Sie spricht Arabisch und Deutsch.","Welche Sprachen spricht sie?","Arabisch und Deutsch.",["Nur Deutsch.","Englisch und Französisch."]],["Wir wohnen in Deutschland.","Wo wohnen die Personen?","In Deutschland.",["In Ägypten.","In Österreich."]],["Er kommt aus der Türkei.","Woher kommt er?","Aus der Türkei.",["Aus Griechenland.","Aus Ägypten."]],["Ich spreche kein Spanisch.","Spricht die Person Spanisch?","Nein.",["Ja.","Nur ein bisschen."]]]},
+ {focus:"Essen und Trinken · Artikel · mögen · möchten",mcq:[["Ich esse ___ Apfel.","einen","ein","eine"],["Sie trinkt ___ Wasser.","das","den","die"],["Ich ___ gern Pizza.","esse","isst","essen"],["Möchtest du ___ Kaffee?","einen","ein","eine"],["Wir ___ Salat.","essen","isst","esst"],["Er ___ Tee.","trinkt","trinke","trinken"],["Ich mag ___ Banane.","die","der","das"],["Was möchtest du ___?","trinken","trinkst","trinkt"],["Ich nehme ___ Suppe.","eine","einen","ein"],["___ Guten Appetit!","Dann","Also","—"]],fill:[["Ich ___ gern Brot. (essen)","esse"],["Du ___ Wasser. (trinken)","trinkst"],["Er ___ einen Tee. (möchten)","möchte"],["Wir ___ Pizza. (essen)","essen"],["Ich nehme ___ Apfel. (ein)","einen"],["Sie trinkt ___ Cola. (eine)","eine"],["Was möchtest du ___? (essen)","essen"],["Ich ___ gern Kaffee. (trinken)","trinke"],["Ihr ___ gern Salat. (essen)","esst"],["Ali ___ einen Hamburger. (nehmen)","nimmt"]],form:[["du / Was / essen / gern","Was isst du gern?"],["möchten / Sie / was / trinken","Was möchten Sie trinken?"],["du / einen Tee / möchtest","Möchtest du einen Tee?"],["kostet / Wie viel / das","Wie viel kostet das?"],["ich / eine Pizza / nehme","Ich nehme eine Pizza."]],order:[["gern / Ich / Kaffee / trinke","Ich trinke gern Kaffee."],["einen Salat / möchte / Er","Er möchte einen Salat."],["isst / Was / du","Was isst du?"],["Wasser / trinken / Wir","Wir trinken Wasser."],["eine Suppe / nehme / Ich","Ich nehme eine Suppe."]],listen:[["Ich möchte einen Kaffee.","Was möchte die Person?","Einen Kaffee.",["Einen Tee.","Eine Cola."]],["Wir essen Pizza.","Was essen die Personen?","Pizza.",["Salat.","Suppe."]],["Sie trinkt Wasser.","Was trinkt sie?","Wasser.",["Milch.","Saft."]],["Ich nehme eine Suppe.","Was nimmt die Person?","Eine Suppe.",["Einen Salat.","Eine Pizza."]],["Er isst einen Apfel.","Was isst er?","Einen Apfel.",["Eine Banane.","Ein Brot."]]]}
+];
+// Die folgenden Lektionen verwenden dieselben A1-Grammatikformate mit thematisch passenden Beispielen.
+const GRAMMAR_EXTRA_META=[
+ {focus:"Familie · Possessivartikel · Plural",base:"Familie",words:["Mutter","Vater","Bruder","Schwester","Kinder"],sentences:[["Das ist ___ Mutter.","meine","mein","meinen"],["Ali hat zwei ___.","Brüder","Bruder","Bruders"],["___ Vater heißt Omar.","Mein","Meine","Meinen"],["Sara und Lina sind ___.","Schwestern","Schwester","Schwesterin"],["Das sind meine ___.","Eltern","Elter","Elterns"]]},
+ {focus:"Freizeit · Uhrzeit · trennbare Verben",base:"Freizeit",words:["Fußball","Kino","Freunde","Musik","Wochenende"],sentences:[["Ich ___ am Samstag aus. (gehen)","gehe","geht","gehst"],["Er ___ um acht Uhr ___. (aufstehen)","steht / auf","stehen / auf","aufsteht"],["Wir ___ gern Musik. (hören)","hören","hört","hörst"],["Wann ___ du ins Kino? (gehen)","gehst","geht","gehen"],["Am Wochenende ___ ich meine Freunde. (treffen)","treffe","triffst","trifft"]]},
+ {focus:"Arbeit · Modalverben · Satzbau",base:"Arbeit",words:["Büro","Chef","Kollegen","arbeiten","müssen"],sentences:[["Ich ___ heute arbeiten. (müssen)","muss","musst","müssen"],["Er ___ gut kochen. (können)","kann","kannst","können"],["Wir ___ um acht Uhr anfangen. (müssen)","müssen","muss","müsst"],["Du ___ heute nicht arbeiten. (müssen)","musst","muss","müssen"],["Sie ___ im Büro arbeiten. (wollen)","will","willst","wollt"]]},
+ {focus:"Körper · Gesundheit · Imperativ",base:"Gesundheit",words:["Arzt","Kopf","Wasser","Sport","gesund"],sentences:[["Du ___ viel Wasser trinken. (sollen)","sollst","soll","sollt"],["___ Sie bitte langsam! (sprechen)","Sprechen","Sprich","Sprecht"],["Ich habe ___ Kopfweh.","—","einen","eine"],["Er ___ zum Arzt gehen. (müssen)","muss","musst","müssen"],["___ mehr Sport! (machen, du)","Mach","Macht","Machen"]]},
+ {focus:"Wohnung · Möbel · Wechselpräpositionen",base:"Wohnung",words:["Zimmer","Tisch","Stuhl","Küche","Wohnung"],sentences:[["Das Buch liegt ___ dem Tisch.","auf","aus","nach"],["Der Stuhl steht ___ der Küche.","in","aus","von"],["Die Lampe ist ___ dem Tisch.","über","durch","nach"],["Wir wohnen ___ einer Wohnung.","in","aus","an"],["Das Sofa steht ___ Wohnzimmer.","im","ins","am"]]},
+ {focus:"Studium · Berufe · können und müssen",base:"Studium",words:["Universität","Student","lernen","Beruf","Prüfung"],sentences:[["Ich ___ Deutsch studieren. (möchten)","möchte","möchtest","möchten"],["Wir ___ für die Prüfung lernen. (müssen)","müssen","muss","müsst"],["Er ___ sehr gut Deutsch sprechen. (können)","kann","kannst","können"],["Sie ist ___ Studentin.","eine","ein","einen"],["Was ___ du von Beruf? (sein)","bist","ist","bin"]]},
+ {focus:"Kleidung · Akkusativ · gefallen",base:"Kleidung",words:["Jacke","Hose","Schuhe","Pullover","Kleid"],sentences:[["Die Jacke gefällt ___. (ich)","mir","mich","mein"],["Ich kaufe ___ Pullover.","einen","ein","eine"],["Die Schuhe ___ sehr schön.","sind","ist","seid"],["Wie findest du ___ Kleid?","das","der","den"],["Mir ___ die Jacke. (gefallen)","gefällt","gefallen","gefallt"]]},
+ {focus:"Reisen · Perfekt-Einstieg · Verkehrsmittel",base:"Reise",words:["Zug","Flugzeug","Hotel","Urlaub","fahren"],sentences:[["Ich fahre ___ Berlin.","nach","aus","bei"],["Wir fahren mit ___ Zug.","dem","den","der"],["Er ___ nach Deutschland gefahren.","ist","hat","sein"],["Ich habe ein Hotel ___. (buchen)","gebucht","gebuchen","buchte"],["Wann fährt der Zug ___?","ab","an","aus"]]}
+];
+function grammarEscape(s){return String(s).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}
+function grammarShuffle(a){const out=a.slice();for(let i=out.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[out[i],out[j]]=[out[j],out[i]]}return out}
+function grammarLessonData(index){
+ const meta=GRAMMAR_META[index]||null;
+ if(index===0){
+  const mcq=meta.mcq.map((q,i)=>({type:'choice',prompt:q[0],answer:q[1],options:[q[1],q[2],q[3]],explain:q[1]}));
+  const fill=meta.fill.map(q=>({type:'fill',prompt:q[0],answer:q[1]}));
+  const form=meta.form.map(q=>({type:'order',prompt:'Bilden Sie eine Frage aus diesen Wörtern:',tokens:grammarShuffle(q[1].replace(/[.!?]/g,'').split(/\s+/)),answer:q[1]}));
+  const order=meta.order.map(q=>({type:'order',prompt:'Ordnen Sie die Wörter:',tokens:q[0].split(' / '),answer:q[1]}));
+  const listen=meta.listen.map(q=>({type:'listen',audio:q[0],prompt:q[1],answer:q[2],options:[q[2],...q[3]]}));
+  // Every test has 4 multiple-choice, 2 ordering, 2 written, and 2 listening questions.
+  const orderBank=order.concat(form);
+  const take=(arr,count,start)=>Array.from({length:count},(_,j)=>arr[(start+j)%arr.length]);
+  const groups=[0,1,2].map(gi=>take(mcq,4,gi*4).concat(take(orderBank,2,gi*2),take(fill,2,gi*2),take(listen,2,gi*2)));
+  return groups.map((g,gi)=>g.map((q)=>({...q,group:gi})));
+ }
+ const ex=GRAMMAR_EXTRA_META[index-4]||GRAMMAR_EXTRA_META[(index-1)%GRAMMAR_EXTRA_META.length];
+ const baseMeta=meta||{focus:ex.focus,mcq:[],fill:[],form:[],order:[],listen:[]};
+ let mcq=(baseMeta.mcq||[]).map(q=>({type:'choice',prompt:q[0],answer:q[1],options:[q[1],q[2],q[3]]}));
+ let fill=(baseMeta.fill||[]).map(q=>({type:'fill',prompt:q[0],answer:q[1]}));
+ let form=(baseMeta.form||[]).map(q=>({type:'order',prompt:'Bilden Sie eine Frage aus diesen Wörtern:',tokens:grammarShuffle(q[1].replace(/[.!?]/g,'').split(/\s+/)),answer:q[1]}));
+ let order=(baseMeta.order||[]).map(q=>({type:'order',prompt:'Ordnen Sie die Wörter:',tokens:q[0].split(' / '),answer:q[1]}));
+ let listen=(baseMeta.listen||[]).map(q=>({type:'listen',audio:q[0],prompt:q[1],answer:q[2],options:[q[2],...q[3]]}));
+ if(index>=4){
+  const sentences=ex.sentences;
+  mcq=sentences.map(q=>({type:'choice',prompt:q[0],answer:q[1],options:[q[1],q[2],q[3]]}));
+  fill=sentences.map(q=>({type:'fill',prompt:q[0],answer:q[1].split(' / ')[0]}));
+  const sentenceFrom=(q)=>{let parts=q[1].split(' / ').slice();let sentence=q[0].replace(/\([^)]*\)/g,'').replace(/___/g,()=>parts.shift()||'').replace(/\s+/g,' ').trim();return sentence};
+  form=sentences.slice(0,5).map(q=>{const answer=sentenceFrom(q);return {type:'order',prompt:'Ordnen Sie die Wörter zu einem Satz:',tokens:grammarShuffle(answer.replace(/[.!?]/g,'').split(/\s+/).filter(Boolean)),answer}});
+  order=sentences.slice(0,5).map(q=>{const answer=sentenceFrom(q);return {type:'order',prompt:'Ordnen Sie die Wörter zu einem Satz:',tokens:grammarShuffle(answer.replace(/[.!?]/g,'').split(/\s+/).filter(Boolean)),answer}});
+  const listenSentences=[
+   [`Ich bin heute ${ex.base==='Familie'?'bei meiner Familie':ex.base==='Freizeit'?'im Kino':ex.base==='Arbeit'?'im Büro':ex.base==='Gesundheit'?'beim Arzt':ex.base==='Wohnung'?'zu Hause':ex.base==='Studium'?'an der Universität':ex.base==='Kleidung'?'im Geschäft':'im Urlaub'}.`, `Wo ist die Person?`, ex.base==='Familie'?'Bei der Familie.':ex.base==='Freizeit'?'Im Kino.':ex.base==='Arbeit'?'Im Büro.':ex.base==='Gesundheit'?'Beim Arzt.':ex.base==='Wohnung'?'Zu Hause.':ex.base==='Studium'?'An der Universität.':ex.base==='Kleidung'?'Im Geschäft.':'Im Urlaub.'],
+   [`Am Samstag treffe ich meine Freunde.`,`Wann trifft die Person ihre Freunde?`,`Am Samstag.`],
+   [`Ich lerne jeden Tag Deutsch.`,`Was lernt die Person?`,`Deutsch.`],
+   [`Wir fahren mit dem Zug.`,`Womit fahren die Personen?`,`Mit dem Zug.`],
+   [`Meine Wohnung hat drei Zimmer.`,`Wie viele Zimmer hat die Wohnung?`,`Drei Zimmer.`]
+  ];
+  listen=listenSentences.map((q,i)=>({type:'listen',audio:q[0],prompt:q[1],answer:q[2],options:[q[2],i%2?'Am Sonntag.':'Mit dem Auto.','Ich weiß nicht.']}));
+ }
+ const listeningByLesson=[
+ [
+  ["Hallo, ich heiße Lena und bin 22 Jahre alt. Ich komme aus Österreich, aber ich wohne jetzt in Berlin. Ich spreche Deutsch und ein bisschen Englisch.","Wo wohnt Lena jetzt?","In Berlin.",["In Wien.","In Hamburg."]],
+  ["Guten Tag, mein Name ist Karim Hassan. Ich komme aus Ägypten und lerne Deutsch. Meine Telefonnummer endet auf 48.","Aus welchem Land kommt Karim?","Aus Ägypten.",["Aus Deutschland.","Aus Österreich."]],
+  ["Ich heiße Paul Müller. Paul ist mein Vorname und Müller ist mein Nachname. Ich buchstabiere Müller: M-Ü-L-L-E-R.","Wie ist Pauls Nachname?","Müller.",["Paul.","Meier."]]
+ ],
+ [
+  ["Das ist meine Kollegin Sara. Sie arbeitet in einem Büro und lernt am Abend Deutsch. Am Wochenende spielt sie gern Tennis.","Was macht Sara am Wochenende gern?","Tennis spielen.",["Fußball spielen.","Deutsch lernen."]],
+  ["Mein Freund Tom wohnt in Köln. Er hat eine Schwester und zwei Brüder. Seine Schwester heißt Anna.","Wie heißt Toms Schwester?","Anna.",["Sara.","Lena."]],
+  ["Ich treffe heute meine Freunde. Wir gehen nicht ins Kino, denn der Film beginnt sehr spät. Wir spielen zu Hause Karten.","Was machen die Freunde zu Hause?","Sie spielen Karten.",["Sie sehen einen Film.","Sie lernen Deutsch."]]
+ ],
+ [
+  ["Entschuldigung, wie komme ich zum Bahnhof? Gehen Sie geradeaus und dann links. Der Bahnhof ist neben dem Supermarkt.","Wo ist der Bahnhof?","Neben dem Supermarkt.",["Hinter dem Hotel.","Neben der Schule."]],
+  ["Mia ist heute in Hamburg. Sie fährt mit dem Bus zum Hafen. Danach geht sie zu Fuß ins Café am Rathaus.","Wie fährt Mia zum Hafen?","Mit dem Bus.",["Mit dem Zug.","Mit dem Fahrrad."]],
+  ["Der Supermarkt ist nicht weit. Gehen Sie bis zur Ampel und biegen Sie rechts ab. Die Apotheke ist links.","Wo ist die Apotheke?","Links.",["Rechts.","Am Bahnhof."]]
+ ],
+ [
+  ["Guten Tag. Ich möchte einen Tee und ein Käsebrötchen. Meine Freundin nimmt einen Kaffee, aber keinen Kuchen. Zusammen zahlen wir sieben Euro.","Was bestellt die Freundin?","Einen Kaffee.",["Einen Tee.","Einen Saft."]],
+  ["Zum Frühstück esse ich Brot mit Käse und trinke Milch. Mittags esse ich in der Kantine. Abends koche ich oft Suppe.","Was trinkt die Person zum Frühstück?","Milch.",["Kaffee.","Wasser."]],
+  ["Entschuldigung, wie viel kostet der Apfelsaft? Zwei Euro fünfzig. Dann nehme ich bitte einen Apfelsaft und ein Wasser.","Wie viel kostet der Apfelsaft?","Zwei Euro fünfzig.",["Zwei Euro.","Drei Euro fünfzig."]]
+ ],
+ [
+  ["Ich stehe um sieben Uhr auf. Dann frühstücke ich mit meiner Familie. Um acht Uhr fährt der Bus zur Arbeit.","Wann steht die Person auf?","Um sieben Uhr.",["Um acht Uhr.","Um neun Uhr."]],
+  ["Am Sonntag besuchen wir unsere Großeltern. Meine Mutter bringt einen Kuchen mit. Wir essen zusammen um zwölf Uhr.","Was bringt die Mutter mit?","Einen Kuchen.",["Einen Salat.","Eine Suppe."]],
+  ["Mein Bruder heißt Sami. Er ist 16 Jahre alt und geht noch zur Schule. Nachmittags macht er seine Hausaufgaben.","Was macht Sami nachmittags?","Er macht Hausaufgaben.",["Er geht zur Arbeit.","Er spielt Tennis."]]
+ ],
+ [
+  ["Wir wollen uns am Freitag treffen. Anna kann erst um sechs Uhr. Wir treffen uns vor dem Kino und sehen einen Film.","Wo treffen sich die Freunde?","Vor dem Kino.",["Im Café.","Am Bahnhof."]],
+  ["Am Samstag habe ich Zeit. Zuerst kaufe ich ein, dann besuche ich Max. Am Abend hören wir zusammen Musik.","Was machen sie am Abend?","Sie hören Musik.",["Sie kochen.","Sie sehen Fußball."]],
+  ["Julia hat heute keine Zeit. Sie muss lernen. Morgen Nachmittag geht sie mit Paul spazieren.","Warum kann Julia heute nicht kommen?","Sie muss lernen.",["Sie arbeitet bis spät.","Sie ist krank."]]
+ ],
+ [
+  ["Herr Becker arbeitet in einem Hotel. Er beginnt um neun Uhr und macht um eins eine Pause. Um fünf Uhr fährt er nach Hause.","Wann beginnt Herr Becker zu arbeiten?","Um neun Uhr.",["Um acht Uhr.","Um zehn Uhr."]],
+  ["Meine Kollegin arbeitet heute nicht im Büro. Sie hat einen Termin beim Kunden und kommt erst am Nachmittag zurück.","Wo ist die Kollegin heute?","Beim Kunden.",["Zu Hause.","Im Supermarkt."]],
+  ["Ich bin Verkäufer. Ich arbeite von Montag bis Freitag. Am Samstag und Sonntag habe ich frei.","An welchen Tagen hat die Person frei?","Am Samstag und Sonntag.",["Am Montag und Dienstag.","Nur am Freitag."]]
+ ],
+ [
+  ["Seit gestern tut mir der Hals weh. Ich habe kein Fieber, aber ich bin müde. Der Arzt sagt, ich soll viel Wasser trinken.","Was soll die Person trinken?","Viel Wasser.",["Kalten Saft.","Kaffee."]],
+  ["Morgens mache ich zehn Minuten Gymnastik. Danach dusche ich und esse Obst. Ich möchte fit bleiben.","Was isst die Person nach der Gymnastik?","Obst.",["Kuchen.","Brot mit Käse."]],
+  ["Frau Klein hat Kopfschmerzen. Sie nimmt keine Tablette, sondern ruht sich aus und geht früh ins Bett.","Was macht Frau Klein?","Sie ruht sich aus.",["Sie geht joggen.","Sie arbeitet weiter."]]
+ ],
+ [
+  ["Meine Wohnung hat zwei Schlafzimmer und ein Wohnzimmer. Das Sofa steht am Fenster. Neben der Tür steht ein kleiner Tisch.","Wo steht das Sofa?","Am Fenster.",["Neben der Tür.","In der Küche."]],
+  ["Die Küche ist klein, aber hell. Der Kühlschrank steht neben dem Herd. Auf dem Tisch liegen zwei Bücher.","Was steht neben dem Herd?","Der Kühlschrank.",["Der Tisch.","Das Sofa."]],
+  ["Ich suche meine Schlüssel. Sie liegen nicht auf dem Tisch. Ich finde sie in meiner Tasche im Flur.","Wo sind die Schlüssel?","In der Tasche im Flur.",["Auf dem Tisch.","Im Schlafzimmer."]]
+ ],
+ [
+  ["Nora studiert Medizin an der Universität. Sie hat montags und mittwochs Vorlesungen. Am Abend lernt sie in der Bibliothek.","Was studiert Nora?","Medizin.",["Deutsch.","Informatik."]],
+  ["Mein Vater ist Mechaniker und arbeitet in einer Werkstatt. Meine Mutter ist Lehrerin und arbeitet an einer Schule.","Wo arbeitet die Mutter?","An einer Schule.",["In einer Werkstatt.","In einem Büro."]],
+  ["Ich kann gut Englisch sprechen, aber ich muss noch viel Deutsch lernen. Morgen habe ich einen Deutschtest.","Was hat die Person morgen?","Einen Deutschtest.",["Eine Prüfung in Englisch.","Einen Arzttermin."]]
+ ],
+ [
+  ["Im Geschäft suche ich eine blaue Jacke. Die blaue ist zu teuer, aber die schwarze kostet nur 35 Euro. Ich probiere sie an.","Welche Jacke kostet 35 Euro?","Die schwarze.",["Die blaue.","Die rote."]],
+  ["Mira braucht neue Schuhe. Größe 38 ist zu klein. Größe 39 passt gut und kostet 45 Euro.","Welche Schuhgröße passt Mira?","Größe 39.",["Größe 38.","Größe 40."]],
+  ["Der Pullover gefällt mir, aber er kostet 60 Euro. Ich kaufe lieber das T-Shirt für 20 Euro.","Was kauft die Person?","Das T-Shirt.",["Den Pullover.","Die Jacke."]]
+ ],
+ [
+  ["Wir fahren am Freitag mit dem Zug nach München. Die Fahrt dauert drei Stunden. Unser Hotel ist in der Nähe vom Bahnhof.","Wie lange dauert die Fahrt?","Drei Stunden.",["Zwei Stunden.","Vier Stunden."]],
+  ["Im Urlaub wohnen wir in einem kleinen Hotel am Meer. Morgens frühstücken wir um acht, danach gehen wir an den Strand.","Wo liegt das Hotel?","Am Meer.",["Im Zentrum.","Neben dem Flughafen."]],
+  ["Der Zug nach Berlin fährt um 10:15 Uhr ab. Wir müssen noch eine Fahrkarte kaufen und zum Gleis drei gehen.","Von welchem Gleis fährt der Zug?","Gleis drei.",["Gleis zwei.","Gleis vier."]]
+ ]
+ ];
+ if(index>=0&&index<listeningByLesson.length){const bank=listeningByLesson[index];listen=bank.map((q,i)=>({type:'listen',audio:q[0],prompt:q[1],answer:q[2],options:[q[2],...q[3]]}));}
+ const pad=(arr,templates)=>{const out=arr.slice();let k=0;while(out.length<10){const q=templates[k++%templates.length];out.push({...q})}return out.slice(0,10)};
+ if(index>=4){mcq=pad(mcq,mcq);fill=pad(fill,fill);order=pad(order,order);listen=pad(listen,listen)}else{
+ mcq=pad(mcq,GRAMMAR_META[index%4].mcq.map(q=>({type:'choice',prompt:q[0],answer:q[1],options:[q[1],q[2],q[3]]})));
+ fill=pad(fill,GRAMMAR_META[index%4].fill.map(q=>({type:'fill',prompt:q[0],answer:q[1]})));
+ order=pad(order,GRAMMAR_META[index%4].order.map(q=>({type:'order',prompt:'Ordnen Sie die Wörter:',tokens:q[0].split(' / '),answer:q[1]})));
+ listen=pad(listen,GRAMMAR_META[index%4].listen.map(q=>({type:'listen',audio:q[0],prompt:q[1],answer:q[2],options:[q[2],...q[3]]})));
+ }
+ const orderBank=order.concat(form);
+ const take=(arr,count,start)=>Array.from({length:count},(_,j)=>arr[(start+j)%arr.length]);
+ const groups=[0,1,2].map(gi=>take(mcq,4,gi*4).concat(take(orderBank,2,gi*2),take(fill,2,gi*2),take(listen,2,gi*2)));
+ return groups.map((g,gi)=>g.map(q=>({...q,group:gi})));
+}
+function renderGrammarHome(){
+ title.textContent='Grammatik A1';crumb.textContent='';view.innerHTML='';
+ const g=document.createElement('div');g.className='grid lessons';
+ GRAMMAR_LESSON_TITLES.forEach((name,i)=>{
+  const tile=document.createElement('div');tile.className='tile grammar-lesson-tile';
+  const open=btn(`<span class="num">${i+1}</span><span>${grammarEscape(name)}</span>`,'t1',()=>go('GRAMMAR_LESSON',i));
+  tile.append(open);g.append(tile);
+ });view.append(g)
+}
+function renderGrammarLesson(index){
+ const name=GRAMMAR_LESSON_TITLES[index]||'Lektion';
+ title.textContent='Lektion '+(index+1)+': '+name;
+ const focus=GRAMMAR_META[index]?.focus||GRAMMAR_EXTRA_META[index-4]?.focus||'Grammatik A1';
+ crumb.textContent='';view.innerHTML='';
+ const intro=document.createElement('div');intro.className='grammar-intro';
+ intro.innerHTML=`<strong>${grammarEscape(focus)}</strong>`;view.append(intro);
+ const g=document.createElement('div');g.className='grammar-groups';
+ ['اختبار 1','اختبار 2','اختبار 3'].forEach((label,gi)=>{
+  const b=document.createElement('button');b.className='grammar-group';
+  const done=(profile.grammarCompleted||[]).includes(index+'-'+gi);
+  b.innerHTML=`<strong>${label}</strong><div class="grammar-progress"><i style="width:${done?100:0}%"></i></div><small>${done?'مكتمل ✓':'10 أسئلة'}</small>`;
+  b.onclick=()=>startGrammarGroup(index,gi);g.append(b)
+ });view.append(g)
+}
+function speakGrammar(text){if(!('speechSynthesis'in window)){alert('المتصفح لا يدعم تشغيل الصوت.');return}speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='de-DE';u.rate=.82;const voices=speechSynthesis.getVoices().filter(v=>v.lang.replace('_','-').toLowerCase().startsWith('de'));const voice=voices.find(v=>/female|woman|anna|petra|katja|marlene|vicki|hedda|amala|helena|sarah|eva|sabine/i.test(v.name))||voices[0];if(voice)u.voice=voice;speechSynthesis.speak(u)}
+function normalizeGrammarAnswer(s){return String(s||'').trim().toLocaleLowerCase('de-DE').replace(/[.!?]+$/,'').replace(/\s+/g,' ')}
+function renderGrammarQuiz(index,groupIndex,qIndex){
+ const groups=grammarLessonData(index),qs=groups[groupIndex]||[],q=qs[qIndex];
+ if(!q){title.textContent='المجموعة اكتملت';return}
+ title.textContent='Lektion '+(index+1)+' · Frage '+(qIndex+1)+'/10';
+ crumb.textContent='';view.innerHTML='';
+ const progress=document.createElement('div');progress.className='grammar-progress';progress.innerHTML=`<i style="width:${(qIndex+1)*10}%"></i>`;view.append(progress);
+ const card=document.createElement('section');card.className='grammar-question';
+ const qhead=document.createElement('div');qhead.className='grammar-qtitle';
+ qhead.innerHTML=`<strong>${q.type==='listen'?'🎧 Hörverstehen':q.type==='fill'?'✍️ Schreiben':q.type==='order'?'🔤 Ordnen':'☑️ Wählen Sie'}</strong><small>${qIndex+1} / 10</small>`;card.append(qhead);
+ if(q.type==='listen'){
+  const note=document.createElement('p');note.style.textAlign='center';note.style.color='var(--mute)';note.textContent='اسمع الجملة كويس، ثم أجب. نص الجملة مش هيظهر.';card.append(note);
+  const audio=document.createElement('div');audio.className='grammar-audio';audio.append(btn('🔊 تشغيل الصوت الألماني','',()=>speakGrammar(q.audio)));card.append(audio)
+ }
+ const prompt=document.createElement('div');prompt.className='grammar-prompt';prompt.textContent=q.prompt;card.append(prompt);
+ const key=index+'-'+groupIndex+'-'+qIndex;
+ let answered=Object.prototype.hasOwnProperty.call(grammarQuizResponses,key),selectedOrder=[];
+ const feedback=document.createElement('div');feedback.className='grammar-feedback';card.append(feedback);
+ const responseValue=grammarQuizResponses[key];
+ function finishAnswer(ok,value){
+  if(answered)return;answered=true;grammarQuizResponses[key]=!!ok;
+  if(q.type==='choice'||q.type==='listen')card.querySelectorAll('.grammar-option').forEach(b=>{b.disabled=true;if(normalizeGrammarAnswer(b.dataset.answer)===normalizeGrammarAnswer(q.answer))b.classList.add('correct')});
+  feedback.style.color=ok?'#16834b':'#c62839';feedback.textContent=ok?'Richtig! إجابة صحيحة.':'Leider falsch. الإجابة الصحيحة: '+q.answer;
+  if(ok){
+   const routeIndex=index,routeGroup=groupIndex,routeQuestion=qIndex;
+   setTimeout(()=>{
+    if(st[0]!=='GRAMMAR_QUIZ'||st[1]!==routeIndex||st[2]!==routeGroup||st[3]!==routeQuestion)return;
+    if(routeQuestion<9)go('GRAMMAR_QUIZ',routeIndex,routeGroup,routeQuestion+1);
+    else{const score=qs.reduce((sum,_,i)=>sum+(grammarQuizResponses[routeIndex+'-'+routeGroup+'-'+i]===true?1:0),0);finishGrammarGroup(routeIndex,routeGroup,score,qs.length)}
+   },650);
+  }
+ }
+ if(answered){feedback.style.color=responseValue?'#16834b':'#c62839';feedback.textContent=responseValue?'Richtig! إجابة صحيحة.':'تمت الإجابة. الإجابة الصحيحة: '+q.answer}
+ if(q.type==='choice'||q.type==='listen'){
+  const opts=grammarShuffle(q.options||[]),list=document.createElement('div');list.className='grammar-options';
+  opts.forEach(opt=>{const b=btn(grammarEscape(opt),'grammar-option',()=>finishAnswer(normalizeGrammarAnswer(opt)===normalizeGrammarAnswer(q.answer),opt));b.dataset.answer=opt;if(answered){b.disabled=true;if(normalizeGrammarAnswer(opt)===normalizeGrammarAnswer(q.answer))b.classList.add('correct')}list.append(b)});card.append(list)
+ }else if(q.type==='fill'){
+  const input=document.createElement('input');input.className='grammar-input';input.placeholder='Antwort auf Deutsch …';input.autocomplete='off';input.disabled=answered;
+  input.addEventListener('keydown',e=>{if(e.key==='Enter'&&!answered)finishAnswer(normalizeGrammarAnswer(input.value)===normalizeGrammarAnswer(q.answer),input.value)});card.append(input);
+  const check=btn('تحقق من الإجابة','grammar-check',()=>{finishAnswer(normalizeGrammarAnswer(input.value)===normalizeGrammarAnswer(q.answer),input.value);check.disabled=answered});check.disabled=answered;card.append(check)
+ }else{
+  const answerLine=document.createElement('div');answerLine.className='grammar-answer-line';answerLine.setAttribute('aria-label','الجملة التي رتبتها');
+  const tokens=document.createElement('div');tokens.className='grammar-token-row';grammarShuffle(q.tokens||[]).forEach(token=>{const b=btn(grammarEscape(token),'grammar-token',()=>{if(answered||b.classList.contains('used'))return;selectedOrder.push(token);b.classList.add('used');answerLine.textContent=selectedOrder.join(' ')});b.disabled=answered;tokens.append(b)});card.append(tokens,answerLine);
+  const clear=btn('مسح الترتيب','go alt',()=>{if(answered)return;selectedOrder=[];answerLine.textContent='';tokens.querySelectorAll('.grammar-token').forEach(b=>b.classList.remove('used'))});clear.disabled=answered;card.append(clear);
+  const check=btn('تحقق من الإجابة','grammar-check',()=>{finishAnswer(normalizeGrammarAnswer(selectedOrder.join(' '))===normalizeGrammarAnswer(q.answer),selectedOrder.join(' '));check.disabled=answered});check.disabled=answered;card.append(check)
+ }
+ view.append(card);
+ const nav=document.createElement('div');nav.className='grammar-question-nav';nav.style.display='flex';nav.style.gap='10px';nav.style.marginTop='14px';
+ const prev=btn('→ السؤال السابق','go alt',()=>{if(qIndex>0)go('GRAMMAR_QUIZ',index,groupIndex,qIndex-1)});prev.disabled=qIndex===0;
+ const next=btn(qIndex===9?'إنهاء الاختبار':'السؤال القادم ←','go',()=>{if(qIndex<9)go('GRAMMAR_QUIZ',index,groupIndex,qIndex+1);else{const score=qs.reduce((sum,_,i)=>sum+(grammarQuizResponses[index+'-'+groupIndex+'-'+i]===true?1:0),0);finishGrammarGroup(index,groupIndex,score,qs.length)}});
+ nav.append(prev,next);view.append(nav)
+}
+let grammarQuizScore=0,grammarQuizKey='',grammarQuizResponses={};
+function startGrammarGroup(index,groupIndex){grammarQuizScore=0;grammarQuizKey=index+'-'+groupIndex;grammarQuizResponses={};go('GRAMMAR_QUIZ',index,groupIndex,0)}
+
+function finishGrammarGroup(index,groupIndex,score,total){profile.grammarCompleted=profile.grammarCompleted||[];const key=index+'-'+groupIndex;if(!profile.grammarCompleted.includes(key))profile.grammarCompleted.push(key);profile.grammarResults=profile.grammarResults||[];profile.grammarResults.push({lesson:index,group:groupIndex,score,total,date:new Date().toISOString()});profile.grammarResults=profile.grammarResults.slice(-100);persistProfile();finishQuiz('A1','grammatik-'+(index+1)+'-'+(groupIndex+1),score,total,index);alert('خلصت المجموعة! نتيجتك '+score+'/'+total+' · تم حفظ تقدم Grammatik.');go('GRAMMAR_LESSON',index)}
+
 function renderLevelGoals(lv){
  title.textContent="مستوى "+lv+(LEVEL_NAMES[lv]?" · "+LEVEL_NAMES[lv]:" · فوق المتوسط");crumb.textContent="اختر القسم";
  const g=document.createElement("div");g.className="grid cats";
  g.append(btn('📖<span class="tt">الكلمات</span>'+(LESSONS[lv]?'<small style="display:block;margin-top:6px">'+pct(lv)+'% محفوظ</small>':'<small style="display:block;margin-top:6px">قريبًا</small>'),"box",()=>go(lv)));
  g.append(btn('🗣️<span class="tt">مواضيع التحدث</span>',"box",()=>go("S",lv)));
  g.append(btn('💬<span class="tt">المحادثات</span>',"box",()=>{if(lv==="A1"){go("DIALOGUES","A1")}else{title.textContent="المحادثات · "+lv;crumb.textContent="المحادثات";view.innerHTML='<div class="empty">المحادثات هتضاف قريبًا.</div>'}}));
+ if(lv==="A1")g.append(btn('📚<span class="tt">Grammatik</span>',"box",()=>go("GRAMMAR")));
  if(lv==="B2") g.append(btn('📚<span class="tt">الأمثال الشعبية الألمانية</span>',"box",()=>go("PG")));
  view.append(g)}
 const A1_DIALOGUES=[
@@ -1695,6 +1929,9 @@ function render(){
  if(l==="PG"){renderProverbGroups();return}
  if(l==="PQ"){renderProverbQuiz(i);return}
  if(l==="G"){renderLevelGoals(i);return}
+ if(l==="GRAMMAR"){renderGrammarHome();return}
+ if(l==="GRAMMAR_LESSON"){renderGrammarLesson(i);return}
+ if(l==="GRAMMAR_QUIZ"){renderGrammarQuiz(i,c,d);return}
  if(l==="DIALOGUES"){renderDialogues(i||"A1");return}
  if(l==="DIALOGUE"){renderDialogue(i);return}
  if(l==="DIALOGUE_REPLY"){renderDialogueReply(i);return}
@@ -2175,7 +2412,14 @@ async function resumeChallengeRoute(id){if(!fbUser||!db)return;try{const ref=db.
 
 let HIST=true;
 function go(...a){st=a;try{history.pushState({st:a,ex:EXAM},"")}catch(e){HIST=false}render()}
-back.onclick=()=>{if(HIST){try{history.back();return}catch(e){HIST=false}}st.pop();if(st.length===1&&(st[0]==="S"||st[0]==="T"))st=[];render()};
+back.onclick=()=>{
+ /* Grammar training uses direct navigation to avoid reviving old quiz history states. */
+ if(st[0]==='GRAMMAR_QUIZ'){go('GRAMMAR_LESSON',st[1]);return}
+ if(st[0]==='GRAMMAR_LESSON'){go('GRAMMAR');return}
+ if(st[0]==='GRAMMAR'){go('G','A1');return}
+ if(HIST){try{history.back();return}catch(e){HIST=false}}
+ st.pop();if(st.length===1&&(st[0]==="S"||st[0]==="T"))st=[];render()
+};
 document.getElementById("dashboard").onclick=()=>go("D");
 document.getElementById("social").onclick=()=>{challengeTarget=null;go("SOCIAL")};
 
@@ -2245,7 +2489,7 @@ function initCloud(){
     const derivedXp=migratedWordXP.length + savedCompleted.length*50 + savedPerfect.length*100;
     const legacyXp=(Math.max(localXp,cloudXp,publicXp)===0?derivedXp:0);
     const baseXp=Math.max(localXp,cloudXp,publicXp,legacyXp);
-    profile={...profile,xp:baseXp,wordXP:migratedWordXP,completedLessons:savedCompleted,perfectTests:savedPerfect,studyDays:cloud.studyDays||profile.studyDays||{},dailyWords:cloud.dailyWords||profile.dailyWords||{},examResults:cloud.examResults||profile.examResults||[],reviewWords:cloud.reviewWords||profile.reviewWords||[],displayName:cloud.displayName||profile.displayName||"",placementResults:cloud.placementResults||profile.placementResults||[],earnedBadges:(cloud.achievementWeekKey===currentAchievementWeekKey()&&profile.achievementWeekKey===currentAchievementWeekKey()?[...new Set([...(profile.earnedBadges||[]),...(cloud.earnedBadges||[])])]:cloud.achievementWeekKey===currentAchievementWeekKey()?(cloud.earnedBadges||[]):profile.achievementWeekKey===currentAchievementWeekKey()?(profile.earnedBadges||[]):[]),achievementWeekKey:currentAchievementWeekKey(),weeklyAchievementStats:(()=>{const a=profile.achievementWeekKey===currentAchievementWeekKey()?(profile.weeklyAchievementStats||freshWeeklyAchievementStats()):freshWeeklyAchievementStats();const b=cloud.achievementWeekKey===currentAchievementWeekKey()?(cloud.weeklyAchievementStats||freshWeeklyAchievementStats()):freshWeeklyAchievementStats();return {words:[...new Set([...(a.words||[]),...(b.words||[])])],lessons:[...new Set([...(a.lessons||[]),...(b.lessons||[])])],perfectTests:[...new Set([...(a.perfectTests||[]),...(b.perfectTests||[])])],studyDays:[...new Set([...(a.studyDays||[]),...(b.studyDays||[])])],xp:Math.max(Number(a.xp)||0,Number(b.xp)||0)}})(),dialoguesCompleted:cloud.dialoguesCompleted||profile.dialoguesCompleted||[],shopCoins:Math.max(0,Number(cloud.shopCoins??profile.shopCoins)||0),shopOwned:Array.isArray(cloud.shopOwned)?cloud.shopOwned:(profile.shopOwned||[]),shopEquipped:cloud.shopEquipped||profile.shopEquipped||{},shopRewardLedger:cloud.shopRewardLedger||profile.shopRewardLedger||{},leaguePoints:Number(cloud.leaguePoints??profile.leaguePoints)||0,leagueWeekKey:cloud.leagueWeekKey||profile.leagueWeekKey||currentAchievementWeekKey(),leaguePreviousPoints:Number(cloud.leaguePreviousPoints??profile.leaguePreviousPoints)||0,leaguePreviousWeekKey:cloud.leaguePreviousWeekKey||profile.leaguePreviousWeekKey||""};
+    profile={...profile,xp:baseXp,wordXP:migratedWordXP,completedLessons:savedCompleted,perfectTests:savedPerfect,studyDays:cloud.studyDays||profile.studyDays||{},dailyWords:cloud.dailyWords||profile.dailyWords||{},examResults:cloud.examResults||profile.examResults||[],reviewWords:cloud.reviewWords||profile.reviewWords||[],displayName:cloud.displayName||profile.displayName||"",placementResults:cloud.placementResults||profile.placementResults||[],earnedBadges:(cloud.achievementWeekKey===currentAchievementWeekKey()&&profile.achievementWeekKey===currentAchievementWeekKey()?[...new Set([...(profile.earnedBadges||[]),...(cloud.earnedBadges||[])])]:cloud.achievementWeekKey===currentAchievementWeekKey()?(cloud.earnedBadges||[]):profile.achievementWeekKey===currentAchievementWeekKey()?(profile.earnedBadges||[]):[]),achievementWeekKey:currentAchievementWeekKey(),weeklyAchievementStats:(()=>{const a=profile.achievementWeekKey===currentAchievementWeekKey()?(profile.weeklyAchievementStats||freshWeeklyAchievementStats()):freshWeeklyAchievementStats();const b=cloud.achievementWeekKey===currentAchievementWeekKey()?(cloud.weeklyAchievementStats||freshWeeklyAchievementStats()):freshWeeklyAchievementStats();return {words:[...new Set([...(a.words||[]),...(b.words||[])])],lessons:[...new Set([...(a.lessons||[]),...(b.lessons||[])])],perfectTests:[...new Set([...(a.perfectTests||[]),...(b.perfectTests||[])])],studyDays:[...new Set([...(a.studyDays||[]),...(b.studyDays||[])])],xp:Math.max(Number(a.xp)||0,Number(b.xp)||0)}})(),dialoguesCompleted:cloud.dialoguesCompleted||profile.dialoguesCompleted||[],grammarCompleted:[...new Set([...(profile.grammarCompleted||[]),...(cloud.grammarCompleted||[])])],grammarResults:cloud.grammarResults||profile.grammarResults||[],shopCoins:Math.max(0,Number(cloud.shopCoins??profile.shopCoins)||0),shopOwned:Array.isArray(cloud.shopOwned)?cloud.shopOwned:(profile.shopOwned||[]),shopEquipped:cloud.shopEquipped||profile.shopEquipped||{},shopRewardLedger:cloud.shopRewardLedger||profile.shopRewardLedger||{},leaguePoints:Number(cloud.leaguePoints??profile.leaguePoints)||0,leagueWeekKey:cloud.leagueWeekKey||profile.leagueWeekKey||currentAchievementWeekKey(),leaguePreviousPoints:Number(cloud.leaguePreviousPoints??profile.leaguePreviousPoints)||0,leaguePreviousWeekKey:cloud.leaguePreviousWeekKey||profile.leaguePreviousWeekKey||""};
     ensureWeeklyAchievements();
     ensureDailyAchievements();
     persistProfile();
