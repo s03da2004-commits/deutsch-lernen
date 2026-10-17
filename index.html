@@ -1616,17 +1616,24 @@ function runQuiz(l,mode,learned,pool){if(mode==="pl")return runPlural(l,learned)
  }
  show()}
 const ICON='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 4V5L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>';
-/* m = رجل بالغ، f = شابة، n = طفل، وباقي الأقسام صوت عادي */
+/* أصوات الكلمات: المذكر رجل بالغ، المؤنث امرأة بالغة، والمحايد شاب. اختيار الصوت الفعلي يعتمد على الأصوات المتاحة في جهاز المستخدم. */
 function speak(t,c){
  if(!("speechSynthesis" in window)){alert("المتصفح ده مش بيدعم النطق");return}
  speechSynthesis.cancel();
  const u=new SpeechSynthesisUtterance(t);u.lang="de-DE";
- const de=speechSynthesis.getVoices().filter(x=>x.lang.replace("_","-").startsWith("de"));
- const male=de.find(x=>/markus|stefan|hans|conrad|florian|jonas|martin|bernd|yannick|killian|\bmale\b/i.test(x.name));
- const fem=de.find(x=>/female|anna|petra|katja|marlene|vicki|hedda|amala|google|seraphina|helena/i.test(x.name));
- const P={m:[male?.8:.6,.85,male],f:[1.3,.9,fem],n:[1.9,1,fem]}[c]||[1,.9,fem||de[0]];
- u.pitch=P[0];u.rate=P[1];const v=P[2]||de[0];if(v)u.voice=v;
- speechSynthesis.speak(u)}
+ const de=speechSynthesis.getVoices().filter(x=>x.lang.replace("_","-").toLowerCase().startsWith("de"));
+ const femalePattern=/female|woman|anna|petra|katja|marlene|vicki|hedda|amala|seraphina|helena|sarah|eva|sabine|katrin|steffi/i;
+ const malePattern=/male|man|markus|stefan|hans|conrad|martin|bernd|daniel|thomas|david|bastian|wolfgang|ralf|lars|sebastian/i;
+ const youngMalePattern=/jonas|florian|yannick|killian|niklas|felix|tim|leon|benjamin|nico|maximilian|jannik/i;
+ const female=de.find(x=>femalePattern.test(x.name));
+ const male=de.find(x=>malePattern.test(x.name)&&!femalePattern.test(x.name)) || de.find(x=>!femalePattern.test(x.name));
+ const youngMale=de.find(x=>youngMalePattern.test(x.name)&&!femalePattern.test(x.name)) || male;
+ let voice=null,pitch=1,rate=.9;
+ if(c==="m"){voice=male;pitch=.88;rate=.88}
+ else if(c==="f"){voice=female;pitch=1.08;rate=.9}
+ else if(c==="n"){voice=youngMale;pitch=1.12;rate=.94}
+ else{voice=de[0]||null;pitch=1;rate=.9}
+ if(voice)u.voice=voice;u.pitch=pitch;u.rate=rate;speechSynthesis.speak(u)}
 function btn(html,cls,fn){const b=document.createElement("button");b.className=cls;b.innerHTML=html;b.onclick=fn;return b}
 const DAILY_ACHIEVEMENT_DEFS=[
  {id:"daily-words-5",emoji:"📖",name:"خمس كلمات اليوم",desc:"راجع 5 كلمات مختلفة اليوم",test:()=>ensureDailyAchievements().words.length>=5,reward:5},
@@ -1652,13 +1659,27 @@ const ACHIEVEMENT_DEFS=[
  {id:"xp-1000",emoji:"👑",name:"نجم المنصة",desc:"اجمع 1000 نقطة خبرة خلال الأسبوع",test:()=>ensureWeeklyAchievements().xp>=1000}
 ];
 function syncAchievements(){ensureWeeklyAchievements();profile.earnedBadges=profile.earnedBadges||[];const newly=[];ACHIEVEMENT_DEFS.forEach(b=>{if(b.test()&&!profile.earnedBadges.includes(b.id)){profile.earnedBadges.push(b.id);newly.push(b)}});if(newly.length){persistProfile();const weekKey=profile.achievementWeekKey||currentAchievementWeekKey();newly.forEach((b)=>{const reward=b.id==="xp-1000"?40:(b.id==="words-100"||b.id==="lessons-10"?25:(b.id==="perfect"||b.id==="streak-7"?20:10));grantShopCoinsOnce("achievement",weekKey+":"+b.id,reward)});if(fbUser&&newly.length)alert("إنجاز أسبوعي جديد! حصلت على "+newly.reduce((n,b)=>n+(b.id==="xp-1000"?40:(b.id==="words-100"||b.id==="lessons-10"?25:(b.id==="perfect"||b.id==="streak-7"?20:10))),0)+" عملة متجر 🏆")}return newly}
+function dailyAchievementProgress(a){
+ const st=ensureDailyAchievements();
+ const map={"daily-words-5":[5,st.words.length],"daily-lesson":[1,st.lessons.length],"daily-quiz":[1,st.tests.length],"daily-perfect":[1,st.perfectTests.length],"daily-study":[1,st.studied?1:0]};
+ return map[a.id]||[1,0];
+}
+function weeklyAchievementProgress(a){
+ const st=ensureWeeklyAchievements();
+ const map={"first-word":[1,st.words.length],"words-25":[25,st.words.length],"words-100":[100,st.words.length],"lesson-1":[1,st.lessons.length],"lessons-10":[10,st.lessons.length],"perfect":[1,st.perfectTests.length],"streak-7":[7,weeklyStudyStreak()],"xp-1000":[1000,st.xp]};
+ return map[a.id]||[1,0];
+}
+function achievementProgressLabel(a,weekly,ok){
+ const [target,current]=weekly?weeklyAchievementProgress(a):dailyAchievementProgress(a);
+ return (ok?"اكتمل ✓ · ":`${target}/${current} · `)+"مكافأة "+(weekly?shopAchievementReward(a):a.reward)+" "+(weekly?"عملة":"عملات");
+}
 function renderAchievements(){
- syncDailyAchievements();syncAchievements();title.textContent="🏆 الإنجازات";crumb.textContent="أنجز مهامك واجمع العملات كل يوم وكل أسبوع";view.innerHTML="";
+ syncDailyAchievements();syncAchievements();title.textContent="🏆 الإنجازات";crumb.textContent="التقدم مكتوب بالشكل: المطلوب/اللي أنجزته، مثل 5/3";view.innerHTML="";
  const tabs=document.createElement("div");tabs.className="achievement-main-tabs";const dailyTab=document.createElement("button");dailyTab.type="button";dailyTab.className="achievement-main-tab active";dailyTab.textContent="☀️ المهام اليومية";const weeklyTab=document.createElement("button");weeklyTab.type="button";weeklyTab.className="achievement-main-tab";weeklyTab.textContent="🏆 المهام الأسبوعية";tabs.append(dailyTab,weeklyTab);view.append(tabs);
  const dailyPanel=document.createElement("section");dailyPanel.className="feature-card";const dailyTitle=document.createElement("h2");dailyTitle.textContent="☀️ إنجازات اليوم";const dailySummary=document.createElement("p");dailySummary.className="feature-note";const dailyEarned=new Set(profile.earnedDailyAchievements||[]);dailySummary.textContent=`أنجزت ${dailyEarned.size} من ${DAILY_ACHIEVEMENT_DEFS.length} مهام اليوم.`;const dailyGrid=document.createElement("div");dailyGrid.className="badge-grid";
- DAILY_ACHIEVEMENT_DEFS.forEach(a=>{const ok=dailyEarned.has(a.id),el=document.createElement("div");el.className="achievement-badge"+(ok?" earned":"");const icon=document.createElement("span");icon.className="badge-emoji";icon.textContent=ok?a.emoji:"🔒";const name=document.createElement("strong");name.textContent=a.name;const desc=document.createElement("small");desc.textContent=(ok?"اكتمل اليوم ✓ · ":a.desc+" · ")+"مكافأة "+a.reward+" عملات";el.append(icon,name,desc);dailyGrid.append(el)});dailyPanel.append(dailyTitle,dailySummary,dailyGrid);
+ DAILY_ACHIEVEMENT_DEFS.forEach(a=>{const [target,current]=dailyAchievementProgress(a),ok=dailyEarned.has(a.id)||current>=target,el=document.createElement("div");el.className="achievement-badge"+(ok?" earned":"");const icon=document.createElement("span");icon.className="badge-emoji";icon.textContent=ok?a.emoji:"🔒";const name=document.createElement("strong");name.textContent=a.name;const desc=document.createElement("small");desc.textContent=achievementProgressLabel(a,false,ok);el.append(icon,name,desc);dailyGrid.append(el)});dailyPanel.append(dailyTitle,dailySummary,dailyGrid);
  const weeklyPanel=document.createElement("section");weeklyPanel.className="feature-card";weeklyPanel.hidden=true;const weeklyTitle=document.createElement("h2");weeklyTitle.textContent="🏆 إنجازات الأسبوع";const earned=new Set(profile.earnedBadges||[]);const weeklySummary=document.createElement("p");weeklySummary.className="feature-note";weeklySummary.textContent=`أنجزت ${earned.size} من ${ACHIEVEMENT_DEFS.length} إنجازات هذا الأسبوع.`;const weeklyGrid=document.createElement("div");weeklyGrid.className="badge-grid";
- ACHIEVEMENT_DEFS.forEach(a=>{const ok=earned.has(a.id),el=document.createElement("div");el.className="achievement-badge"+(ok?" earned":"");const icon=document.createElement("span");icon.className="badge-emoji";icon.textContent=ok?a.emoji:"🔒";const name=document.createElement("strong");name.textContent=a.name;const desc=document.createElement("small");desc.textContent=(ok?"اكتمل هذا الأسبوع ✓ · ":a.desc+" · ")+"مكافأة "+shopAchievementReward(a)+" عملة";el.append(icon,name,desc);weeklyGrid.append(el)});weeklyPanel.append(weeklyTitle,weeklySummary,weeklyGrid);
+ ACHIEVEMENT_DEFS.forEach(a=>{const [target,current]=weeklyAchievementProgress(a),ok=earned.has(a.id)||current>=target,el=document.createElement("div");el.className="achievement-badge"+(ok?" earned":"");const icon=document.createElement("span");icon.className="badge-emoji";icon.textContent=ok?a.emoji:"🔒";const name=document.createElement("strong");name.textContent=a.name;const desc=document.createElement("small");desc.textContent=achievementProgressLabel(a,true,ok);el.append(icon,name,desc);weeklyGrid.append(el)});weeklyPanel.append(weeklyTitle,weeklySummary,weeklyGrid);
  const setTab=which=>{const daily=which==="daily";dailyPanel.hidden=!daily;weeklyPanel.hidden=daily;dailyTab.classList.toggle("active",daily);weeklyTab.classList.toggle("active",!daily)};dailyTab.onclick=()=>setTab("daily");weeklyTab.onclick=()=>setTab("weekly");view.append(dailyPanel,weeklyPanel,btn("العودة للرئيسية","go alt",()=>go()));
 }
 
@@ -2200,12 +2221,13 @@ async function syncPendingOfflineProgress(){
 }
 window.addEventListener("online",()=>{if(fbUser&&db)syncPendingOfflineProgress()});
 
+function authErrorMessage(e){const code=e&&e.code||"unknown";const detail=e&&e.message?e.message:"لا توجد تفاصيل إضافية.";const known={"auth/unauthorized-domain":"النطاق الذي فُتح منه الموقع غير مصرح به في Firebase Authentication.","auth/operation-not-allowed":"تسجيل الدخول بجوجل غير مفعّل لهذا المشروع.","auth/network-request-failed":"فشل الاتصال بالإنترنت أثناء تسجيل الدخول.","auth/too-many-requests":"محاولات كثيرة؛ انتظر قليلًا ثم أعد المحاولة.","auth/popup-blocked":"المتصفح منع نافذة Google المنبثقة. اسمح بالنوافذ المنبثقة أو جرّب Chrome.","auth/web-storage-unsupported":"المتصفح يمنع التخزين اللازم لاستعادة الجلسة. اسمح بالتخزين وملفات تعريف الارتباط للموقع.","auth/credential-already-in-use":"بيانات اعتماد Google مرتبطة بحساب آخر بالفعل.","auth/email-already-in-use":"البريد الإلكتروني مستخدم في حساب آخر.","auth/invalid-credential":"تعذّر التحقق من بيانات اعتماد Google؛ ابدأ تسجيل الدخول من جديد.","auth/timeout":"انتهت مهلة تسجيل الدخول؛ تحقق من الاتصال وحاول مرة أخرى."};return "تعذّر تسجيل الدخول بجوجل.\\nالرمز: "+code+"\\n"+(known[code]||detail)+"\\n\\nلو استمرت المشكلة، أرسل الرمز للمبرمج.";}
+
 function initCloud(){
  if(!FIREBASE_CONFIG||!window.firebase)return;
  try{firebase.initializeApp(FIREBASE_CONFIG);const auth=firebase.auth();db=firebase.firestore();
-  authBtn.onclick=async()=>{if(authBusy)return;if(fbUser){try{await auth.signOut()}catch(e){alert("تعذّر تسجيل الخروج: "+e.message)}return}authBusy=true;authUI();const provider=new firebase.auth.GoogleAuthProvider();try{await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);/* جرّب النافذة المنبثقة على كل الأجهزة أولًا؛ إعادة التوجيه على بعض متصفحات أندرويد لا تستعيد جلسة Firebase بشكل صحيح على GitHub Pages. */await auth.signInWithPopup(provider)}catch(e){if(e&&e.code==="auth/cancelled-popup-request"){console.info("تم تجاهل طلب تسجيل دخول مكرر؛ نافذة تسجيل الدخول الأخرى ما زالت قيد الفتح.")}else if(e&&e.code==="auth/popup-closed-by-user"){/* المستخدم أغلق نافذة تسجيل الدخول */}else if(e&&["auth/internal-error","auth/popup-blocked","auth/operation-not-supported-in-this-environment"].includes(e.code)){console.warn("Google popup sign-in failed; retrying with redirect:",e);try{await auth.signInWithRedirect(provider);return}catch(redirectError){console.error("Google redirect sign-in failed:",redirectError);alert("تعذّر تسجيل الدخول بجوجل ("+(redirectError.code||e.code||"unknown")+"): "+(redirectError.message||e.message||"افتح الموقع في Chrome وحاول مرة أخرى."))}}else{console.error("Google sign-in failed:",e);alert("تعذّر تسجيل الدخول بجوجل ("+(e&&e.code?e.code:"unknown")+"): "+(e&&e.message?e.message:"حاول مرة أخرى."))}}finally{authBusy=false;authUI()}};
-  auth.getRedirectResult().catch(e=>{console.error("Google redirect result failed:",e);alert("تعذّر إكمال تسجيل الدخول بجوجل ("+(e&&e.code?e.code:"unknown")+"): "+(e&&e.message?e.message:"افتح الموقع في Chrome وحاول مرة أخرى."))});
-  auth.onAuthStateChanged(async u=>{fbUser=u;authUI();setupSocialBadges();if(!u){renderDashboardIfVisible();return}
+  authBtn.onclick=async()=>{if(authBusy)return;if(fbUser){try{await auth.signOut()}catch(e){console.error("Firebase sign-out failed",e);alert("تعذّر تسجيل الخروج ("+(e.code||"unknown")+"): "+(e.message||"حاول مرة أخرى."))}return}authBusy=true;authUI();const provider=new firebase.auth.GoogleAuthProvider();provider.setCustomParameters({prompt:"select_account"});try{await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);await auth.signInWithPopup(provider)}catch(e){const code=e&&e.code||"unknown";console.error("Google sign-in failed",e);if(code==="auth/cancelled-popup-request"){console.info("تم تجاهل طلب تسجيل دخول مكرر.")}else if(code==="auth/popup-closed-by-user"){/* المستخدم أغلق النافذة */}else if(["auth/popup-blocked","auth/operation-not-supported-in-this-environment","auth/web-storage-unsupported"].includes(code)){try{sessionStorage.setItem("googleRedirectPending","1");await auth.signInWithRedirect(provider);return}catch(re){try{sessionStorage.removeItem("googleRedirectPending")}catch(_){}console.error("Google redirect fallback failed",re);alert(authErrorMessage(re))}}else if(code==="auth/account-exists-with-different-credential"){const email=e.email||e.customData&&e.customData.email||"";alert("البريد الإلكتروني ده مسجّل بالفعل بطريقة دخول مختلفة. "+(email?"البريد: "+email+". ":"")+"سجّل الدخول بالطريقة الأصلية المرتبطة بنفس البريد أولًا. لم يتم تغيير أي حساب أو بيانات.")}else{alert(authErrorMessage(e))}}finally{authBusy=false;authUI()}};
+  auth.getRedirectResult().then(result=>{try{sessionStorage.removeItem("googleRedirectPending")}catch(_){}if(result&&result.user)console.info("Google redirect sign-in completed",result.user.uid)}).catch(e=>{console.error("Google redirect result failed",e);try{sessionStorage.removeItem("googleRedirectPending")}catch(_){}alert("تعذّر إكمال تسجيل الدخول بعد الرجوع من Google.\\n"+authErrorMessage(e))});auth.onAuthStateChanged(async u=>{fbUser=u;authUI();setupSocialBadges();if(!u){renderDashboardIfVisible();return}
    try{
     const [d,pubSnap]=await Promise.all([
      db.collection("users").doc(u.uid).get(),
@@ -2231,7 +2253,7 @@ function initCloud(){
     syncAchievements();
     await syncPublicProfile();
     render()
-   }catch(e){console.error(e);alert("تم تسجيل الدخول، لكن تعذرت قراءة التقدم من Google. تأكد من إعدادات Firestore.")}})}catch(e){console.error(e)}}
+   }catch(e){console.error("Signed in, but cloud profile/progress initialization failed",e);alert("تم تسجيل الدخول، لكن تعذّر تحميل بيانات الحساب أو التقدم من Firestore.\\nالرمز: "+(e&&e.code||"unknown")+"\\n"+(e&&e.message||"تحقق من الاتصال وصلاحيات Firestore ثم أعد تحميل الصفحة."))}})}catch(e){console.error("Firebase initialization/auth listener setup failed",e);alert("تعذّر تهيئة تسجيل الدخول في الموقع. أعد تحميل الصفحة. "+(e&&e.message||e))}}
 try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
 try{history.replaceState({st:[],ex:null},"")}catch(e){HIST=false}
 window.addEventListener("popstate",e=>{const s=e.state;st=(s&&s.st)||[];if(s&&"ex" in s)EXAM=s.ex;render()});
